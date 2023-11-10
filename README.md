@@ -1,14 +1,10 @@
-# Laravel React Example Full Stack Application
-Example Application build with Laravel and React
-
-> The repo was created while I was working on the following [YouTube tutorial](https://youtu.be/qJq9ZMB2Was)
-
-## Demo
-https://laravel-react.com
+# Laravel React with DaisyUI
+WBS NT Tracking
 
 
 ## Installation 
-Make sure you have environment setup properly. You will need PHP8.1, composer and Node.js.
+Make sure you have environment setup properly.
+You will need PHP8.1, composer and Node.js.
 
 1. Download the project (or clone using GIT)
 2. Copy `.env.example` into `.env` and configure database credentials
@@ -21,3 +17,4 @@ Make sure you have environment setup properly. You will need PHP8.1, composer an
 9. Copy `react/.env.example` into `.env` and adjust the `VITE_API_BASE_URL` parameter
 9. Run `npm install`
 10. Run `npm run dev` to start vite server for React
+11. Access the App by redirecting to http://localhost:3000
