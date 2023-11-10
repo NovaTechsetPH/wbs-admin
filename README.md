@@ -17,4 +17,5 @@ You will need PHP8.1, composer and Node.js.
 9. Copy `react/.env.example` into `.env` and adjust the `VITE_API_BASE_URL` parameter
 9. Run `npm install`
 10. Run `npm run dev` to start vite server for React
-11. Access the App by redirecting to http://localhost:3000
+11. Run `npm run daisy` to start to render css files
+12. Access the App by redirecting to http://localhost:3000
