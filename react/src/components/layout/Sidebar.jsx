@@ -1,15 +1,24 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import ntImage from "/nt-logo.png";
-import { Link } from "react-router-dom";
+import { Link, useNavigate, NavLink, useLocation } from "react-router-dom";
 
-const Sidebar = (props) => {
+const Sidebar = () => {
+  // const navigate = useNavigate();
+  const location = useLocation();
+  const [currentRoute, setCurrentRoute] = useState("");
+
+  useEffect(() => {
+    setCurrentRoute(location.pathname);
+    console.log(location.pathname, "location");
+  }, [location]);
+
   return (
     <div
       className="drawer-side z-40 shadow-none"
       style={{ scrollBehavior: "smooth", scrollPaddingTop: "5rem" }}
     >
-      <aside className="bg-base-100 w-80">
+      <aside className="bg-base-100 w-90">
         <div className="bg-base-100 sticky top-0 z-20 hidden items-center gap-2 bg-opacity-90 px-4 py-2 backdrop-blur lg:flex ">
           <a
             href="/"
@@ -22,14 +31,17 @@ const Sidebar = (props) => {
             <div className="font-title inline-flex text-lg md:text-2xl">
               <span className="uppercase">WBS</span>
               {" - "}
-              <span className="lowercase text-[#1AD1A5]">Admin</span>
+              <span className="text-secondary">Admin</span>
             </div>
           </a>
         </div>
         <div className="h-4"></div>
         <ul className="menu menu-sm lg:menu-lg px-5 py-2">
           <li>
-            <a href="/dashboard" data-sveltekit-preload-data="hover">
+            <NavLink
+              to={"/dashboard"}
+              className={currentRoute == "dashboard" && "active"}
+            >
               <span>
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -45,7 +57,7 @@ const Sidebar = (props) => {
                 </svg>
               </span>
               <span>Dashboard</span>
-            </a>
+            </NavLink>
           </li>
           <li>
             <a href="/docs/themes/" data-sveltekit-preload-data="hover">
@@ -70,10 +82,15 @@ const Sidebar = (props) => {
             </a>
           </li>
           <li>
-            <Link to={"/attendance"}>
+            <NavLink
+              to={"/attendance"}
+              className={currentRoute == "attendance" && "active"}
+            >
               <span>
                 <svg
-                  fill="#000000"
+                  fill={
+                    currentRoute == "/attendance" ? "hsl(var(--b2))" : "#000000"
+                  }
                   height="24"
                   width="24"
                   version="1.1"
@@ -90,7 +107,7 @@ const Sidebar = (props) => {
                 </svg>
               </span>
               <span>Attendance</span>
-            </Link>
+            </NavLink>
           </li>
         </ul>
       </aside>

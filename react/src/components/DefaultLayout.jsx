@@ -32,9 +32,9 @@ export default function DefaultLayout() {
       <input id="drawer" type="checkbox" className="drawer-toggle"></input>
       <div className="drawer-content">
         <Navbar />
-        {/* <main>
+        <main className="mx-8">
           <Outlet />
-        </main> */}
+        </main>
         {notification && <div className="notification">{notification}</div>}
       </div>
       <Sidebar />
