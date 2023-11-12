@@ -12,15 +12,6 @@ export default function DefaultLayout() {
     return <Navigate to="/login" />;
   }
 
-  const onLogout = (ev) => {
-    ev.preventDefault();
-
-    axiosClient.post("/logout").then(() => {
-      setUser({});
-      setToken(null);
-    });
-  };
-
   useEffect(() => {
     axiosClient.get("/user").then(({ data }) => {
       setUser(data);

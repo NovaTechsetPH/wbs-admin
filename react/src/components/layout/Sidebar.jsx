@@ -10,7 +10,6 @@ const Sidebar = () => {
 
   useEffect(() => {
     setCurrentRoute(location.pathname);
-    console.log(location.pathname, "location");
   }, [location]);
 
   return (
@@ -60,7 +59,10 @@ const Sidebar = () => {
             </NavLink>
           </li>
           <li>
-            <a href="/docs/themes/" data-sveltekit-preload-data="hover">
+            <NavLink
+              to={"/tracking"}
+              className={currentRoute == "tracking" && "active"}
+            >
               <span>
                 <svg
                   width="24"
@@ -79,7 +81,7 @@ const Sidebar = () => {
                 </svg>
               </span>
               <span>Activity Tracking</span>
-            </a>
+            </NavLink>
           </li>
           <li>
             <NavLink
