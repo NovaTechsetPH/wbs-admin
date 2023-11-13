@@ -1,9 +1,10 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useStateContext } from "./../../context/ContextProvider";
 import axiosClient from "./../../axios-client";
 
-const Navbar = () => {
-  const { setUser, setToken } = useStateContext();
+const Navbar = ({ filterEmployee }) => {
+  const { setUser, setToken, filterString, setFilterString } =
+    useStateContext();
 
   const onLogout = (ev) => {
     ev.preventDefault();
@@ -12,6 +13,14 @@ const Navbar = () => {
       setToken(null);
     });
   };
+
+  const filterEmployee = (event) => {
+    setFilterString(event.target.value);
+  };
+
+  useEffect(() => {
+    console.log(filterString);
+  }, [filterString]);
 
   return (
     <>
@@ -132,6 +141,7 @@ const Navbar = () => {
                       placeholder="Search"
                       className="input input-bordered w-full max-w-xs mt-2"
                       id="search-box-nav"
+                      onChange={filterEmployee}
                     />
                   </form>
                 </div>
