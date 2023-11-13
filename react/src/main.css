@@ -1,3 +1,30 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.card {
+    display: flex;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 7%;
+
+}
+
+.input { 
+    color: black;
+    align-self: center;
+}
+
+.block {
+    color: white;
+    text-align: left;
+}
+
+.card-title {
+    align-self: center;
+}
+
+.message {
+    text-align: center;
+    
+}
