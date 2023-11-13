@@ -19,7 +19,7 @@ return [
 
     'allowed_methods' => ['*'],
 
-    'allowed_origins' => ['*'],
+    'allowed_origins' => ['192.46.230.32', '*.192.46.230.32'],
 
     'allowed_origins_patterns' => [],
 
