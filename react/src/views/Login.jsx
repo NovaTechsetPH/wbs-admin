@@ -27,6 +27,7 @@ export default function Login() {
         const response = err.response;
         if (response && response.status === 422) {
           setMessage(response.data.message);
+          alert(response.data.message);
         }
       });
   };
@@ -35,10 +36,10 @@ export default function Login() {
     <div
       className="bg-no-repeat bg-cover bg-center relative"
       style={{
-        backgroundImage: `url(https://images.unsplash.com/photo-1579621970563-ebec7560ff3e?ixlib=rb-1.2.1&amp;ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&amp;auto=format&amp;fit=crop&amp;w=1951&amp;q=80)`,
+        backgroundImage: `url(https://www.ismartrecruit.com/upload/blog/main_image/boost-employee-productivity.webp)`,
       }}
     >
-      <div className="absolute bg-gradient-to-b from-green-500 to-green-400 opacity-75 inset-0 z-0"></div>
+      <div className="absolute bg-gradient-to-b from-red-500 to-red-400 opacity-75 inset-0 z-0"></div>
       <div className="min-h-screen sm:flex sm:flex-row mx-0 justify-center">
         <div className="flex-col flex  self-center p-10 sm:max-w-5xl xl:max-w-2xl  z-10">
           <div className="self-start hidden lg:flex flex-col  text-white">
@@ -56,11 +57,11 @@ export default function Login() {
             <div className="mb-4">
               <h3 className="font-semibold text-2xl text-gray-800">Sign In </h3>
               <p className="text-gray-500">Please sign in to your account.</p>
-              {message && (
-                <div className="alert">
+              {/* {message && (
+                <div className="alert text-error bold">
                   <p>{message}</p>
                 </div>
-              )}
+              )} */}
             </div>
 
             <form onSubmit={onSubmit}>
@@ -103,7 +104,7 @@ export default function Login() {
                     </label>
                   </div>
                   <div className="text-sm">
-                    <a href="#" className="text-green-400 hover:text-green-500">
+                    <a href="#" className="text-red-400 hover:text-red-500">
                       Forgot your password?
                     </a>
                   </div>
@@ -111,7 +112,7 @@ export default function Login() {
                 <div>
                   <button
                     type="submit"
-                    className="w-full flex justify-center bg-green-400  hover:bg-green-500 text-gray-100 p-3  rounded-full tracking-wide font-semibold  shadow-lg cursor-pointer transition ease-in duration-500"
+                    className="w-full flex justify-center bg-red-400  hover:bg-red-500 text-gray-100 p-3  rounded-full tracking-wide font-semibold  shadow-lg cursor-pointer transition ease-in duration-500"
                   >
                     Sign in
                   </button>
@@ -119,40 +120,11 @@ export default function Login() {
               </div>
             </form>
             <div className="pt-5 text-center text-gray-400 text-xs">
-              <span>
-                Copyright © 2021-2022
-                <a
-                  href="https://codepen.io/uidesignhub"
-                  rel=""
-                  target="_blank"
-                  title="Ajimon"
-                  className="text-green hover:text-green-500 "
-                >
-                  AJI
-                </a>
-              </span>
+              <span>Copyright © 2023</span>
             </div>
           </div>
         </div>
       </div>
     </div>
-    // <div className="login-signup-form animated fadeInDown">
-    //   <div className="form">
-    //     <form onSubmit={onSubmit}>
-    //       <h1 className="title">Login into your account</h1>
-
-    //       {message &&
-    //         <div className="alert">
-    //           <p>{message}</p>
-    //         </div>
-    //       }
-
-    //       <input ref={emailRef} type="email" placeholder="Email"//>
-    //       <input ref={passwordRef} type="password" placeholder="Password"//>
-    //       <button className="btn btn-block">Login</button>
-    //       <p className="message">Not registered? <Link to="/signup">Create an account</Link></p>
-    //     </form>
-    //   </div>
-    // </div>
   );
 }

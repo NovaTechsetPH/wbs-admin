@@ -37,9 +37,9 @@ export const ContextProvider = ({ children }) => {
 
   const setFilterString = (term) => {
     _setFilterString(term);
-    return employees.map((emp) => {
-      return emp.name.toLowerCase().includes(term.toLowerCase());
-    });
+    // return employees.map((emp) => {
+    //   return emp.name.toLowerCase().includes(term.toLowerCase());
+    // });
   };
 
   return (

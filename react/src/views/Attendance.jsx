@@ -1,6 +1,40 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { useStateContext } from "./../context/ContextProvider";
 
 const Attendance = () => {
+  const { employees, setEmployees, filterString } = useStateContext();
+  const [filteredEmp, setFilteredEmp] = useState([]);
+
+  const getEmployees = () => {
+    // setLoading(true);
+    fetch("/employees.json")
+      .then((res) => res.json())
+      .then((data) => {
+        setEmployees(data.employees);
+        return data.employees;
+      })
+      .then((emps) => setFilteredEmp(emps))
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  useEffect(() => {
+    getEmployees();
+  }, []);
+
+  useEffect(() => {
+    if (filterString !== "") {
+      setFilteredEmp(
+        employees.filter((employee) =>
+          employee.name.toLowerCase().includes(filterString.toLowerCase())
+        )
+      );
+    } else {
+      setFilteredEmp(employees);
+    }
+  }, [filterString]);
+
   return (
     <>
       <div className="artboard horizontal artboard-demo mr-6">
@@ -25,190 +59,56 @@ const Attendance = () => {
               </tr>
             </thead>
             <tbody>
-              {/* row 1 */}
-              <tr>
-                <td>
-                  <label>
-                    <input type="checkbox" className="checkbox" />
-                  </label>
-                </td>
-                <td>
-                  <div className="flex items-center space-x-3">
-                    <div className="avatar">
-                      <div className="mask mask-squircle w-12 h-12">
-                        <img
-                          src="images/inday-2.png"
-                          alt="Avatar Tailwind CSS Component"
-                        />
+              {filteredEmp.length > 0 &&
+                filteredEmp.map((employee) => (
+                  <tr key={employee.id}>
+                    <td>
+                      <label>
+                        <input type="checkbox" className="checkbox" />
+                      </label>
+                    </td>
+                    <td>
+                      <div className="flex items-center space-x-3">
+                        <div className="avatar">
+                          <div className="mask mask-squircle w-12 h-12">
+                            <img
+                              src={`images/inday-${employee.id}.png`}
+                              alt={employee.name}
+                            />
+                          </div>
+                        </div>
+                        <div>
+                          <div className="font-bold">{employee.name}</div>
+                          <div className="text-sm opacity-50">
+                            <span className="badge badge-ghost badge-sm">
+                              {employee.position}
+                            </span>
+                          </div>
+                        </div>
                       </div>
-                    </div>
-                    <div>
-                      <div className="font-bold">Hart Hagerty</div>
-                      <div className="text-sm opacity-50">
-                        <span className="badge badge-ghost badge-sm">
-                          Desktop Support Technician
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                </td>
-                <td>IT/Development</td>
-                <td>10/11/2023</td>
-                <td>09:49</td>
-                <td>18:20</td>
-                <td>08:39 h</td>
-                <td className="text-success font-bold">02:20 h</td>
-                <td>
-                  <button className="btn btn-outline btn-xs">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      height="1em"
-                      viewBox="0 0 384 512"
-                    >
-                      <path d="M64 464c-8.8 0-16-7.2-16-16V64c0-8.8 7.2-16 16-16H224v80c0 17.7 14.3 32 32 32h80V448c0 8.8-7.2 16-16 16H64zM64 0C28.7 0 0 28.7 0 64V448c0 35.3 28.7 64 64 64H320c35.3 0 64-28.7 64-64V154.5c0-17-6.7-33.3-18.7-45.3L274.7 18.7C262.7 6.7 246.5 0 229.5 0H64zm56 256c-13.3 0-24 10.7-24 24s10.7 24 24 24H264c13.3 0 24-10.7 24-24s-10.7-24-24-24H120zm0 96c-13.3 0-24 10.7-24 24s10.7 24 24 24H264c13.3 0 24-10.7 24-24s-10.7-24-24-24H120z" />
-                    </svg>{" "}
-                    details
-                  </button>
-                </td>
-              </tr>
-              {/* row 2 */}
-              <tr>
-                <td>
-                  <label>
-                    <input type="checkbox" className="checkbox" />
-                  </label>
-                </td>
-                <td>
-                  <div className="flex items-center space-x-3">
-                    <div className="avatar">
-                      <div className="mask mask-squircle w-12 h-12">
-                        <img
-                          src="images/part-1.png"
-                          alt="Avatar Tailwind CSS Component"
-                        />
-                      </div>
-                    </div>
-                    <div>
-                      <div className="font-bold">Brice Swyre</div>
-                      <div className="text-sm opacity-50">
-                        <span className="badge badge-ghost badge-sm">
-                          Tax Accountant
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                </td>
-                <td>Copy Editor</td>
-                <td>10/11/2023</td>
-                <td>09:49</td>
-                <td>18:20</td>
-                <td>08:39 h</td>
-                <td className="text-success font-bold">02:20 h</td>
-                <td>
-                  <button className="btn btn-outline btn-xs">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      height="1em"
-                      viewBox="0 0 384 512"
-                    >
-                      <path d="M64 464c-8.8 0-16-7.2-16-16V64c0-8.8 7.2-16 16-16H224v80c0 17.7 14.3 32 32 32h80V448c0 8.8-7.2 16-16 16H64zM64 0C28.7 0 0 28.7 0 64V448c0 35.3 28.7 64 64 64H320c35.3 0 64-28.7 64-64V154.5c0-17-6.7-33.3-18.7-45.3L274.7 18.7C262.7 6.7 246.5 0 229.5 0H64zm56 256c-13.3 0-24 10.7-24 24s10.7 24 24 24H264c13.3 0 24-10.7 24-24s-10.7-24-24-24H120zm0 96c-13.3 0-24 10.7-24 24s10.7 24 24 24H264c13.3 0 24-10.7 24-24s-10.7-24-24-24H120z" />
-                    </svg>{" "}
-                    details
-                  </button>
-                </td>
-              </tr>
-              {/* row 3 */}
-              <tr>
-                <td>
-                  <label>
-                    <input type="checkbox" className="checkbox" />
-                  </label>
-                </td>
-                <td>
-                  <div className="flex items-center space-x-3">
-                    <div className="avatar">
-                      <div className="mask mask-squircle w-12 h-12">
-                        <img
-                          src="images/inday-4.png"
-                          alt="Avatar Tailwind CSS Component"
-                        />
-                      </div>
-                    </div>
-                    <div>
-                      <div className="font-bold">Marjy Ferencz</div>
-                      <div className="text-sm opacity-50">
-                        <span className="badge badge-ghost badge-sm">
-                          Office Assistant I
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                </td>
-                <td>Quality Control</td>
-                <td>10/11/2023</td>
-                <td>09:49</td>
-                <td>18:20</td>
-                <td>08:39 h</td>
-                <td className="text-success font-bold">02:20 h</td>
-                <td>
-                  <button className="btn btn-outline btn-xs">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      height="1em"
-                      viewBox="0 0 384 512"
-                    >
-                      <path d="M64 464c-8.8 0-16-7.2-16-16V64c0-8.8 7.2-16 16-16H224v80c0 17.7 14.3 32 32 32h80V448c0 8.8-7.2 16-16 16H64zM64 0C28.7 0 0 28.7 0 64V448c0 35.3 28.7 64 64 64H320c35.3 0 64-28.7 64-64V154.5c0-17-6.7-33.3-18.7-45.3L274.7 18.7C262.7 6.7 246.5 0 229.5 0H64zm56 256c-13.3 0-24 10.7-24 24s10.7 24 24 24H264c13.3 0 24-10.7 24-24s-10.7-24-24-24H120zm0 96c-13.3 0-24 10.7-24 24s10.7 24 24 24H264c13.3 0 24-10.7 24-24s-10.7-24-24-24H120z" />
-                    </svg>{" "}
-                    details
-                  </button>
-                </td>
-              </tr>
-              {/* row 4 */}
-              <tr>
-                <td>
-                  <label>
-                    <input type="checkbox" className="checkbox" />
-                  </label>
-                </td>
-                <td>
-                  <div className="flex items-center space-x-3">
-                    <div className="avatar">
-                      <div className="mask mask-squircle w-12 h-12">
-                        <img
-                          src="images/inday-1.png"
-                          alt="Avatar Tailwind CSS Component"
-                        />
-                      </div>
-                    </div>
-                    <div>
-                      <div className="font-bold">Yancy Tear</div>
-                      <div className="text-sm opacity-50">
-                        <span className="badge badge-ghost badge-sm">
-                          Community Outreach Specialist
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                </td>
-                <td>Human Resources</td>
-                <td>10/11/2023</td>
-                <td>09:49</td>
-                <td>18:20</td>
-                <td>08:39 h</td>
-                <td className="text-success font-bold">02:20 h</td>
-                <td>
-                  <button className="btn btn-outline btn-xs">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      height="1em"
-                      viewBox="0 0 384 512"
-                    >
-                      <path d="M64 464c-8.8 0-16-7.2-16-16V64c0-8.8 7.2-16 16-16H224v80c0 17.7 14.3 32 32 32h80V448c0 8.8-7.2 16-16 16H64zM64 0C28.7 0 0 28.7 0 64V448c0 35.3 28.7 64 64 64H320c35.3 0 64-28.7 64-64V154.5c0-17-6.7-33.3-18.7-45.3L274.7 18.7C262.7 6.7 246.5 0 229.5 0H64zm56 256c-13.3 0-24 10.7-24 24s10.7 24 24 24H264c13.3 0 24-10.7 24-24s-10.7-24-24-24H120zm0 96c-13.3 0-24 10.7-24 24s10.7 24 24 24H264c13.3 0 24-10.7 24-24s-10.7-24-24-24H120z" />
-                    </svg>{" "}
-                    details
-                  </button>
-                </td>
-              </tr>
+                    </td>
+                    <td>{employee.team}</td>
+                    <td>{employee.date}</td>
+                    <td>{employee.clockin}</td>
+                    <td>{employee.clockout}</td>
+                    <td>{employee.worktime} h</td>
+                    <td className="text-success font-bold">
+                      {employee.productive} h
+                    </td>
+                    <td>
+                      <button className="btn btn-outline btn-xs">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          height="1em"
+                          viewBox="0 0 384 512"
+                        >
+                          <path d="M64 464c-8.8 0-16-7.2-16-16V64c0-8.8 7.2-16 16-16H224v80c0 17.7 14.3 32 32 32h80V448c0 8.8-7.2 16-16 16H64zM64 0C28.7 0 0 28.7 0 64V448c0 35.3 28.7 64 64 64H320c35.3 0 64-28.7 64-64V154.5c0-17-6.7-33.3-18.7-45.3L274.7 18.7C262.7 6.7 246.5 0 229.5 0H64zm56 256c-13.3 0-24 10.7-24 24s10.7 24 24 24H264c13.3 0 24-10.7 24-24s-10.7-24-24-24H120zm0 96c-13.3 0-24 10.7-24 24s10.7 24 24 24H264c13.3 0 24-10.7 24-24s-10.7-24-24-24H120z" />
+                        </svg>{" "}
+                        details
+                      </button>
+                    </td>
+                  </tr>
+                ))}
             </tbody>
             {/* foot */}
             {/* <tfoot></tfoot> */}
@@ -221,7 +121,7 @@ const Attendance = () => {
       >
         <span className="text-sm font-normal text-gray-400 ">
           Showing <span className="font-semibold text-black ">1-10</span> of{" "}
-          <span className="font-semibold text-black ">1000</span>
+          <span className="font-semibold text-black ">{employees.length}</span>
         </span>
         <ul className="inline-flex -space-x-px text-sm h-8">
           <li>

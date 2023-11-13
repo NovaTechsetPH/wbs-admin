@@ -19,7 +19,7 @@ return [
 
     'allowed_methods' => ['*'],
 
-    'allowed_origins' => ['192.46.230.32', '*.192.46.230.32'],
+    'allowed_origins' => [env('SERVER_HOST', '127.0.0.1'), '*.' . env('SERVER_HOST', '127.0.0.1')],
 
     'allowed_origins_patterns' => [],
 
@@ -29,6 +29,6 @@ return [
 
     'max_age' => 0,
 
-    'supports_credentials' => false,
+    'supports_credentials' => true,
 
 ];

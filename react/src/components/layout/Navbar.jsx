@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { useStateContext } from "./../../context/ContextProvider";
 import axiosClient from "./../../axios-client";
 
-const Navbar = ({ filterEmployee }) => {
+const Navbar = () => {
   const { setUser, setToken, filterString, setFilterString } =
     useStateContext();
 
@@ -17,10 +17,6 @@ const Navbar = ({ filterEmployee }) => {
   const filterEmployee = (event) => {
     setFilterString(event.target.value);
   };
-
-  useEffect(() => {
-    console.log(filterString);
-  }, [filterString]);
 
   return (
     <>
