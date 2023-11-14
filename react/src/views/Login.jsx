@@ -98,7 +98,7 @@ export default function Login() {
                     />
                     <label
                       htmlFor="remember_me"
-                      className="ml-2 block text-sm text-gray-800"
+                      className="ml-2 text-sm text-gray-400"
                     >
                       Remember me
                     </label>
