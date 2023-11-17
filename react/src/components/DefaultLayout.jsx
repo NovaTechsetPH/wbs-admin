@@ -24,7 +24,9 @@ export default function DefaultLayout() {
       <div className="drawer-content">
         <Navbar />
         <main className="mx-8">
-          <Outlet />
+          <div className="artboard artboard-demo artboard-horizontal w-full h-screen">
+            <Outlet />
+          </div>
         </main>
         {notification && <div className="notification">{notification}</div>}
       </div>

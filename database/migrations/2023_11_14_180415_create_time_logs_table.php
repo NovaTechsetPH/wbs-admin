@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('time_logs', function (Blueprint $table) {
+        Schema::create('tbltime_logs', function (Blueprint $table) {
             $table->id();
             $table->integer('emp_id');
             $table->integer('session_id');

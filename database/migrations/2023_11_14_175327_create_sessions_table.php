@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('sessions', function (Blueprint $table) {
+        Schema::create('tbltrackrecords', function (Blueprint $table) {
             $table->id();
             $table->integer('userid');
             $table->time('timein');

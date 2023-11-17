@@ -8,6 +8,7 @@ import Signup from "./views/Signup";
 import Users from "./views/Users";
 import UserForm from "./views/UserForm";
 import Attendance from "./views/Attendance.jsx";
+import ActivityChart from "./components/ActivityChart.jsx";
 
 const router = createBrowserRouter([
   {
@@ -25,7 +26,7 @@ const router = createBrowserRouter([
       },
       {
         path: "/tracking",
-        element: <Users />,
+        element: <ActivityChart />,
       },
       {
         path: "/users/new",
