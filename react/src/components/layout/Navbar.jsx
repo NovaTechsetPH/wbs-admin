@@ -3,6 +3,7 @@ import { useStateContext } from "./../../context/ContextProvider";
 import axiosClient from "./../../axios-client";
 // import ProfileAvatar from "./ProfileAvatar";
 import { Input } from "../ui/input";
+import ntImage from "/nt-logo.png";
 
 const Navbar = () => {
   const { setUser, setToken, filterString, setFilterString } =
@@ -42,8 +43,8 @@ const Navbar = () => {
       <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
         <div className="container flex h-14 items-center">
           <div className="mr-4 hidden md:flex">
-            <a className="mr-6 flex items-center space-x-2" href="/">
-              <svg
+            <div className="mr-6 flex items-center space-x-2">
+              {/* <svg
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 256 256"
                 className="h-6 w-6"
@@ -74,9 +75,27 @@ const Navbar = () => {
               </svg>
               <span className="hidden font-bold sm:inline-block">
                 shadcn/ui
-              </span>
-            </a>
-            <nav className="flex items-center space-x-6 text-sm font-medium">
+              </span> */}
+              <a
+                href="/"
+                aria-current="page"
+                aria-label="Homepage"
+                className="flex btn btn-ghost px-2 flex-row space-between"
+                data-svelte-h="svelte-pw6yxt"
+              >
+                <img src={ntImage} alt="NT-Logo" width={36} height={36} />
+                <div className="font-title inline-flex text-lg md:text-2xl font-bold">
+                  <span className="uppercase ml-1 hidden font-bold sm:inline-block">
+                    WBS
+                  </span>
+                  {" - "}
+                  <span className="hidden font-bold sm:inline-block">
+                    Admin
+                  </span>
+                </div>
+              </a>
+            </div>
+            {/* <nav className="flex items-center space-x-6 text-sm font-medium">
               <a
                 className="transition-colors hover:text-foreground/80 text-foreground/60"
                 href="/docs"
@@ -107,7 +126,7 @@ const Navbar = () => {
               >
                 GitHub
               </a>
-            </nav>
+            </nav> */}
           </div>
           <button
             className="inline-flex items-center justify-center whitespace-nowrap rounded-md font-medium transition-colors focus-visible:outline-none focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 hover:text-accent-foreground h-9 py-2 mr-2 px-0 text-base hover:bg-transparent focus-visible:bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0 md:hidden"
