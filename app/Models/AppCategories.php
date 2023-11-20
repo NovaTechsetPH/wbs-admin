@@ -13,11 +13,8 @@ class AppCategories extends Model
 
     protected $fillable = [
         'id',
-        'task_name',
-        'category_id',
-        'taskid',
-        'userid',
-        'time',
-        'date',
+        'name',
+        'description',
+        'is_productive',
     ];
 }

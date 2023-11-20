@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\UserController;
+use App\Http\Controllers\Api\AppCategoriesController;
+use App\Http\Controllers\Api\RunningAppsController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -23,6 +25,8 @@ Route::middleware('auth:sanctum')->group(function () {
     });
 
     Route::apiResource('/users', UserController::class);
+    Route::apiResource('/appcategories', AppCategoriesController::class);
+    Route::apiResource('/runningapps', RunningAppsController::class);
 });
 
 Route::post('/signup', [AuthController::class, 'signup']);
