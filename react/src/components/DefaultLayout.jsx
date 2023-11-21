@@ -19,6 +19,7 @@ import { playlists } from "./data/playlists";
 import ActivityChart from "./ActivityChart";
 import { CalendarClockIcon } from "lucide-react";
 import EmployeeStatus from "./extra/employee-status";
+import EmployeeAnomaly from "./extra/employee-anomaly";
 
 export default function DefaultLayout() {
   const { user, token, setUser, setToken, notification } = useStateContext();
@@ -56,7 +57,8 @@ export default function DefaultLayout() {
                       </TabsTrigger>
                       <TabsTrigger value="late">Tardiness</TabsTrigger>
                       <TabsTrigger value="absent">Absences</TabsTrigger>
-                      <TabsTrigger value="present">Active</TabsTrigger>
+                      <TabsTrigger value="present">Online Users</TabsTrigger>
+                      <TabsTrigger value="anomaly">Anomalies</TabsTrigger>
                     </TabsList>
                     <div className="ml-auto mr-4">
                       <Button>
@@ -117,7 +119,7 @@ export default function DefaultLayout() {
                   </TabsContent>
                   {/* Late */}
                   <TabsContent
-                    value="late"
+                    value="present"
                     className="h-full flex-col border-none p-0 data-[state=active]:flex"
                   >
                     <div className="flex items-center justify-between">
@@ -168,6 +170,24 @@ export default function DefaultLayout() {
                     </div>
                     <Separator className="my-4" />
                     <PodcastEmptyPlaceholder />
+                  </TabsContent>
+                  {/* Late */}
+                  <TabsContent
+                    value="anomaly"
+                    className="h-full flex-col border-none p-0 data-[state=active]:flex"
+                  >
+                    <div className="flex items-center justify-between">
+                      <div className="space-y-1">
+                        <h2 className="text-2xl font-semibold tracking-tight">
+                          Invalid time in/out
+                        </h2>
+                        {/* <p className="text-sm text-muted-foreground">
+                          Your favorite podcasts. Updated daily.
+                        </p> */}
+                      </div>
+                    </div>
+                    <Separator className="my-4" />
+                    <EmployeeAnomaly />
                   </TabsContent>
                 </Tabs>
               </div>
