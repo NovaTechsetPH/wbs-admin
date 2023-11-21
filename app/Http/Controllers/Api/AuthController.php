@@ -44,8 +44,16 @@ class AuthController extends Controller
     public function logout(Request $request)
     {
         /** @var \App\Models\User $user */
-        $user = $request->user();
-        $user->currentAccessToken()->delete();
-        return response('', 204);
+        //$user = $request->user();
+        //$user->currentAccessToken()->delete();
+
+        $request->user()->currentAccessToken()->delete();
+        //return response('', 204);
+
+        //$user = request()->user();
+        //$user->tokens()->where('id', $user->currentAccessToken()->id)->delete();
+
+        //dd(Auth::user());        
+        return response()->json(['message' => 'Logout Success!'], 200);
     }
 }

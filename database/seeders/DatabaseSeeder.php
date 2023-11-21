@@ -38,5 +38,9 @@ class DatabaseSeeder extends Seeder
         ]);
 
         \App\Models\RunningApps::factory(30)->create();
+
+        $this->call([
+            EmployeeSeeder::class
+        ]);
     }
 }
