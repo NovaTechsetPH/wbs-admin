@@ -24,7 +24,7 @@ class EmployeeResource extends JsonResource
             'email' => $this->email,
             'type' => $this->type,
             'status' => $this->status,
-            'created_at' => $this->created_at->format('Y-m-d H:i:s'),
+            //'created_at' => $this->created_at->format('Y-m-d H:i:s'),
         ];
     }
 }

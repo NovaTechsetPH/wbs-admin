@@ -28,4 +28,9 @@ class Employee extends Model
     {
         return $this->hasMany(TimeLogs::class, 'emp_id');
     }
+
+    public function anomalies()
+    {
+        return $this->hasMany(TimeLogs::class, 'emp_id');
+    }
 }

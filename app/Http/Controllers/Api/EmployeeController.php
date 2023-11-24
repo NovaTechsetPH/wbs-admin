@@ -10,6 +10,8 @@ use App\Http\Resources\EmployeeResource;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
 
+use Carbon\Carbon;
+
 class EmployeeController extends Controller
 {
     /**
@@ -95,5 +97,27 @@ class EmployeeController extends Controller
         })->orderBy('id', 'desc')->paginate(10);
 
         return EmployeeResource::collection($absentEmployees);
+    }
+
+    /**
+     * Display a listing of the employee resource absent.
+     */
+    public function anomaly()
+    {
+        // Get employees who are absent based on the absence of time logs
+        $anomalyEmployees = Employee::whereHas('anomalies', function ($query) {
+            $query->where('action', 'IN')
+                ->whereNotExists(function ($subQuery) {
+                    $subQuery->select('id')
+                        ->from('tbltime_logs as tl2')
+                        ->whereRaw('tl2.emp_id = tbltime_logs.emp_id')
+                        ->where('tl2.action', 'OUT')
+                        ->whereRaw('DATE(tl2.created_at) = DATE(tbltime_logs.created_at)');
+                })
+                ->where('created_at', '>=', Carbon::now()->startOfMonth())
+                ->where('created_at', '<=', Carbon::now()->subDays(1));
+        })->orderBy('id', 'desc')->paginate(10);
+
+        return EmployeeResource::collection($anomalyEmployees);
     }
 }
