@@ -23,4 +23,9 @@ class Employee extends Model
         'type',
         'status',
     ];
+
+    public function timeLogs()
+    {
+        return $this->hasMany(TimeLogs::class, 'emp_id');
+    }
 }

@@ -82,4 +82,18 @@ class EmployeeController extends Controller
     {
         //
     }
+
+    /**
+     * Display a listing of the employee resource absent.
+     */
+    public function absent()
+    {
+        // Get employees who are absent based on the absence of time logs
+        $absentEmployees = Employee::whereDoesntHave('timeLogs', function ($query) {
+            $query->where('created_at', '>=', now()->startOfDay())
+                ->where('created_at', '<=', now()->endOfDay());
+        })->orderBy('id', 'desc')->paginate(10);
+
+        return EmployeeResource::collection($absentEmployees);
+    }
 }

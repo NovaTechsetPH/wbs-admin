@@ -5,6 +5,7 @@ use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\AppCategoriesController;
 use App\Http\Controllers\Api\EmployeeController;
 use App\Http\Controllers\Api\RunningAppsController;
+use App\Http\Controllers\Api\TimeLogsController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -28,7 +29,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('/users', UserController::class);
     Route::apiResource('/appcategories', AppCategoriesController::class);
     Route::apiResource('/runningapps', RunningAppsController::class);
+    Route::get('/employees/absent', [EmployeeController::class, 'absent']);
     Route::apiResource('/employees', EmployeeController::class);
+    Route::apiResource('/timelogs', TimeLogsController::class);
 });
 
 Route::post('/signup', [AuthController::class, 'signup']);
