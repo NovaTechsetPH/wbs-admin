@@ -15,7 +15,11 @@ class TrackRecordResource extends JsonResource
     {
         return [
             'id' => $this->id,
+<<<<<<< Updated upstream
             'user_id' => $this->user_id,
+=======
+            'userid' => $this->userid,
+>>>>>>> Stashed changes
             'timein' => $this->timein,
             'datein' => $this->datein,
             'timebreakin' => $this->timebreakin,
