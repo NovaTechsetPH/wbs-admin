@@ -19,7 +19,7 @@ import { playlists } from "./data/playlists";
 import ActivityChart from "./ActivityChart";
 import { CalendarClockIcon } from "lucide-react";
 import EmployeeStatus from "./extra/employee-status";
-import EmployeeAnomaly from "./extra/employee-anomaly";
+// import EmployeeAnomaly from "./extra/employee-status";
 
 export default function DefaultLayout() {
   const { user, token, setUser, setToken, notification } = useStateContext();
@@ -155,7 +155,7 @@ export default function DefaultLayout() {
                   </TabsContent>
                   {/* Present */}
                   <TabsContent
-                    value="present"
+                    value="late"
                     className="h-full flex-col border-none p-0 data-[state=active]:flex"
                   >
                     <div className="flex items-center justify-between">
@@ -187,7 +187,7 @@ export default function DefaultLayout() {
                       </div>
                     </div>
                     <Separator className="my-4" />
-                    <EmployeeAnomaly />
+                    <EmployeeStatus />
                   </TabsContent>
                 </Tabs>
               </div>
