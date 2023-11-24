@@ -31,6 +31,6 @@ class Employee extends Model
 
     public function anomalies()
     {
-        return $this->hasMany(TimeLogs::class, 'emp_id');
+        return $this->hasMany(TrackRecord::class, 'userid');
     }
 }
