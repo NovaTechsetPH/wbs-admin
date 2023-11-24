@@ -7,6 +7,8 @@ use App\Models\Employee;
 use App\Http\Requests\StoreEmployeeRequest;
 use App\Http\Requests\UpdateEmployeeRequest;
 use App\Http\Resources\EmployeeResource;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Http\Request;
 
 class EmployeeController extends Controller
 {
@@ -29,17 +31,32 @@ class EmployeeController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreEmployeeRequest $request)
+    public function store(Request $request)
     {
-        //
+        $input = $request->all();
+
+        /*
+        $validator = Validator::make($input, [
+            'name' => 'required',
+            'detail' => 'required'
+        ]);
+
+        if ($validator->fails()) {
+            return $this->sendError('Validation Error.', $validator->errors());
+        }
+        */
+
+        $employee = Employee::create($input);
+
+        return $this->sendResponse(new EmployeeResource($employee), 'Employee Created Successfully.');
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(Employee $employee)
+    public function show(string $id)
     {
-        //
+        return new EmployeeResource(Employee::findOrFail($id));
     }
 
     /**
@@ -53,7 +70,7 @@ class EmployeeController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateEmployeeRequest $request, Employee $employee)
+    public function update(Request $request, string $id)
     {
         //
     }
@@ -61,7 +78,7 @@ class EmployeeController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Employee $employee)
+    public function destroy(string $id)
     {
         //
     }

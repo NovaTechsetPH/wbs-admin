@@ -18,7 +18,8 @@ class EmployeeSeeder extends Seeder
             new Account("Daisy", "Lago", "Master", "IT Department", "dlago", "b", "dlago@novatechset.com", "", "Pending"),
             new Account("Daisy Jane", "Lago", "Proof Collator", "Production", "dalagoo", "aa", "dalagoo@novatechset.com", "User", "Pending"),
             new Account("Mon", "Mon", "Senior Software Engineer", "IT Department", "mmon", "s", "mon@mon.com", "User", "Pending"),
-            new Account("Dave", "Omandam", "IT Support Engineer", "IT Department", "domandam", "do", "domandam@novatechset.com", "User", "Pending")
+            new Account("Dave", "Omandam", "IT Support Engineer", "IT Department", "domandam", "do", "domandam@novatechset.com", "User", "Pending"),
+            new Account("Jerol", "Adorable", "Software Engineer", "IT Department", "jerol", "j", "jadorable@novatechset.com", "User", "Active")
         ];
 
         foreach ($employees as $employee) {
@@ -37,6 +38,7 @@ class EmployeeSeeder extends Seeder
     }
 }
 
+# Account class to hold employee data
 class Account
 {
     public $first_name;
