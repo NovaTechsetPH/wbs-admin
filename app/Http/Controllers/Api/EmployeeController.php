@@ -100,7 +100,7 @@ class EmployeeController extends Controller
     }
 
     /**
-     * Display a listing of the employee resource absent.
+     * Display a listing of the employee resource anomaly.
      */
     /*public function anomaly()
     {
