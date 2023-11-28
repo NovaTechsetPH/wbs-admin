@@ -100,9 +100,9 @@ class EmployeeController extends Controller
     }
 
     /**
-     * Display a listing of the employee resource absent.
+     * Display a listing of the employee resource anomaly.
      */
-    public function anomaly()
+    /*public function anomaly()
     {
         // Get employees who are absent based on the absence of time logs
         $anomalyEmployees = Employee::whereHas('anomalies', function ($query) {
@@ -116,6 +116,26 @@ class EmployeeController extends Controller
                 })
                 ->where('created_at', '>=', Carbon::now()->startOfMonth())
                 ->where('created_at', '<=', Carbon::now()->subDays(1));
+        })->orderBy('id', 'desc')->paginate(10);
+
+        return EmployeeResource::collection($anomalyEmployees);
+    }*/
+
+    public function anomaly()
+    {
+<<<<<<< Updated upstream
+        // Get employees who are absent based on the absence of time logs
+        $anomalyEmployees = Employee::whereHas('anomalies', function ($query) {
+            $query->whereNull('timeout')
+                ->where('created_at', '>=', Carbon::now()->startOfMonth())
+                ->where('created_at', '<=', Carbon::now()->subDays(1));
+=======
+        // Get employees who are anomaly based on the dateout of null time logs
+        $anomalyEmployees = Employee::whereHas('anomalies', function ($query) {
+            $query->whereNull('dateout')
+                ->where('datein', '>=', Carbon::now()->startOfMonth())
+                ->where('datein', '<=', Carbon::now()->subDays(1));
+>>>>>>> Stashed changes
         })->orderBy('id', 'desc')->paginate(10);
 
         return EmployeeResource::collection($anomalyEmployees);
