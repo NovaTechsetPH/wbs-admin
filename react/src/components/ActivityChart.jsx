@@ -22,6 +22,12 @@ Chart.register(
   Tooltip
 );
 
+const COLORS = {
+  unproductive: "24.6 95% 53.1%",
+  productive: "142.1 76.2% 36.3%",
+  neutral: "240 4.8% 95.9%",
+};
+
 const ActivityChart = () => {
   const [dataLabel, setDataLabel] = useState([]);
   const DATA_COUNT = 13;
@@ -53,7 +59,7 @@ const ActivityChart = () => {
           {
             label: "Productive",
             data: Utils.numbers(NUMBER_CFG),
-            backgroundColor: Utils.CHART_COLORS.green,
+            backgroundColor: `hsl(${COLORS.productive})`,
             parsing: {
               yAxisKey: "unproductive",
             },
@@ -69,7 +75,7 @@ const ActivityChart = () => {
           {
             label: "Unproductive",
             data: Utils.numbers(NUMBER_CFG),
-            backgroundColor: Utils.CHART_COLORS.red,
+            backgroundColor: `hsl(${COLORS.unproductive})`, // Utils.CHART_COLORS.red
             parsing: {
               yAxisKey: "productive",
             },
@@ -113,7 +119,6 @@ const ActivityChart = () => {
                     myChart.ticks.push(e);
                   }
                 });
-                console.log(myChart.ticks);
               }
             },
           },
@@ -152,14 +157,12 @@ const ActivityChart = () => {
   }, [dataLabel]);
 
   return (
-    <div className="card lg:card-side bg-base-100 shadow-xl">
-      <div className="card-body">
-        <div className="chart-container">
-          <canvas
-            id="track-chart"
-            // style={{ width: "100% !important" }}
-          ></canvas>
-        </div>
+    <div className="bg-base-100 rounded-lg border shadow-sm">
+      <div className="chart-container">
+        <canvas
+          id="track-chart"
+          // style={{ width: "100% !important" }}
+        ></canvas>
       </div>
     </div>
   );

@@ -87,6 +87,7 @@ export function Sidebar({ className, playlists }) {
                   fillRule="evenodd"
                   clipRule="evenodd"
                 ></path>
+                <circle cx="12" cy="7" r="4" />
               </svg>
               Attendance
             </Button>

@@ -1,14 +1,11 @@
-import { Link, Navigate, Outlet } from "react-router-dom";
+import { useEffect } from "react";
+import { Navigate, Outlet } from "react-router-dom";
 import { useStateContext } from "../context/ContextProvider";
 import axiosClient from "../axios-client.js";
-import { useEffect } from "react";
+
 import Navbar from "./layout/Navbar.jsx";
-
 import { Sidebar } from "./extra/sidebar";
-
 import { playlists } from "./data/playlists";
-
-// import EmployeeAnomaly from "./extra/employee-status";
 
 export default function DefaultLayout() {
   const { user, token, setUser, setToken, notification } = useStateContext();
