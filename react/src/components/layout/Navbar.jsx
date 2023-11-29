@@ -23,59 +23,10 @@ const Navbar = () => {
 
   return (
     <>
-      {/* <nav className="navbar bg-base-100 p-3">
-        <div className="flex-1">
-          <div className="form-control">
-            <input
-              type="text"
-              placeholder="Search"
-              className="input input-bordered w-24 md:w-auto"
-              onChange={filterEmployee}
-            />
-          </div>
-        </div>
-        <div className="flex-none gap-2">
-          <a className="btn btn-ghost text-xl">Home</a>
-          <ProfileAvatar onLogout={onLogout} />
-        </div>
-      </nav>
-      <div className="h-4"></div> */}
       <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
         <div className="container flex h-14 items-center">
           <div className="mr-4 hidden md:flex">
             <div className="mr-6 flex items-center space-x-2">
-              {/* <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 256 256"
-                className="h-6 w-6"
-              >
-                <rect width="256" height="256" fill="none" />
-                <line
-                  x1="208"
-                  y1="128"
-                  x2="128"
-                  y2="208"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="16"
-                />
-                <line
-                  x1="192"
-                  y1="40"
-                  x2="40"
-                  y2="192"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="16"
-                />
-              </svg>
-              <span className="hidden font-bold sm:inline-block">
-                shadcn/ui
-              </span> */}
               <a
                 href="/"
                 aria-current="page"
@@ -85,48 +36,16 @@ const Navbar = () => {
               >
                 <img src={ntImage} alt="NT-Logo" width={36} height={36} />
                 <div className="font-title inline-flex text-lg md:text-2xl font-bold">
-                  <span className="uppercase ml-1 hidden font-bold sm:inline-block">
-                    WBS
+                  <span className="ml-1 hidden font-bold sm:inline-block">
+                    iNTrack
                   </span>
                   {" - "}
-                  <span className="hidden font-bold sm:inline-block">
+                  <span className="hidden font-normal sm:inline-block">
                     Admin
                   </span>
                 </div>
               </a>
             </div>
-            {/* <nav className="flex items-center space-x-6 text-sm font-medium">
-              <a
-                className="transition-colors hover:text-foreground/80 text-foreground/60"
-                href="/docs"
-              >
-                Documentation
-              </a>
-              <a
-                className="transition-colors hover:text-foreground/80 text-foreground/60"
-                href="/docs/components"
-              >
-                Components
-              </a>
-              <a
-                className="transition-colors hover:text-foreground/80 text-foreground/60"
-                href="/themes"
-              >
-                Themes
-              </a>
-              <a
-                className="transition-colors hover:text-foreground/80 text-foreground"
-                href="/examples"
-              >
-                Examples
-              </a>
-              <a
-                className="hidden text-foreground/60 transition-colors hover:text-foreground/80 lg:block"
-                href="https://github.com/shadcn-ui/ui"
-              >
-                GitHub
-              </a>
-            </nav> */}
           </div>
           <button
             className="inline-flex items-center justify-center whitespace-nowrap rounded-md font-medium transition-colors focus-visible:outline-none focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 hover:text-accent-foreground h-9 py-2 mr-2 px-0 text-base hover:bg-transparent focus-visible:bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0 md:hidden"
@@ -155,15 +74,6 @@ const Navbar = () => {
           </button>
           <div className="flex flex-1 items-center justify-between space-x-2 md:justify-end">
             <div className="w-full flex-1 md:w-auto md:flex-none">
-              {/* <button className="inline-flex items-center whitespace-nowrap rounded-md font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 border border-input bg-transparent shadow-sm hover:bg-accent hover:text-accent-foreground h-9 px-4 py-2 relative w-full justify-start text-sm text-muted-foreground sm:pr-12 md:w-40 lg:w-64">
-                <span className="hidden lg:inline-flex">
-                  Search documentation...
-                </span>
-                <span className="inline-flex lg:hidden">Search...</span>
-                <kbd className="pointer-events-none absolute right-1.5 top-1.5 hidden h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium opacity-100 sm:flex">
-                  <span className="text-xs">⌘</span>K
-                </kbd>
-              </button> */}
               <Input />
             </div>
             <nav className="flex items-center">

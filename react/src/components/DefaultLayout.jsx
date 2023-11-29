@@ -3,22 +3,18 @@ import { useStateContext } from "../context/ContextProvider";
 import axiosClient from "../axios-client.js";
 import { useEffect } from "react";
 import Navbar from "./layout/Navbar.jsx";
-
-import { PlusCircledIcon } from "@radix-ui/react-icons";
-
-import { Button } from "./ui/button";
 import { ScrollArea, ScrollBar } from "./ui/scroll-area";
 import { Separator } from "./ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
 
-import { AlbumArtwork } from "./extra/album-artwork";
 import { PodcastEmptyPlaceholder } from "./extra/podcast-empty-placeholder";
 import { Sidebar } from "./extra/sidebar";
-import { listenNowAlbums, madeForYouAlbums } from "./data/album";
 import { playlists } from "./data/playlists";
 import ActivityChart from "./ActivityChart";
-import { CalendarClockIcon } from "lucide-react";
 import EmployeeStatus from "./extra/employee-status";
+import Widget from "./extra/widget";
+import { TeamAppList } from "./extra/team-app-list";
+import { DatePicker } from "./extra/date-picker";
 // import EmployeeAnomaly from "./extra/employee-status";
 
 export default function DefaultLayout() {
@@ -33,6 +29,63 @@ export default function DefaultLayout() {
       setUser(data);
     });
   }, []);
+
+  const appUsed = {
+    Productive: [
+      {
+        name: "VS Code",
+        totalTime: "16m 37s",
+      },
+      {
+        name: "Stackoverflow",
+        totalTime: "9m 59s",
+      },
+      {
+        name: "Teams",
+        totalTime: "7m 18s",
+      },
+      {
+        name: "Figma",
+        totalTime: "5m 46s",
+      },
+    ],
+    Unproductive: [
+      {
+        name: "Facebook",
+        totalTime: "1h 25m 54s",
+      },
+      {
+        name: "Vivamax",
+        totalTime: "54m 54s",
+      },
+      {
+        name: "Dota",
+        totalTime: "46m 2s",
+      },
+      {
+        name: "Netflakes",
+        totalTime: "17m 25s",
+      },
+    ],
+    Neutral: [
+      {
+        name: "Github",
+        totalTime: "22m 33s",
+      },
+      {
+        name: "Microsoft Excel",
+        totalTime: "20m 58s",
+      },
+      {
+        name: "Microsoft Outlook",
+        totalTime: "5m 18s",
+      },
+      {
+        name: "Adobe Reader",
+        totalTime: "1m 6s",
+      },
+    ],
+  };
 
   return (
     <div className="md:block">
@@ -61,9 +114,10 @@ export default function DefaultLayout() {
                       <TabsTrigger value="anomaly">Anomalies</TabsTrigger>
                     </TabsList>
                     <div className="ml-auto mr-4">
-                      <Button>
+                      <DatePicker />
+                      {/* <Button>
                         <CalendarClockIcon className="h-4 w-4" />
-                      </Button>
+                      </Button> */}
                     </div>
                   </div>
                   {/* Team Productivity */}
@@ -76,42 +130,79 @@ export default function DefaultLayout() {
                         <h2 className="text-2xl font-semibold tracking-tight">
                           Productivity Chart
                         </h2>
-                        {/* <p className="text-sm text-muted-foreground">
-                          Top picks for you. Updated daily.
-                        </p> */}
                       </div>
                     </div>
                     <Separator className="my-4" />
                     <div className="relative">
                       <ScrollArea>
-                        <div className="flex space-x-4 pb-4">
-                          <ActivityChart />
+                        <div className="flex space-x-4 pb-4 col">
+                          <div className="grid grid-cols-2 gap-4">
+                            <div className="col-span-1">
+                              <ActivityChart />
+                            </div>
+                            <div className="col-span-1">
+                              <div className="grid grid-cols-2 gap-4">
+                                <div className="col-span-1">
+                                  <Widget
+                                    title={"Productivity"}
+                                    content={"content"}
+                                  />
+                                </div>
+                                <div className="col-span-1">
+                                  <Widget title={"Late"} content={"content2"} />
+                                </div>
+                                <div className="col-span-1">
+                                  <Widget
+                                    title={"Absent"}
+                                    content={"content"}
+                                  />
+                                </div>
+                                <div className="col-span-1">
+                                  <Widget
+                                    title={"Present"}
+                                    content={"content2"}
+                                  />
+                                </div>
+                              </div>
+                            </div>
+                          </div>
                         </div>
                         <ScrollBar orientation="horizontal" />
                       </ScrollArea>
                     </div>
                     <div className="mt-6 space-y-1">
                       <h2 className="text-2xl font-semibold tracking-tight">
-                        Made for You
+                        Application List
                       </h2>
                       <p className="text-sm text-muted-foreground">
-                        Your personal playlists. Updated daily.
+                        Lists of all applications used by the team.
                       </p>
                     </div>
                     <Separator className="my-4" />
                     <div className="relative">
                       <ScrollArea>
-                        <div className="flex space-x-4 pb-4">
-                          {madeForYouAlbums.map((album) => (
-                            <AlbumArtwork
-                              key={album.name}
-                              album={album}
-                              className="w-[150px]"
-                              aspectRatio="square"
-                              width={150}
-                              height={150}
+                        <div className="grid grid-cols-3 gap-4">
+                          <div className="col-span-1">
+                            <TeamAppList
+                              title={"Productive apps"}
+                              apps={appUsed.Productive}
+                              className={"bg-success text-success-foreground"}
                             />
-                          ))}
+                          </div>
+                          <div className="col-span-1">
+                            <TeamAppList
+                              title={"Unproductive apps"}
+                              apps={appUsed.Unproductive}
+                              className={"bg-warning text-warning-foreground"}
+                            />
+                          </div>
+                          <div className="col-span-1">
+                            <TeamAppList
+                              title={"Neutral apps"}
+                              apps={appUsed.Neutral}
+                              className={"bg-muted text-muted-foreground"}
+                            />
+                          </div>
                         </div>
                         <ScrollBar orientation="horizontal" />
                       </ScrollArea>
