@@ -33,24 +33,6 @@ export default function DefaultLayout() {
   const appUsed = {
     Productive: [
       {
-        name: "Facebook",
-        totalTime: "1h 25m 54s",
-      },
-      {
-        name: "Redtube",
-        totalTime: "54m 54s",
-      },
-      {
-        name: "Dota",
-        totalTime: "46m 2s",
-      },
-      {
-        name: "Netflakes",
-        totalTime: "17m 25s",
-      },
-    ],
-    Unproductive: [
-      {
         name: "VS Code",
         totalTime: "16m 37s",
       },
@@ -65,6 +47,24 @@ export default function DefaultLayout() {
       {
         name: "Figma",
         totalTime: "5m 46s",
+      },
+    ],
+    Unproductive: [
+      {
+        name: "Facebook",
+        totalTime: "1h 25m 54s",
+      },
+      {
+        name: "Vivamax",
+        totalTime: "54m 54s",
+      },
+      {
+        name: "Dota",
+        totalTime: "46m 2s",
+      },
+      {
+        name: "Netflakes",
+        totalTime: "17m 25s",
       },
     ],
     Neutral: [
