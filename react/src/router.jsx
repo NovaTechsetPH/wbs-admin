@@ -5,10 +5,13 @@ import GuestLayout from "./components/GuestLayout";
 import Login from "./views/Login";
 import NotFound from "./views/NotFound";
 import Signup from "./views/Signup";
-import Users from "./views/Users";
+
 import UserForm from "./views/UserForm";
 import Attendance from "./views/Attendance.jsx";
 import ActivityChart from "./components/ActivityChart.jsx";
+
+// import { DataTableToolbar } from "./components/extra/datatable/data-table-toolbar.jsx";
+import Employees from "./Employees.jsx";
 
 const router = createBrowserRouter([
   {
@@ -21,12 +24,16 @@ const router = createBrowserRouter([
       },
       {
         path: "/dashboard",
-        // element: <Dashboard />,
-        element: <Users />,
+        element: <Dashboard />,
+        // element: <Users />,
       },
       {
         path: "/tracking",
         element: <ActivityChart />,
+      },
+      {
+        path: "/employee",
+        element: <Employees />,
       },
       {
         path: "/users/new",
