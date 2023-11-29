@@ -1,9 +1,17 @@
 import { cn } from "@/lib/utils";
 import { Button } from "./../ui/button";
 import { ScrollArea } from "./../ui/scroll-area";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
+import { useEffect, useState } from "react";
 
 export function Sidebar({ className, playlists }) {
+  const location = useLocation();
+  const [currentRoute, setCurrentRoute] = useState("");
+
+  useEffect(() => {
+    setCurrentRoute(location.pathname);
+  }, [location]);
+
   return (
     <div className={cn("pb-12", className)}>
       <div className="space-y-4 py-4">
@@ -13,7 +21,14 @@ export function Sidebar({ className, playlists }) {
           </h2>
           <div className="space-y-1">
             <Link to={"/dashboard"}>
-              <Button variant="secondary" className="w-full justify-start">
+              <Button
+                variant={
+                  currentRoute == "/dashboard" || currentRoute == "/"
+                    ? "secondary"
+                    : "ghost"
+                }
+                className="w-full justify-start"
+              >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   viewBox="0 0 24 24"
@@ -33,7 +48,14 @@ export function Sidebar({ className, playlists }) {
               </Button>
             </Link>
             <Link to={"/employee"}>
-              <Button variant="ghost" className="w-full justify-start">
+              <Button
+                variant={
+                  currentRoute == "/employee" || currentRoute == "/"
+                    ? "secondary"
+                    : "ghost"
+                }
+                className="w-full justify-start"
+              >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   viewBox="0 0 24 24"
