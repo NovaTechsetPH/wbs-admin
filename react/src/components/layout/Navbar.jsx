@@ -36,11 +36,11 @@ const Navbar = () => {
               >
                 <img src={ntImage} alt="NT-Logo" width={36} height={36} />
                 <div className="font-title inline-flex text-lg md:text-2xl font-bold">
-                  <span className="uppercase ml-1 hidden font-bold sm:inline-block">
-                    WBS
+                  <span className="ml-1 hidden font-bold sm:inline-block">
+                    iNTrack
                   </span>
                   {" - "}
-                  <span className="hidden font-bold sm:inline-block">
+                  <span className="hidden font-normal sm:inline-block">
                     Admin
                   </span>
                 </div>
