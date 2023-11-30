@@ -159,23 +159,33 @@ class EmployeeController extends Controller
                 ->where('date', '<=', Carbon::now()->subDays(1));
         })->orderBy('id', 'desc')->get();
 
+        $categories_data = AppCategories::all();
+        $appCategories = [];
+        foreach ($categories_data as $category) {
+            $appCategories[$category->id] = $category;
+        }
 
-        foreach ($employees as $key_emp => $emp) {
+        foreach ($employees as $key => $emp) {
             $categories['unproductive'] = [];
             $categories['productive'] = [];
             $categories['neutral'] = [];
-            foreach ($emp->runningapps as $key => $app) {
-                $category = AppCategories::find($app->category_id);
-                if ($category && $category->is_productive == 0) {
-                    $categories['unproductive'][] = $app;
-                } else if ($category && $category->is_productive == 1) {
-                    $categories['productive'][] = $app;
+            foreach ($emp->runningapps as $app) {
+                if (array_key_exists($app->category_id, $appCategories)) {
+                    $category = $appCategories[$app->category_id];
+                    $app['category'] = $category;
+                    if ($category->is_productive == 0) {
+                        $categories['unproductive'][] = $app;
+                    } else if ($category->is_productive == 1) {
+                        $categories['productive'][] = $app;
+                    } else {
+                        $categories['neutral'][] = $app;
+                    }
                 } else {
-                    $categories['neutral'][] = $app;
+                    $categories['unproductive'][] = $app;
                 }
             }
-            $employees[$key_emp]->offsetUnset('runningapps');
-            $employees[$key_emp]['runningapps'] = $categories;
+            $employees[$key]->offsetUnset('runningapps');
+            $employees[$key]['runningapps'] = $categories;
         }
 
         return response()->json([
