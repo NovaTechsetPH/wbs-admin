@@ -157,9 +157,7 @@ class EmployeeController extends Controller
         $employees = Employee::whereHas('runningapps', function ($query) {
             $query->where('date', '>=', Carbon::now()->startOfMonth())
                 ->where('date', '<=', Carbon::now()->subDays(1));
-        })->orderBy('id', 'desc')
-            ->limit(50)
-            ->get();
+        })->orderBy('id', 'desc')->get();
 
 
         foreach ($employees as $key_emp => $emp) {

@@ -46,8 +46,10 @@ class Employee extends Model
         return $this->hasMany(RunningApps::class, 'userid');
     }
 
+    /*
     public function categories()
     {
         return $this->hasMany(AppCategories::class, 'id');
     }
+    */
 }
