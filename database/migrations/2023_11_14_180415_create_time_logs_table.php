@@ -25,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('time_logs');
+        Schema::dropIfExists('tbltime_logs');
     }
 };
