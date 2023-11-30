@@ -19,7 +19,7 @@ class AppCategories extends Model
     ];
 
     // Define your relationships
-    public function runningApps()
+    public function runningapps()
     {
         return $this->hasMany(RunningApps::class, 'category_id');
     }
