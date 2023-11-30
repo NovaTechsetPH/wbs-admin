@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class EmployeeResource extends JsonResource
@@ -11,8 +12,9 @@ class EmployeeResource extends JsonResource
      *
      * @return array<string, mixed>
      */
-    public function toArray($request)
+    public function toArray(Request $request): array
     {
+        //print_r($this->runningapps);
         return [
             'id' => $this->id,
             //'user_image' => $this->user_image,
@@ -24,6 +26,9 @@ class EmployeeResource extends JsonResource
             'email' => $this->email,
             'type' => $this->type,
             'status' => $this->status,
+            //'categories' => $this->categories,
+            'runningapps' => $this->runningapps,
+            //'runningapps' => RunningAppsResource::collection($this->runningapps),
             //'created_at' => $this->created_at->format('Y-m-d H:i:s'),
         ];
     }

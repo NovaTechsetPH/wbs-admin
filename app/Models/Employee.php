@@ -24,6 +24,12 @@ class Employee extends Model
         'status',
     ];
 
+    protected $hidden = [
+        'user_image',
+        'password',
+    ];
+
+    /*
     public function timeLogs()
     {
         return $this->hasMany(TimeLogs::class, 'emp_id');
@@ -32,5 +38,16 @@ class Employee extends Model
     public function anomalies()
     {
         return $this->hasMany(TrackRecords::class, 'userid');
+    }
+    */
+
+    public function runningapps()
+    {
+        return $this->hasMany(RunningApps::class, 'userid');
+    }
+
+    public function categories()
+    {
+        return $this->hasMany(AppCategories::class, 'id');
     }
 }
