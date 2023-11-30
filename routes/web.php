@@ -1,5 +1,9 @@
 <?php
+ini_set('max_execution_time', 0);
+ini_set('memory_limit', '11256M');
 
+use App\Http\Resources\EmployeeResource;
+use App\Models\Employee;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -14,5 +18,9 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    //return view('welcome');
+    #$apps = Employee::where('id', 13)->paginate(1);
+    #$apps = Employee::all();
+    $apps = Employee::with('runningapps')->paginate(1);
+    return EmployeeResource::collection($apps);
 });

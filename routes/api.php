@@ -31,8 +31,10 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('/runningapps', RunningAppsController::class);
     Route::get('/employees/absent', [EmployeeController::class, 'absent']);
     Route::get('/employees/anomaly', [EmployeeController::class, 'anomaly']);
+    Route::get('/employees/runningapps', [EmployeeController::class, 'runningapps']);
+    Route::get('/employees/apps', [EmployeeController::class, 'getEmployeeApps']);
     Route::apiResource('/employees', EmployeeController::class);
-    Route::apiResource('/timelogs', TimeLogsController::class);
+    Route::apiResource('/timelogs', TimeLogsController::class);;
 });
 
 Route::post('/signup', [AuthController::class, 'signup']);

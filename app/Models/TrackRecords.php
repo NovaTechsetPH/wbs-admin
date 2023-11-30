@@ -8,8 +8,6 @@ use Illuminate\Database\Eloquent\Model;
 class TrackRecords extends Model
 {
     use HasFactory;
-<<<<<<< Updated upstream
-=======
 
     protected $table = 'tbltrackrecords';
 
@@ -25,5 +23,4 @@ class TrackRecords extends Model
         'timeout',
         'dateout',
     ];
->>>>>>> Stashed changes
 }
