@@ -17,4 +17,10 @@ class AppCategories extends Model
         'description',
         'is_productive',
     ];
+
+    // Define your relationships
+    public function runningApps()
+    {
+        return $this->hasMany(RunningApps::class, 'category_id');
+    }
 }

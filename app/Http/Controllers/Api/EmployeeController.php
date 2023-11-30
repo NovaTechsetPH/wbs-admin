@@ -6,7 +6,9 @@ use App\Http\Controllers\Controller;
 use App\Models\Employee;
 use App\Http\Requests\StoreEmployeeRequest;
 use App\Http\Requests\UpdateEmployeeRequest;
+use App\Http\Resources\AppCategoriesResource;
 use App\Http\Resources\EmployeeResource;
+use App\Models\AppCategories;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
 
@@ -131,5 +133,56 @@ class EmployeeController extends Controller
         })->orderBy('id', 'desc')->paginate(10);
 
         return EmployeeResource::collection($anomalyEmployees);
+    }
+
+    public function runningapps()
+    {
+        // Get employees productivity based on average
+        $runningapps = Employee::whereHas('runningapps', function ($query) {
+            $query->where('date', '>=', Carbon::now()->startOfMonth())
+                ->where('date', '<=', Carbon::now()->subDays(1));
+        })->orderBy('id', 'desc')->paginate(10);
+
+        return EmployeeResource::collection($runningapps);
+    }
+
+    public function categories()
+    {
+        $categories = AppCategories::all();
+        return AppCategoriesResource::collection($categories);
+    }
+
+    public function getEmployeeApps()
+    {
+        $employees = Employee::whereHas('runningapps', function ($query) {
+            $query->where('date', '>=', Carbon::now()->startOfMonth())
+                ->where('date', '<=', Carbon::now()->subDays(1));
+        })->orderBy('id', 'desc')
+            ->limit(50)
+            ->get();
+
+
+        foreach ($employees as $key_emp => $emp) {
+            $categories['unproductive'] = [];
+            $categories['productive'] = [];
+            $categories['neutral'] = [];
+            foreach ($emp->runningapps as $key => $app) {
+                $category = AppCategories::find($app->category_id);
+                if ($category && $category->is_productive == 0) {
+                    $categories['unproductive'][] = $app;
+                } else if ($category && $category->is_productive == 1) {
+                    $categories['productive'][] = $app;
+                } else {
+                    $categories['neutral'][] = $app;
+                }
+            }
+            $employees[$key_emp]->offsetUnset('runningapps');
+            $employees[$key_emp]['runningapps'] = $categories;
+        }
+
+        return response()->json([
+            'data' => $employees,
+            'message' => 'Success'
+        ], 200);
     }
 }

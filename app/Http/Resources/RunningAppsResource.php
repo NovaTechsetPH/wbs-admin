@@ -15,13 +15,15 @@ class RunningAppsResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'task_name' => $this->task_name,
+            'description' => $this->description,
             'category_id' => $this->category_id,
             'taskid' => $this->taskid,
             'userid' => $this->userid,
             'date' => $this->date,
             'time' => $this->time,
-            'created_at' => $this->created_at->format('Y-m-d H:i:s'),
+            'status' => $this->status,
+            //'employee' => new EmployeeResource($this->employee),
+            //'created_at' => $this->created_at->format('Y-m-d H:i:s'),
         ];
     }
 }
