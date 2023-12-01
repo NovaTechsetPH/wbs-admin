@@ -10,7 +10,6 @@ const MembersTable = () => {
       .then((res) => res.json())
       .then((data) => {
         setTasks(data.employees);
-        console.log(data);
       });
   }, []);
   return (

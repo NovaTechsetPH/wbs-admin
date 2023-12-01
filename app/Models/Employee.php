@@ -5,6 +5,8 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
+use Carbon\Carbon;
+
 class Employee extends Model
 {
     use HasFactory;
@@ -29,7 +31,6 @@ class Employee extends Model
         'password',
     ];
 
-    /*
     public function timeLogs()
     {
         return $this->hasMany(TimeLogs::class, 'emp_id');
@@ -39,15 +40,18 @@ class Employee extends Model
     {
         return $this->hasMany(TrackRecords::class, 'userid');
     }
-    */
 
     public function runningapps()
     {
-        return $this->hasMany(RunningApps::class, 'userid');
+        return $this->hasMany(RunningApps::class, 'userid')
+            ->where('date', '>=', Carbon::now()->startOfDay())
+            ->where('date', '<=', Carbon::now());
     }
 
+    /*
     public function categories()
     {
         return $this->hasMany(AppCategories::class, 'id');
     }
+    */
 }
