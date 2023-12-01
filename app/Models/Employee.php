@@ -29,7 +29,6 @@ class Employee extends Model
         'password',
     ];
 
-    /*
     public function timeLogs()
     {
         return $this->hasMany(TimeLogs::class, 'emp_id');
@@ -39,7 +38,6 @@ class Employee extends Model
     {
         return $this->hasMany(TrackRecords::class, 'userid');
     }
-    */
 
     public function runningapps()
     {
