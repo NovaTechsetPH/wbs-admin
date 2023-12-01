@@ -36,6 +36,12 @@
     --ring: 215 20.2% 65.1%;
 
     --radius: 0.5rem;
+
+
+    --success: 142.1 76.2% 36.3%;
+    --success-foreground: 355.7 100% 97.3%;
+    --warning: 24.6 95% 53.1%;
+    --warning-foreground: 60 9.1% 97.8%;
   }
 
   .dark {
