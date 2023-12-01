@@ -1,4 +1,6 @@
 import * as React from "react";
+import { useDashboardContext } from "./../../context/DashboardContextProvider";
+
 import { format } from "date-fns";
 import { Calendar as CalendarIcon } from "lucide-react";
 
@@ -8,12 +10,16 @@ import { Calendar } from "./../ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "./../ui/popover";
 
 export function DatePicker() {
-  const [date, setDate] = React.useState(new Date());
+  const { date, setDate } = useDashboardContext();
   const btnRef = React.useRef(null);
 
-  const handleDateChange = (date) => {
-    console.log(date, "date");
-    setDate(date);
+  // React.useEffect(() => {
+  //   console.log(date);
+  // }, [date]);
+
+  const handleDateChange = (newDate) => {
+    // console.log(date, "date");
+    setDate(newDate);
     btnRef.current.click();
   };
 

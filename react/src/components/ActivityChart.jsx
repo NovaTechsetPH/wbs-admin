@@ -1,3 +1,4 @@
+import { useDashboardContext } from "@/context/DashboardContextProvider";
 import React, { useEffect, useState } from "react";
 import {
   BarController,
@@ -29,6 +30,7 @@ const COLORS = {
 };
 
 const ActivityChart = () => {
+  const { date } = useDashboardContext();
   const [dataLabel, setDataLabel] = useState([]);
   const DATA_COUNT = 13;
   const NUMBER_CFG = { count: DATA_COUNT, min: 0, max: 30 };
@@ -42,7 +44,7 @@ const ActivityChart = () => {
       tmp = tmp.add(1, "hours");
       tmpArray.push(tmp.format("hh:mm"));
     }
-    console.log(tmpArray);
+    // console.log(Utils.numbers(NUMBER_CFG), "num");
     setDataLabel(tmpArray);
   }, []);
 
@@ -58,7 +60,9 @@ const ActivityChart = () => {
         datasets: [
           {
             label: "Productive",
-            data: Utils.numbers(NUMBER_CFG),
+            data: isFutureDate(date)
+              ? Utils.numbers(NUMBER_CFG).map((x) => x * 0)
+              : Utils.numbers(NUMBER_CFG),
             backgroundColor: `hsl(${COLORS.productive})`,
             parsing: {
               yAxisKey: "unproductive",
@@ -66,7 +70,9 @@ const ActivityChart = () => {
           },
           {
             label: "Neutral",
-            data: Utils.numbers(NUMBER_CFG),
+            data: isFutureDate(date)
+              ? Utils.numbers(NUMBER_CFG).map((x) => x * 0)
+              : Utils.numbers(NUMBER_CFG),
             backgroundColor: Utils.CHART_COLORS.grey,
             parsing: {
               yAxisKey: "neutral",
@@ -74,7 +80,9 @@ const ActivityChart = () => {
           },
           {
             label: "Unproductive",
-            data: Utils.numbers(NUMBER_CFG),
+            data: isFutureDate(date)
+              ? Utils.numbers(NUMBER_CFG).map((x) => x * 0)
+              : Utils.numbers(NUMBER_CFG),
             backgroundColor: `hsl(${COLORS.unproductive})`, // Utils.CHART_COLORS.red
             parsing: {
               yAxisKey: "productive",
@@ -154,7 +162,13 @@ const ActivityChart = () => {
         },
       },
     });
-  }, [dataLabel]);
+  }, [dataLabel, date]);
+
+  const isFutureDate = (value) => {
+    let d_now = new Date();
+    let d_inp = new Date(value);
+    return d_now < d_inp;
+  };
 
   return (
     <div className="bg-base-100 rounded-lg border shadow-sm">

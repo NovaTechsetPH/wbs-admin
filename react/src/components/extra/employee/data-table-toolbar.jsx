@@ -11,10 +11,6 @@ import { useEffect } from "react";
 export function DataTableToolbar({ table }) {
   const isFiltered = table.getState().columnFilters.length > 0;
 
-  useEffect(() => {
-    console.log(table);
-  }, []);
-
   return (
     <div className="flex items-center justify-between">
       <div className="flex flex-1 items-center space-x-2">
