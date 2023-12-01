@@ -11,8 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('track_records', function (Blueprint $table) {
+        Schema::create('tbltaskrunning', function (Blueprint $table) {
             $table->id();
+            $table->string('task_name')->nullable();
+            $table->integer('category_id')->nullable();
+            $table->string('taskid');
+            $table->integer('userid');
+            $table->time('time');
+            $table->date('date');
             $table->timestamps();
         });
     }
@@ -22,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('track_records');
+        Schema::dropIfExists('tbltaskrunning');
     }
 };
