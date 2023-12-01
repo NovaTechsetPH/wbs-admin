@@ -9,8 +9,10 @@ use App\Http\Requests\UpdateEmployeeRequest;
 use App\Http\Resources\AppCategoriesResource;
 use App\Http\Resources\EmployeeResource;
 use App\Models\AppCategories;
+use App\Models\RunningApps;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 use Carbon\Carbon;
 
@@ -139,8 +141,8 @@ class EmployeeController extends Controller
     {
         // Get employees productivity based on average
         $runningapps = Employee::whereHas('runningapps', function ($query) {
-            $query->where('date', '>=', Carbon::now()->startOfMonth())
-                ->where('date', '<=', Carbon::now()->subDays(1));
+            $query->where('date', '>=', Carbon::now()->startOfDay())
+                ->where('date', '<=', Carbon::now());
         })->orderBy('id', 'desc')->paginate(10);
 
         return EmployeeResource::collection($runningapps);
@@ -155,10 +157,9 @@ class EmployeeController extends Controller
     public function getEmployeeApps()
     {
         $employees = Employee::whereHas('runningapps', function ($query) {
-            $query->where('date', '>=', Carbon::now()->startOfMonth())
-                ->where('date', '<=', Carbon::now()->subDays(1));
+            $query->where('date', '>=', Carbon::now()->startOfDay())
+                ->where('date', '<=', Carbon::now());
         })->orderBy('id', 'desc')->get();
-
         $categories_data = AppCategories::all();
         $appCategories = [];
         foreach ($categories_data as $category) {
@@ -190,6 +191,77 @@ class EmployeeController extends Controller
 
         return response()->json([
             'data' => $employees,
+            'message' => 'Success'
+        ], 200);
+    }
+
+    public function getProductivity()
+    {
+        $productivity = [0, 0];
+        $categories_data = AppCategories::all();
+        $appCategories = [];
+        foreach ($categories_data as $category) {
+            $appCategories[$category->id] = $category;
+        }
+        $start_time = DB::table('tbltaskrunning')
+            ->select(DB::raw('HOUR(time) AS start_time'))
+            ->where('date', '>=', Carbon::now()->startOfDay())
+            ->where('date', '<=', Carbon::now())
+            ->orderBy('time')
+            ->limit(1)
+            ->get();
+
+        if (count($start_time) > 0) {
+            foreach ($start_time as $start) {
+                $productivity[0] = $start->start_time;
+                $productivity[1] = $start->start_time + 9;
+            }
+        } else {
+            $start = date('H');
+            $productivity[0] = $start;
+            $productivity[1] = $start + 9;
+        }
+
+        for ($i = $productivity[0]; $i <= $productivity[1]; $i++) {
+            $categories[$i]['unproductive'] = 0;
+            $categories[$i]['productive'] = 0;
+            $categories[$i]['neutral'] = 0;
+            //DB::connection()->enableQueryLog();
+            $runningapps = DB::table('tbltaskrunning')
+                ->select(
+                    'userid',
+                    'category_id',
+                    DB::raw('SUM(HOUR(SUBTIME(IF(ISNULL(end_time), CURRENT_TIME, end_time), `time`))) / COUNT(userid) AS usage_time')
+                )
+                ->where('time', '>=', $i . ':00:00')
+                ->where('time', '<=', $i . ':59:59')
+                ->where('date', '>=', Carbon::now()->startOfDay())
+                ->where('date', '<=', Carbon::now())
+                ->groupBy('userid', 'category_id')
+                ->get();
+            //$queries = DB::getQueryLog();
+            //print_r($queries);
+
+            foreach ($runningapps as $key => $app) {
+
+                if (array_key_exists($app->category_id, $appCategories)) {
+                    $category = $appCategories[$app->category_id];
+                    if ($category->is_productive == 0) {
+                        $categories[$i]['unproductive'] += $app->usage_time;
+                    } else if ($category->is_productive == 1) {
+                        $categories[$i]['productive'] += $app->usage_time;
+                    } else {
+                        $categories[$i]['neutral'] += $app->usage_time;
+                    }
+                } else {
+                    $categories[$i]['unproductive'] += $app->usage_time;
+                }
+            }
+        }
+
+
+        return response()->json([
+            'data' => $categories,
             'message' => 'Success'
         ], 200);
     }
