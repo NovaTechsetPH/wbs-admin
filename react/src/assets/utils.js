@@ -32,7 +32,7 @@ export function numbers(config) {
 
   for (i = 0; i < count; ++i) {
     // value = (from[i] || 0) + rand(min, max);
-    value = (from[i] || 0) = rand(min, max);
+    value = (from[i] || 0) + rand(min, max);
     if (rand() <= continuity) {
       data.push(Math.round(dfactor * value) / dfactor);
     } else {
