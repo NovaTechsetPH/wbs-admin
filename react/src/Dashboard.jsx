@@ -1,5 +1,9 @@
-import { DashboardContextProvider } from "./context/DashboardContextProvider";
+import {
+  DashboardContextProvider,
+  useDashboardContext,
+} from "./context/DashboardContextProvider";
 import ActivityChart from "./components/ActivityChart";
+import axiosClient from "@/axios-client";
 
 import { ScrollArea, ScrollBar } from "./components/ui/scroll-area";
 import { Separator } from "./components/ui/separator";
@@ -10,7 +14,7 @@ import EmployeeStatus from "./components/extra/employee-status";
 import Widget from "./components/extra/widget";
 import { TeamAppList } from "./components/extra/team-app-list";
 import { DatePicker } from "./components/extra/date-picker";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 const appUsed = {
   Productive: [
@@ -70,6 +74,31 @@ const appUsed = {
 };
 
 function Dashboard() {
+  const { date } = useDashboardContext();
+  const [selectedDate, setSelectedDate] = useState(date);
+  const [productivity, setProductivity] = useState([]);
+  const [appList, setAppList] = useState({
+    Productive: [],
+    Unproductive: [],
+    Neutral: [],
+  });
+
+  useEffect(() => {
+    // console.log(selectedDate, "dashboard");
+    axiosClient
+      .post("/employees/productivity", {
+        date: selectedDate,
+      })
+      .then(({ data }) => {
+        setProductivity(data?.data);
+        // console.log(data);
+      });
+  }, [selectedDate]);
+
+  const handleDateChange = (newDate) => {
+    setSelectedDate(newDate);
+  };
+
   return (
     <DashboardContextProvider>
       <div className="h-full px-4 py-6 lg:px-8">
@@ -85,7 +114,7 @@ function Dashboard() {
               <TabsTrigger value="anomaly">Anomalies</TabsTrigger>
             </TabsList>
             <div className="ml-auto mr-4">
-              <DatePicker />
+              <DatePicker onDateChanged={handleDateChange} />
               {/* <Button>
                         <CalendarClockIcon className="h-4 w-4" />
                       </Button> */}
@@ -109,7 +138,7 @@ function Dashboard() {
                 <div className="flex space-x-4 pb-4 col">
                   <div className="grid grid-cols-2 gap-4">
                     <div className="col-span-1">
-                      <ActivityChart />
+                      <ActivityChart productivity={productivity} />
                     </div>
                     <div className="col-span-1">
                       <div className="grid grid-cols-2 gap-4">

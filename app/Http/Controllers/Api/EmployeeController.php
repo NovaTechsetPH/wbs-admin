@@ -154,12 +154,15 @@ class EmployeeController extends Controller
         return AppCategoriesResource::collection($categories);
     }
 
-    public function getEmployeeApps()
+    public function getEmployeeApps(Request $request)
     {
+        $date = $request->date ? Carbon::parse($request->date) : Carbon::now();
+
         $employees = Employee::whereHas('runningapps', function ($query) {
-            $query->where('date', '>=', Carbon::now()->startOfDay())
-                ->where('date', '<=', Carbon::now());
+            $query->where('date', '>=', $date->startOfDay())
+                ->where('date', '<=', $date);
         })->orderBy('id', 'desc')->get();
+
         $categories_data = AppCategories::all();
         $appCategories = [];
         foreach ($categories_data as $category) {
@@ -195,8 +198,10 @@ class EmployeeController extends Controller
         ], 200);
     }
 
-    public function getProductivity()
+    public function getProductivity(Request $request)
     {
+        $date = Carbon::parse($request->date) ?? Carbon::now();
+
         $productivity = [0, 0];
         $categories_data = AppCategories::all();
         $appCategories = [];
@@ -205,8 +210,8 @@ class EmployeeController extends Controller
         }
         $start_time = DB::table('tbltaskrunning')
             ->select(DB::raw('HOUR(time) AS start_time'))
-            ->where('date', '>=', Carbon::now()->startOfDay())
-            ->where('date', '<=', Carbon::now())
+            ->where('date', '>=', $date->startOfDay())
+            ->where('date', '<=', $date)
             ->orderBy('time')
             ->limit(1)
             ->get();
@@ -235,8 +240,8 @@ class EmployeeController extends Controller
                 )
                 ->where('time', '>=', $i . ':00:00')
                 ->where('time', '<=', $i . ':59:59')
-                ->where('date', '>=', Carbon::now()->startOfDay())
-                ->where('date', '<=', Carbon::now())
+                ->where('date', '>=', $date->startOfDay())
+                ->where('date', '<=', $date)
                 ->groupBy('userid', 'category_id')
                 ->get();
             //$queries = DB::getQueryLog();

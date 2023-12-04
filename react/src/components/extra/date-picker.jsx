@@ -9,17 +9,13 @@ import { Button } from "./../ui/button";
 import { Calendar } from "./../ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "./../ui/popover";
 
-export function DatePicker() {
+export function DatePicker({ onDateChanged }) {
   const { date, setDate } = useDashboardContext();
   const btnRef = React.useRef(null);
 
-  // React.useEffect(() => {
-  //   console.log(date);
-  // }, [date]);
-
   const handleDateChange = (newDate) => {
-    // console.log(date, "date");
     setDate(newDate);
+    onDateChanged(newDate);
     btnRef.current.click();
   };
 
