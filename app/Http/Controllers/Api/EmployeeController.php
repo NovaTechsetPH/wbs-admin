@@ -154,12 +154,24 @@ class EmployeeController extends Controller
         return AppCategoriesResource::collection($categories);
     }
 
-    public function getEmployeeApps()
+    public function getEmployeeApps(Request $request)
     {
-        $employees = Employee::whereHas('runningapps', function ($query) {
-            $query->where('date', '>=', Carbon::now()->startOfDay())
-                ->where('date', '<=', Carbon::now());
-        })->orderBy('id', 'desc')->get();
+        $userid = '';
+        $date = Carbon::now()->format('Y-m-d');
+        if ($request->has('userid')) {
+            $userid = $request->input('userid');
+        }
+        if ($request->has('date')) {
+            $date = Carbon::createFromFormat('Y-m-d', $request->input('date'))->format('Y-m-d');
+        }
+
+        $employees = Employee::whereHas('runningapps', function ($query) use ($date) {
+            $query->where('date', '=', $date);
+        });
+        if ($userid != '') {
+            $employees->where('id', $userid);
+        }
+        $employees = $employees->orderBy('id', 'desc')->get();
         $categories_data = AppCategories::all();
         $appCategories = [];
         foreach ($categories_data as $category) {
@@ -195,21 +207,35 @@ class EmployeeController extends Controller
         ], 200);
     }
 
-    public function getProductivity()
+    public function getProductivity(Request $request)
     {
+        $userid = '';
+        $date = Carbon::now()->format('Y-m-d');
+        if ($request->has('userid')) {
+            $userid = $request->input('userid');
+        }
+        if ($request->has('date')) {
+            $date = Carbon::createFromFormat('Y-m-d', $request->input('date'))->format('Y-m-d');
+        }
+
         $productivity = [0, 0];
         $categories_data = AppCategories::all();
         $appCategories = [];
         foreach ($categories_data as $category) {
             $appCategories[$category->id] = $category;
         }
-        $start_time = DB::table('tbltaskrunning')
-            ->select(DB::raw('HOUR(time) AS start_time'))
-            ->where('date', '>=', Carbon::now()->startOfDay())
-            ->where('date', '<=', Carbon::now())
+        //DB::connection()->enableQueryLog();
+        $queries = DB::table('tbltaskrunning');
+        $queries->select(DB::raw('HOUR(time) AS start_time'));
+        if ($userid != '') {
+            $queries->where('userid', $userid);
+        }
+        $queries->where('date', '=', $date)
             ->orderBy('time')
-            ->limit(1)
-            ->get();
+            ->limit(1);
+        $start_time = $queries->get();
+        //$queries = DB::getQueryLog();
+        //print_r($queries);
 
         if (count($start_time) > 0) {
             foreach ($start_time as $start) {
@@ -226,20 +252,22 @@ class EmployeeController extends Controller
             $categories[$i]['unproductive'] = 0;
             $categories[$i]['productive'] = 0;
             $categories[$i]['neutral'] = 0;
-            //DB::connection()->enableQueryLog();
-            $runningapps = DB::table('tbltaskrunning')
-                ->select(
-                    'userid',
-                    'category_id',
-                    DB::raw('SUM(HOUR(SUBTIME(IF(ISNULL(end_time), CURRENT_TIME, end_time), `time`))) / COUNT(userid) AS usage_time')
-                )
-                ->where('time', '>=', $i . ':00:00')
+            DB::connection()->enableQueryLog();
+            $runningapps = DB::table('tbltaskrunning');
+            $runningapps->select(
+                'userid',
+                'category_id',
+                DB::raw('SUM(HOUR(SUBTIME(IF(ISNULL(end_time), CURRENT_TIME, end_time), `time`))) / COUNT(userid) AS usage_time')
+            );
+            if ($userid != '') {
+                $runningapps->where('userid', $userid);
+            }
+            $runningapps = $runningapps->where('time', '>=', $i . ':00:00')
                 ->where('time', '<=', $i . ':59:59')
-                ->where('date', '>=', Carbon::now()->startOfDay())
-                ->where('date', '<=', Carbon::now())
+                ->where('date', '=', $date)
                 ->groupBy('userid', 'category_id')
                 ->get();
-            //$queries = DB::getQueryLog();
+            $queries = DB::getQueryLog();
             //print_r($queries);
 
             foreach ($runningapps as $key => $app) {
