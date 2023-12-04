@@ -240,11 +240,23 @@ class EmployeeController extends Controller
         if (count($start_time) > 0) {
             foreach ($start_time as $start) {
                 $productivity[0] = $start->start_time;
-                $productivity[1] = $start->start_time + 9;
+                $end = $start->start_time + 9;
+                if ($end > 24) {
+                    $end = $end - 24;
+                }
+                $current = date('H');
+                if ($current > $end) {
+                    $end = $current;
+                }
+                $productivity[1] = $end;
             }
         } else {
             $start = date('H');
             $productivity[0] = $start;
+            $end  = $start + 9;
+            if ($end > 24) {
+                $end = $end - 24;
+            }
             $productivity[1] = $start + 9;
         }
 
