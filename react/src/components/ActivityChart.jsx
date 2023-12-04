@@ -29,7 +29,7 @@ const COLORS = {
   neutral: "240 4.8% 95.9%",
 };
 
-const ActivityChart = () => {
+const ActivityChart = ({ productive, unproductive, neutral, productivity }) => {
   const { date } = useDashboardContext();
   const [dataLabel, setDataLabel] = useState([]);
   const DATA_COUNT = 13;
@@ -45,8 +45,18 @@ const ActivityChart = () => {
       tmpArray.push(tmp.format("hh:mm"));
     }
     // console.log(Utils.numbers(NUMBER_CFG), "num");
-    setDataLabel(tmpArray);
-  }, []);
+    // let productivityArray = productivity.map((x) => x);
+    console.log(typeof productivity);
+    // console.log(productivityArray, "productivityArray");
+    console.log(tmpArray);
+    let timeArr = Object.keys(productivity).map((t) => {
+      console.log(t);
+      return moment(t, "hh:mm").format("HH:mm");
+    });
+
+    console.log(timeArr, "productivityArr");
+    setDataLabel(timeArr);
+  }, [productivity]);
 
   useEffect(() => {
     var myChart = Chart.getChart("track-chart");
@@ -123,9 +133,10 @@ const ActivityChart = () => {
               if (activePeriod == "day") {
                 myChart.ticks = [];
                 tiktok.forEach((e) => {
-                  if (e.value % 2 == 0 && e.value != 24) {
-                    myChart.ticks.push(e);
-                  }
+                  myChart.ticks.push(e);
+                  // if (e.value % 2 == 0 && e.value != 24) {
+                  //   myChart.ticks.push(e);
+                  // }
                 });
               }
             },
