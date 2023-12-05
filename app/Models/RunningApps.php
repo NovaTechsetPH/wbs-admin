@@ -25,7 +25,7 @@ class RunningApps extends Model
     // Define your relationships
     public function employee()
     {
-        return $this->belongsTo(Employee::class, 'id');
+        return $this->belongsTo(Employee::class, 'userid');
     }
 
     public function category()

@@ -217,7 +217,8 @@ class EmployeeController extends Controller
             $userid = $request->input('userid');
         }
         if ($request->has('date')) {
-            $date = Carbon::createFromFormat('Y-m-d', $request->input('date'))->format('Y-m-d');
+            // $date = Carbon::createFromFormat('Y-m-d', $request->date)->format('Y-m-d');
+            $date = Carbon::parse($request->date)->format('Y-m-d');
         }
 
         $productivity = [0, 0];
@@ -301,9 +302,23 @@ class EmployeeController extends Controller
             }
         }
 
-
         return response()->json([
             'data' => $categories,
+            'message' => 'Success'
+        ], 200);
+    }
+
+    public function getAllDailyOpenedApps(Request $request)
+    {
+        $date = $request->date ?? Carbon::now()->format('Y-m-d');
+
+        $apps = RunningApps::with('employee', 'category')
+            ->where('date', Carbon::parse($date)->subDays(1)->format('Y-m-d'))
+            ->orderBy('time', 'desc')
+            ->get();
+
+        return response()->json([
+            'data' => $apps,
             'message' => 'Success'
         ], 200);
     }

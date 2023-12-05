@@ -35,7 +35,10 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/employees/apps', [EmployeeController::class, 'getEmployeeApps']);
     Route::post('/employees/productivity', [EmployeeController::class, 'getProductivity']);
     Route::apiResource('/employees', EmployeeController::class);
-    Route::apiResource('/timelogs', TimeLogsController::class);;
+    Route::apiResource('/timelogs', TimeLogsController::class);
+
+    // Dashboard
+    Route::post('/dashboard/apps', [EmployeeController::class, 'getAllDailyOpenedApps']);
 });
 
 Route::post('/signup', [AuthController::class, 'signup']);
