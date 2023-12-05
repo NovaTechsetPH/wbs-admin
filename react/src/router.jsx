@@ -1,5 +1,5 @@
 import { createBrowserRouter, Navigate } from "react-router-dom";
-import Dashboard from "./Dashboard.jsx";
+
 import DefaultLayout from "./components/DefaultLayout";
 import GuestLayout from "./components/GuestLayout";
 import Login from "./views/Login";
@@ -10,8 +10,9 @@ import UserForm from "./views/UserForm";
 import Attendance from "./views/Attendance.jsx";
 import ActivityChart from "./components/ActivityChart.jsx";
 
-// import { DataTableToolbar } from "./components/extra/datatable/data-table-toolbar.jsx";
+import Dashboard from "./Dashboard.jsx";
 import Employees from "./Employees.jsx";
+import ActivityTracking from "./ActivityTracking";
 
 const router = createBrowserRouter([
   {
@@ -36,7 +37,7 @@ const router = createBrowserRouter([
         element: <Employees />,
       },
       {
-        path: "/users/new",
+        path: "/activity-tracking",
         element: <UserForm key="userCreate" />,
       },
       {
