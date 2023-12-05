@@ -183,6 +183,8 @@ class EmployeeController extends Controller
             $categories['productive'] = [];
             $categories['neutral'] = [];
             foreach ($emp->runningapps as $app) {
+                $app['epoch'] = Carbon::createFromFormat('Y-m-d H:i:s', $app->date . ' ' . $app->time)->timestamp;
+                //$app['original'] = Carbon::createFromTimestamp($app['epoch'])->toDateTimeString();
                 if (array_key_exists($app->category_id, $appCategories)) {
                     $category = $appCategories[$app->category_id];
                     $app['category'] = $category;
