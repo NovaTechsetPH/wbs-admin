@@ -39,8 +39,7 @@ const Navbar = () => {
                   <span className="ml-1 hidden font-bold sm:inline-block">
                     iNTrack
                   </span>
-                  {" - "}
-                  <span className="hidden font-normal sm:inline-block">
+                  <span className="hidden font-normal sm:inline-block ml-1">
                     Admin
                   </span>
                 </div>

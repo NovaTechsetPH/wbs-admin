@@ -16,62 +16,7 @@ import { TeamAppList } from "./components/extra/team-app-list";
 import { DatePicker } from "./components/extra/date-picker";
 import { useEffect, useState } from "react";
 
-const appUsed = {
-  Productive: [
-    {
-      name: "VS Code",
-      totalTime: "16m 37s",
-    },
-    {
-      name: "Stackoverflow",
-      totalTime: "9m 59s",
-    },
-    {
-      name: "Teams",
-      totalTime: "7m 18s",
-    },
-    {
-      name: "Figma",
-      totalTime: "5m 46s",
-    },
-  ],
-  Unproductive: [
-    {
-      name: "Facebook",
-      totalTime: "1h 25m 54s",
-    },
-    {
-      name: "Vivamax",
-      totalTime: "54m 54s",
-    },
-    {
-      name: "Dota",
-      totalTime: "46m 2s",
-    },
-    {
-      name: "Netflakes",
-      totalTime: "17m 25s",
-    },
-  ],
-  Neutral: [
-    {
-      name: "Github",
-      totalTime: "22m 33s",
-    },
-    {
-      name: "Microsoft Excel",
-      totalTime: "20m 58s",
-    },
-    {
-      name: "Microsoft Outlook",
-      totalTime: "5m 18s",
-    },
-    {
-      name: "Adobe Reader",
-      totalTime: "1m 6s",
-    },
-  ],
-};
+const CATEGORY = ["Unproductive", "Productive", "Neutral"];
 
 function Dashboard() {
   const { date } = useDashboardContext();
@@ -84,14 +29,40 @@ function Dashboard() {
   });
 
   useEffect(() => {
-    // console.log(selectedDate, "dashboard");
+    // Chart Needle Data
     axiosClient
       .post("/employees/productivity", {
         date: selectedDate,
       })
+      .then(({ data }) => setProductivity(data?.data))
+      .catch((err) => console.log(err));
+
+    // App Listing
+    axiosClient
+      .post("/dashboard/apps", {
+        date: selectedDate,
+      })
       .then(({ data }) => {
-        setProductivity(data?.data);
-        // console.log(data);
+        let listApps = {
+          Productive: [],
+          Unproductive: [],
+          Neutral: [],
+        };
+        let tmp = [];
+        data.data.forEach((app) => {
+          if (tmp.includes(app.description)) {
+            return;
+          }
+
+          listApps[CATEGORY[app.category.is_productive]].push({
+            id: crypto.randomUUID(),
+            name: app.description,
+            totalTime: app.time,
+          });
+
+          tmp.push(app.description);
+        });
+        setAppList(listApps);
       });
   }, [selectedDate]);
 
@@ -176,21 +147,21 @@ function Dashboard() {
                   <div className="col-span-1">
                     <TeamAppList
                       title={"Productive apps"}
-                      apps={appUsed.Productive}
+                      apps={appList.Productive}
                       className={"bg-success text-success-foreground"}
                     />
                   </div>
                   <div className="col-span-1">
                     <TeamAppList
                       title={"Unproductive apps"}
-                      apps={appUsed.Unproductive}
+                      apps={appList.Unproductive}
                       className={"bg-warning text-warning-foreground"}
                     />
                   </div>
                   <div className="col-span-1">
                     <TeamAppList
                       title={"Neutral apps"}
-                      apps={appUsed.Neutral}
+                      apps={appList.Neutral}
                       className={"bg-muted text-muted-foreground"}
                     />
                   </div>

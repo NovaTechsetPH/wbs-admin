@@ -310,15 +310,17 @@ class EmployeeController extends Controller
 
     public function getAllDailyOpenedApps(Request $request)
     {
-        $date = $request->date ?? Carbon::now()->format('Y-m-d');
+        $date = $request->date ?? Carbon::now()->toDateString();
 
         $apps = RunningApps::with('employee', 'category')
-            ->where('date', Carbon::parse($date)->subDays(1)->format('Y-m-d'))
-            ->orderBy('time', 'desc')
+            ->where('date', Carbon::parse($date)->toDateString())
+            ->where('userid', 1)
+            ->orderBy('id', 'desc')
             ->get();
 
         return response()->json([
-            'data' => $apps,
+            'date' => $date,
+            'data' => $apps ?? [],
             'message' => 'Success'
         ], 200);
     }

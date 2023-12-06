@@ -20,7 +20,7 @@ export function TeamAppList({ title, apps, className }) {
       <CardContent className="grid gap-3 py-1 px-6">
         {apps.map((app) => (
           <div
-            key={app.name}
+            key={app.id}
             className="flex items-center justify-between space-x-2"
           >
             <div className="flex items-center space-x-4">
