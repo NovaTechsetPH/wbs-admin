@@ -29,12 +29,15 @@ const COLORS = {
   neutral: "240 4.8% 95.9%",
 };
 
-const ActivityChart = ({ productive, unproductive, neutral, productivity }) => {
+const ActivityChart = ({ productivity }) => {
   const { date } = useDashboardContext();
   const [dataLabel, setDataLabel] = useState([]);
   const DATA_COUNT = 13;
   const NUMBER_CFG = { count: DATA_COUNT, min: 0, max: 30 };
   const activePeriod = "day";
+  const [productive, setProductive] = useState([]);
+  const [unproductive, setUnproductive] = useState([]);
+  const [neutral, setNeutral] = useState([]);
 
   useEffect(() => {
     let startTime = moment("09:00:00", "hh:mm");
@@ -44,18 +47,27 @@ const ActivityChart = ({ productive, unproductive, neutral, productivity }) => {
       tmp = tmp.add(1, "hours");
       tmpArray.push(tmp.format("hh:mm"));
     }
-    // console.log(Utils.numbers(NUMBER_CFG), "num");
-    // let productivityArray = productivity.map((x) => x);
-    console.log(typeof productivity);
-    // console.log(productivityArray, "productivityArray");
-    console.log(tmpArray);
+
     let timeArr = Object.keys(productivity).map((t) => {
-      console.log(t);
       return moment(t, "hh:mm").format("HH:mm");
     });
 
-    console.log(timeArr, "productivityArr");
+    console.log(typeof productivity);
+
     setDataLabel(timeArr);
+
+    let tmpProductive = [];
+    let tmpUnproductive = [];
+    let tmpNeutral = [];
+    for (const key in productivity) {
+      tmpProductive.push(productivity[key].productive);
+      tmpUnproductive.push(productivity[key].unproductive);
+      tmpNeutral.push(productivity[key].neutral);
+    }
+
+    setProductive(tmpProductive);
+    setUnproductive(tmpUnproductive);
+    setNeutral(tmpNeutral);
   }, [productivity]);
 
   useEffect(() => {
@@ -72,7 +84,7 @@ const ActivityChart = ({ productive, unproductive, neutral, productivity }) => {
             label: "Productive",
             data: isFutureDate(date)
               ? Utils.numbers(NUMBER_CFG).map((x) => x * 0)
-              : Utils.numbers(NUMBER_CFG),
+              : productive, // productivity.map((x) => x.productive),
             backgroundColor: `hsl(${COLORS.productive})`,
             parsing: {
               yAxisKey: "unproductive",
@@ -82,7 +94,7 @@ const ActivityChart = ({ productive, unproductive, neutral, productivity }) => {
             label: "Neutral",
             data: isFutureDate(date)
               ? Utils.numbers(NUMBER_CFG).map((x) => x * 0)
-              : Utils.numbers(NUMBER_CFG),
+              : neutral,
             backgroundColor: Utils.CHART_COLORS.grey,
             parsing: {
               yAxisKey: "neutral",
@@ -92,7 +104,7 @@ const ActivityChart = ({ productive, unproductive, neutral, productivity }) => {
             label: "Unproductive",
             data: isFutureDate(date)
               ? Utils.numbers(NUMBER_CFG).map((x) => x * 0)
-              : Utils.numbers(NUMBER_CFG),
+              : unproductive,
             backgroundColor: `hsl(${COLORS.unproductive})`, // Utils.CHART_COLORS.red
             parsing: {
               yAxisKey: "productive",
@@ -184,10 +196,7 @@ const ActivityChart = ({ productive, unproductive, neutral, productivity }) => {
   return (
     <div className="bg-base-100 rounded-lg border shadow-sm">
       <div className="chart-container">
-        <canvas
-          id="track-chart"
-          // style={{ width: "100% !important" }}
-        ></canvas>
+        <canvas id="track-chart"></canvas>
       </div>
     </div>
   );
