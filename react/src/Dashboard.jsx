@@ -17,6 +17,7 @@ import { DatePicker } from "./components/extra/date-picker";
 import { useEffect, useState } from "react";
 // import crypto from 'crypto';
 import { v4 as uuidv4 } from "uuid";
+import moment from "moment";
 
 const CATEGORY = ["Unproductive", "Productive", "Neutral"];
 
@@ -24,6 +25,7 @@ function Dashboard() {
   const { date } = useDashboardContext();
   const [selectedDate, setSelectedDate] = useState(date);
   const [productivity, setProductivity] = useState([]);
+  const [rawApps, setRawApps] = useState([]);
   const [appList, setAppList] = useState({
     Productive: [],
     Unproductive: [],
@@ -31,7 +33,7 @@ function Dashboard() {
   });
 
   useEffect(() => {
-    // Chart Needle Data
+    // Chart Candle Data
     axiosClient
       .post("/employees/productivity", {
         date: selectedDate,
@@ -52,19 +54,31 @@ function Dashboard() {
         };
         let tmp = [];
         data.data.forEach((app) => {
+          if (!app.end_time) return;
+
+          let endTime = moment(app.end_time, "H:mm:ss");
+          let startTime = moment(app.time, "H:mm:ss");
+          let totalTime = moment.duration(endTime.diff(startTime)).asSeconds();
+
           if (tmp.includes(app.category.header_name)) {
-            return;
+            let index = listApps[
+              CATEGORY[app.category.is_productive]
+            ].findIndex((x) => {
+              return x.name === app.category.header_name;
+            });
+            listApps[CATEGORY[app.category.is_productive]][index].totalTime +=
+              totalTime;
+          } else {
+            listApps[CATEGORY[app.category.is_productive]].push({
+              id: uuidv4(),
+              name: app.category.header_name,
+              totalTime: totalTime,
+            });
+            tmp.push(app.category.header_name);
           }
-
-          listApps[CATEGORY[app.category.is_productive]].push({
-            id: uuidv4(),
-            name: app.category.header_name,
-            totalTime: app.time,
-          });
-
-          tmp.push(app.category.header_name);
         });
         setAppList(listApps);
+        setRawApps(data.data);
       });
   }, [selectedDate]);
 
@@ -108,7 +122,10 @@ function Dashboard() {
                 <div className="flex space-x-4 pb-4 col">
                   <div className="grid grid-cols-2 gap-4">
                     <div className="col-span-1">
-                      <ActivityChart productivity={productivity} />
+                      <ActivityChart
+                        productivity={productivity}
+                        rawApps={rawApps}
+                      />
                     </div>
                     <div className="col-span-1">
                       <div className="grid grid-cols-2 gap-4">

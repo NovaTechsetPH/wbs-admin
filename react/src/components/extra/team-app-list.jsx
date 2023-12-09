@@ -11,6 +11,26 @@ import { Avatar, AvatarFallback, AvatarImage } from "./../ui/avatar";
 import { Separator } from "./../ui/separator";
 
 export function TeamAppList({ title, apps, className }) {
+  const convertSeconds = (seconds) => {
+    const hours = Math.floor(seconds / 3600);
+    const minutes = Math.floor((seconds % 3600) / 60);
+    const remainingSeconds = seconds % 60;
+
+    const hourString = hours > 0 ? `${hours}h` : "";
+    const minuteString = minutes > 0 ? `${minutes}m` : "";
+    const secondString = remainingSeconds > 0 ? `${remainingSeconds}s` : "";
+
+    if (hours > 0) {
+      return `${hourString} ${minuteString || "0 m"} ${
+        secondString && `${secondString}`
+      }`;
+    } else if (!hours && minutes > 0) {
+      return `${minuteString} ${secondString && `${secondString}`}`;
+    }
+
+    return secondString;
+  };
+
   return (
     <Card>
       <CardHeader className={cn("mb-3 p-3", className)}>
@@ -32,7 +52,9 @@ export function TeamAppList({ title, apps, className }) {
                 <p className="text-sm font-medium leading-none">{app.name}</p>
               </div>
             </div>
-            <p className="text-sm text-muted-foreground">{app.totalTime}</p>
+            <p className="text-sm text-muted-foreground">
+              {convertSeconds(app.totalTime)}
+            </p>
           </div>
         ))}
       </CardContent>

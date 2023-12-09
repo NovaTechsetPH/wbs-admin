@@ -52,13 +52,12 @@ const ActivityChart = ({ productivity }) => {
       return moment(t, "hh:mm").format("HH:mm");
     });
 
-    console.log(typeof productivity);
-
     setDataLabel(timeArr);
 
     let tmpProductive = [];
     let tmpUnproductive = [];
     let tmpNeutral = [];
+
     for (const key in productivity) {
       tmpProductive.push(productivity[key].productive);
       tmpUnproductive.push(productivity[key].unproductive);
@@ -113,6 +112,16 @@ const ActivityChart = ({ productivity }) => {
         ],
       },
       options: {
+        animation: {
+          onProgress: function (animation) {
+            let progress = document.getElementById("process-bar");
+            console.log("test progress");
+            progress.value = animation.currentStep / animation.numSteps;
+          },
+          onComplete: function (complete) {
+            console.log(complete, "complete");
+          },
+        },
         plugins: {
           legend: {
             display: false,
@@ -196,6 +205,7 @@ const ActivityChart = ({ productivity }) => {
   return (
     <div className="bg-base-100 rounded-lg border shadow-sm">
       <div className="chart-container">
+        <div id="process-bar"></div>
         <canvas id="track-chart"></canvas>
       </div>
     </div>
