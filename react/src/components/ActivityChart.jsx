@@ -29,7 +29,7 @@ const COLORS = {
   neutral: "240 4.8% 95.9%",
 };
 
-const ActivityChart = ({ productivity }) => {
+const ActivityChart = ({ productivity, appList }) => {
   const { date } = useDashboardContext();
   const [dataLabel, setDataLabel] = useState([]);
   const DATA_COUNT = 13;
@@ -52,7 +52,17 @@ const ActivityChart = ({ productivity }) => {
       return moment(t, "hh:mm").format("HH:mm");
     });
 
-    setDataLabel(timeArr);
+    let tenMinutes = [];
+    timeArr.forEach((ten) => {
+      const extraMins = ["0", "10", "20", "30", "40", "50"];
+      const extraTicks = extraMins.map((ex) => {
+        return moment(ten, "HH:mm").add(ex, "minutes").format("HH:mm");
+      });
+      tenMinutes = tenMinutes.concat(extraTicks);
+      // console.log(extraTicks);
+    });
+
+    setDataLabel(tenMinutes);
 
     let tmpProductive = [];
     let tmpUnproductive = [];
@@ -68,6 +78,10 @@ const ActivityChart = ({ productivity }) => {
     setUnproductive(tmpUnproductive);
     setNeutral(tmpNeutral);
   }, [productivity]);
+
+  useEffect(() => {
+    console.log(appList, "appList");
+  }, [appList]);
 
   useEffect(() => {
     var myChart = Chart.getChart("track-chart");
@@ -115,11 +129,11 @@ const ActivityChart = ({ productivity }) => {
         animation: {
           onProgress: function (animation) {
             let progress = document.getElementById("process-bar");
-            console.log("test progress");
+            // console.log("test progress");
             progress.value = animation.currentStep / animation.numSteps;
           },
           onComplete: function (complete) {
-            console.log(complete, "complete");
+            // console.log(complete, "complete");
           },
         },
         plugins: {
@@ -155,9 +169,6 @@ const ActivityChart = ({ productivity }) => {
                 myChart.ticks = [];
                 tiktok.forEach((e) => {
                   myChart.ticks.push(e);
-                  // if (e.value % 2 == 0 && e.value != 24) {
-                  //   myChart.ticks.push(e);
-                  // }
                 });
               }
             },

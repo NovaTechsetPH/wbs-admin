@@ -125,6 +125,7 @@ function Dashboard() {
                       <ActivityChart
                         productivity={productivity}
                         rawApps={rawApps}
+                        appList={appList}
                       />
                     </div>
                     <div className="col-span-1">
