@@ -1,51 +1,18 @@
-var candle = [
-  "08:00",
-  "08:10",
-  "08:20",
-  "08:30",
-  "08:40",
-  "08:50",
-  "09:00",
-  "09:10",
-  "09:20",
-  "09:30",
-  "09:40",
-  "09:50",
-  "10:00",
-  "10:10",
-  "10:20",
-  "10:30",
-  "10:40",
-  "10:50",
-  "11:00",
-  "11:10",
-  "11:20",
-  "11:30",
-  "11:40",
-  "11:50",
-  "12:00",
-  "12:10",
-  "12:20",
-  "12:30",
-  "12:40",
-  "12:50",
-  "13:00",
-  "13:10",
-  "13:20",
-];
+import moment from 'moment';
 
-var candleTime = "09:23:26";
-var endTime = "09:58:15";
+export const CandleData = (candleStart, candleLast, date) => {
+  let startTime = moment(candleStart, 'hours'),
+    endTime = startTime
+  var sticks = [startTime.format('HH:mm')];
+  var limitDate = moment(date).isSame(moment(), 'date') ? moment.now() : moment(candleLast)
+  while (endTime.isBefore(limitDate)) {
+    endTime = endTime.add(10, 'minutes');
+    sticks.push(endTime.format('HH:mm'));
+  }
 
-var sticks = []
-candle.forEach((t) => {
-  sticks.push({
-    label: t,
-    value: 0,
-  });
-})
+  return sticks;
+}
 
-// console.log(sticks);
 function timeStringToSecs(data) {
   var a = data.split(':'); // split it at the colons
   if (a.length < 3) {
@@ -71,27 +38,32 @@ function getItemDuration(startTime, endTime) {
   return duration;
 }
 
-function allocateTime() {
-  console.clear()
-  var item = getStickIndex(candleTime, sticks)
-  var itemDuration = getItemDuration(candleTime, endTime)
-  var initStickAddedTime = 600 - item.secs
-  var remainderAddedTime = itemDuration - initStickAddedTime
-  var sticksToFill = Math.floor(remainderAddedTime / 600)
-  var remainderToFill = remainderAddedTime % 600
+export const handleAllocateTime = (data, sticks) => {
+  let clonedData = [...data]
+  let clonedSticks = [...sticks]
 
-  sticks[item.index].value += initStickAddedTime
+  clonedData.forEach((d) => {
+    if (d.end_time == null) return;
 
-  for (let i = 1; i <= sticksToFill; i++) {
-    sticks[item.index + i].value += 600
-  }
+    var item = getStickIndex(d.time, sticks)
+    var initStickAddedTime = 600 - item.secs
+    var itemDuration = getItemDuration(d.time, d.end_time)
+    var remainderAddedTime = itemDuration - initStickAddedTime
+    var sticksToFill = Math.floor(remainderAddedTime / 600)
+    var remainderToFill = remainderAddedTime % 600
 
-  sticks[item.index + sticksToFill + 1].value += remainderToFill
+    clonedSticks[item.index].value += initStickAddedTime
 
+    for (let i = 1; i <= sticksToFill; i++) {
+      clonedSticks[item.index + i].value += 600
+    }
+
+    if (!clonedSticks[item.index + sticksToFill + 1]) return
+    clonedSticks[item.index + sticksToFill + 1].value += remainderToFill
+  })
+
+  return clonedSticks
 }
-
-allocateTime();
-console.log(sticks);
 
 
 

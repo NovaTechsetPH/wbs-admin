@@ -316,6 +316,7 @@ class EmployeeController extends Controller
             ->where('date', Carbon::parse($date)->toDateString())
             // ->where('userid', 20)
             ->orderBy('id', 'asc')
+            // ->limit(10)
             ->get();
 
         return response()->json([

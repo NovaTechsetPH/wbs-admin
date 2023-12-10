@@ -12,6 +12,7 @@ import {
 } from "chart.js";
 import * as Utils from "./../assets/utils";
 import moment from "moment";
+import { CandleData } from "@/lib/timehash";
 
 Chart.register(
   BarController,
@@ -29,7 +30,7 @@ const COLORS = {
   neutral: "240 4.8% 95.9%",
 };
 
-const ActivityChart = ({ productivity, appList }) => {
+const ActivityChart = ({ productivity, rawApps }) => {
   const { date } = useDashboardContext();
   const [dataLabel, setDataLabel] = useState([]);
   const DATA_COUNT = 13;
@@ -48,21 +49,20 @@ const ActivityChart = ({ productivity, appList }) => {
       tmpArray.push(tmp.format("hh:mm"));
     }
 
-    let timeArr = Object.keys(productivity).map((t) => {
-      return moment(t, "hh:mm").format("HH:mm");
-    });
+    // Old Sticks
+    // let timeArr = Object.keys(productivity).map((t) => {
+    //   return moment(t, "hh:mm").format("HH:mm");
+    // });
 
-    let tenMinutes = [];
-    timeArr.forEach((ten) => {
-      const extraMins = ["0", "10", "20", "30", "40", "50"];
-      const extraTicks = extraMins.map((ex) => {
-        return moment(ten, "HH:mm").add(ex, "minutes").format("HH:mm");
-      });
-      tenMinutes = tenMinutes.concat(extraTicks);
-      // console.log(extraTicks);
-    });
-
-    setDataLabel(tenMinutes);
+    // let tenMinutes = [];
+    // timeArr.forEach((ten) => {
+    //   const extraMins = ["0", "10", "20", "30", "40", "50"];
+    //   const extraTicks = extraMins.map((ex) => {
+    //     return moment(ten, "HH:mm").add(ex, "minutes").format("HH:mm");
+    //   });
+    //   tenMinutes = tenMinutes.concat(extraTicks);
+    //   // console.log(extraTicks);
+    // });
 
     let tmpProductive = [];
     let tmpUnproductive = [];
@@ -80,8 +80,12 @@ const ActivityChart = ({ productivity, appList }) => {
   }, [productivity]);
 
   useEffect(() => {
-    console.log(appList, "appList");
-  }, [appList]);
+    if (rawApps.length === 0) return;
+    let tenMinutes = CandleData(rawApps[0].time);
+    console.log(CandleData(rawApps[0].time), "Candle Data");
+
+    setDataLabel(tenMinutes);
+  }, [rawApps]);
 
   useEffect(() => {
     var myChart = Chart.getChart("track-chart");

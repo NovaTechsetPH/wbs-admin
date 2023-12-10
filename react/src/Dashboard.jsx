@@ -12,10 +12,11 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "./components/ui/tabs";
 import { PodcastEmptyPlaceholder } from "./components/extra/podcast-empty-placeholder";
 import EmployeeStatus from "./components/extra/employee-status";
 import Widget from "./components/extra/widget";
+import { CandleData, handleAllocateTime } from "./lib/timehash";
+
 import { TeamAppList } from "./components/extra/team-app-list";
 import { DatePicker } from "./components/extra/date-picker";
 import { useEffect, useState } from "react";
-// import crypto from 'crypto';
 import { v4 as uuidv4 } from "uuid";
 import moment from "moment";
 
@@ -46,16 +47,29 @@ function Dashboard() {
       .post("/dashboard/apps", {
         date: selectedDate,
       })
-      .then(({ data }) => {
+      .then(async ({ data }) => {
         let listApps = {
           Productive: [],
           Unproductive: [],
           Neutral: [],
         };
         let tmp = [];
-        data.data.forEach((app) => {
-          if (!app.end_time) return;
+        setRawApps(data.data);
+        let dataLength = data.data.length;
+        let cleanCandle = CandleData(
+          data.data[0]?.time,
+          data.data[dataLength]?.time,
+          selectedDate
+        ).map((candle) => {
+          return { label: candle, value: 0 };
+        });
 
+        /**@args candleTime, endTime, sticks*/
+        if (data.data.length === 1) return;
+        let candleData = handleAllocateTime(data.data, cleanCandle);
+
+        await data.data.forEach((app) => {
+          if (app.end_time === null) return;
           let endTime = moment(app.end_time, "H:mm:ss");
           let startTime = moment(app.time, "H:mm:ss");
           let totalTime = moment.duration(endTime.diff(startTime)).asSeconds();
@@ -77,8 +91,8 @@ function Dashboard() {
             tmp.push(app.category.header_name);
           }
         });
+        console.log(candleData, "candleData");
         setAppList(listApps);
-        setRawApps(data.data);
       });
   }, [selectedDate]);
 
