@@ -35,12 +35,12 @@ function Dashboard() {
 
   useEffect(() => {
     // Chart Candle Data
-    axiosClient
-      .post("/employees/productivity", {
-        date: selectedDate,
-      })
-      .then(({ data }) => setProductivity(data?.data))
-      .catch((err) => console.log(err));
+    // axiosClient
+    //   .post("/employees/productivity", {
+    //     date: selectedDate,
+    //   })
+    //   .then(({ data }) => setProductivity(data?.data))
+    //   .catch((err) => console.log(err));
 
     // App Listing
     axiosClient
@@ -61,7 +61,11 @@ function Dashboard() {
           data.data[dataLength]?.time,
           selectedDate
         ).map((candle) => {
-          return { label: candle, value: 0 };
+          return {
+            label: candle,
+            value: 0,
+            category: { productive: 0, unproductive: 0, neutral: 0 },
+          };
         });
 
         /**@args candleTime, endTime, sticks*/
@@ -92,6 +96,7 @@ function Dashboard() {
           }
         });
         console.log(candleData, "candleData");
+        setProductivity(candleData);
         setAppList(listApps);
       });
   }, [selectedDate]);

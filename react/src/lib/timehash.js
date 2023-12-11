@@ -1,5 +1,11 @@
 import moment from 'moment';
 
+const CATEGORY = [
+  'unproductive',
+  'productive',
+  'neutral'
+]
+
 export const CandleData = (candleStart, candleLast, date) => {
   let startTime = moment(candleStart, 'hours'),
     endTime = startTime
@@ -9,6 +15,8 @@ export const CandleData = (candleStart, candleLast, date) => {
     endTime = endTime.add(10, 'minutes');
     sticks.push(endTime.format('HH:mm'));
   }
+
+  console.log(sticks.length, 'candleSize');
 
   return sticks;
 }
@@ -38,6 +46,25 @@ function getItemDuration(startTime, endTime) {
   return duration;
 }
 
+export const secondsToHuman = (seconds) => {
+  const hours = Math.floor(seconds / 3600);
+  const minutes = Math.floor((seconds % 3600) / 60);
+  const remainingSeconds = seconds % 60;
+
+  const hourString = hours > 0 ? `${hours}h` : "";
+  const minuteString = minutes > 0 ? `${minutes}m` : "";
+  const secondString = remainingSeconds > 0 ? `${remainingSeconds}s` : "";
+
+  if (hours > 0) {
+    return `${hourString} ${minuteString || "0 m"} ${secondString && `${secondString}`
+      }`;
+  } else if (!hours && minutes > 0) {
+    return `${minuteString} ${secondString && `${secondString}`}`;
+  }
+
+  return secondString;
+};
+
 export const handleAllocateTime = (data, sticks) => {
   let clonedData = [...data]
   let clonedSticks = [...sticks]
@@ -53,13 +80,16 @@ export const handleAllocateTime = (data, sticks) => {
     var remainderToFill = remainderAddedTime % 600
 
     clonedSticks[item.index].value += initStickAddedTime
+    clonedSticks[item.index].category[CATEGORY[d.category.is_productive]] += initStickAddedTime
 
     for (let i = 1; i <= sticksToFill; i++) {
       clonedSticks[item.index + i].value += 600
+      clonedSticks[item.index + i].category[CATEGORY[d.category.is_productive]] += 600
     }
 
     if (!clonedSticks[item.index + sticksToFill + 1]) return
     clonedSticks[item.index + sticksToFill + 1].value += remainderToFill
+    clonedSticks[item.index + sticksToFill + 1].category[CATEGORY[d.category.is_productive]] += remainderToFill
   })
 
   return clonedSticks

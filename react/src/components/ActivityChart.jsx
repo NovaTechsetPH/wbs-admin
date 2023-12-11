@@ -12,7 +12,7 @@ import {
 } from "chart.js";
 import * as Utils from "./../assets/utils";
 import moment from "moment";
-import { CandleData } from "@/lib/timehash";
+import { CandleData, secondsToHuman } from "@/lib/timehash";
 
 Chart.register(
   BarController,
@@ -69,9 +69,9 @@ const ActivityChart = ({ productivity, rawApps }) => {
     let tmpNeutral = [];
 
     for (const key in productivity) {
-      tmpProductive.push(productivity[key].productive);
-      tmpUnproductive.push(productivity[key].unproductive);
-      tmpNeutral.push(productivity[key].neutral);
+      tmpProductive.push(productivity[key].category["productive"]);
+      tmpUnproductive.push(productivity[key].category["unproductive"]);
+      tmpNeutral.push(productivity[key].category["neutral"]);
     }
 
     setProductive(tmpProductive);
@@ -143,6 +143,18 @@ const ActivityChart = ({ productivity, rawApps }) => {
         plugins: {
           legend: {
             display: false,
+          },
+          tooltip: {
+            callbacks: {
+              label: function (context) {
+                let data = parseInt(context.formattedValue.replace(/,/g, ""));
+                let label = context.dataset.label;
+                let formatedData =
+                  secondsToHuman(data) == "" ? "0" : secondsToHuman(data);
+                return `${label}: ${formatedData}`;
+                // return label;
+              },
+            },
           },
         },
         interaction: {
