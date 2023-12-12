@@ -58,7 +58,7 @@ function Dashboard() {
         let dataLength = data.data.length;
         let cleanCandle = CandleData(
           data.data[0]?.time,
-          data.data[dataLength]?.time,
+          data.data[dataLength - 1]?.time,
           selectedDate
         ).map((candle) => {
           return {
@@ -68,7 +68,6 @@ function Dashboard() {
           };
         });
 
-        /**@args candleTime, endTime, sticks*/
         if (data.data.length === 1) return;
         let candleData = handleAllocateTime(data.data, cleanCandle);
 
@@ -95,7 +94,7 @@ function Dashboard() {
             tmp.push(app.category.header_name);
           }
         });
-        console.log(candleData, "candleData");
+
         setProductivity(candleData);
         setAppList(listApps);
       });

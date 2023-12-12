@@ -16,6 +16,8 @@ class AppCategories extends Model
         'name',
         'description',
         'is_productive',
+        'icon',
+        'abbreviation',
     ];
 
     // Define your relationships

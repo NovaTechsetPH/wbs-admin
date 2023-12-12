@@ -20,6 +20,7 @@ class RunningApps extends Model
         'time',
         'status',
         'category_id',
+        'end_time',
     ];
 
     // Define your relationships

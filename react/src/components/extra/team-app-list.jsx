@@ -46,7 +46,9 @@ export function TeamAppList({ title, apps, className }) {
             <div className="flex items-center space-x-4">
               <Avatar>
                 <AvatarImage src="/avatars/01.png" />
-                <AvatarFallback>{app.name.slice(0, 2)}</AvatarFallback>
+                <AvatarFallback>
+                  {app.abbreviation ? app.abbreviation : app.name.slice(0, 2)}
+                </AvatarFallback>
               </Avatar>
               <div>
                 <p className="text-sm font-medium leading-none">{app.name}</p>

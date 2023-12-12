@@ -11,7 +11,6 @@ import {
   Tooltip,
 } from "chart.js";
 import * as Utils from "./../assets/utils";
-import moment from "moment";
 import { CandleData, secondsToHuman } from "@/lib/timehash";
 
 Chart.register(
@@ -41,29 +40,6 @@ const ActivityChart = ({ productivity, rawApps }) => {
   const [neutral, setNeutral] = useState([]);
 
   useEffect(() => {
-    let startTime = moment("09:00:00", "hh:mm");
-    let tmpArray = [startTime.format("hh:mm")];
-    let tmp = startTime;
-    for (let i = 1; i < DATA_COUNT; i++) {
-      tmp = tmp.add(1, "hours");
-      tmpArray.push(tmp.format("hh:mm"));
-    }
-
-    // Old Sticks
-    // let timeArr = Object.keys(productivity).map((t) => {
-    //   return moment(t, "hh:mm").format("HH:mm");
-    // });
-
-    // let tenMinutes = [];
-    // timeArr.forEach((ten) => {
-    //   const extraMins = ["0", "10", "20", "30", "40", "50"];
-    //   const extraTicks = extraMins.map((ex) => {
-    //     return moment(ten, "HH:mm").add(ex, "minutes").format("HH:mm");
-    //   });
-    //   tenMinutes = tenMinutes.concat(extraTicks);
-    //   // console.log(extraTicks);
-    // });
-
     let tmpProductive = [];
     let tmpUnproductive = [];
     let tmpNeutral = [];
@@ -81,10 +57,9 @@ const ActivityChart = ({ productivity, rawApps }) => {
 
   useEffect(() => {
     if (rawApps.length === 0) return;
-    let tenMinutes = CandleData(rawApps[0].time);
-    console.log(CandleData(rawApps[0].time), "Candle Data");
-
-    setDataLabel(tenMinutes);
+    setDataLabel(
+      CandleData(rawApps[0].time, rawApps[rawApps.length - 1].time, date)
+    );
   }, [rawApps]);
 
   useEffect(() => {
@@ -152,7 +127,6 @@ const ActivityChart = ({ productivity, rawApps }) => {
                 let formatedData =
                   secondsToHuman(data) == "" ? "0" : secondsToHuman(data);
                 return `${label}: ${formatedData}`;
-                // return label;
               },
             },
           },

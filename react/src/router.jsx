@@ -38,7 +38,7 @@ const router = createBrowserRouter([
       },
       {
         path: "/activity-tracking",
-        element: <UserForm key="userCreate" />,
+        element: <ActivityTracking />,
       },
       {
         path: "/users/:id",

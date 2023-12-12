@@ -154,7 +154,6 @@ export const columns = [
       );
     },
     filterFn: (row, id, value) => {
-      console.log(id);
       return value.includes(row.getValue(id));
     },
   },

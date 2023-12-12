@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\RunningApps;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class ActivityTrackController extends Controller
@@ -12,6 +14,29 @@ class ActivityTrackController extends Controller
         return response()->json([
             'data' => [],
             'message' => 'Employees not found',
+        ], 200);
+    }
+
+    public function getEmployeeActivity(Request $request)
+    {
+        try {
+            $date = $request->date ?? Carbon::now()->toDateString();
+            $apps = RunningApps::with('employee', 'category')
+                ->where('date', Carbon::parse($date)->toDateString())
+                ->where('userid', $request->userid)
+                ->whereNot('end_time', NULL)
+                ->orderBy('id', 'asc')
+                ->get();
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => $e->getMessage(),
+                'message' => 'Internal Server Error!',
+            ], 500);
+        }
+
+        return response()->json([
+            'data' => $apps ?? [],
+            'message' => count($apps) > 0 ? 'Success' : 'Employee not found',
         ], 200);
     }
 }

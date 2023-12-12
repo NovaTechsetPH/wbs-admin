@@ -10,14 +10,11 @@ export const CandleData = (candleStart, candleLast, date) => {
   let startTime = moment(candleStart, 'hours'),
     endTime = startTime
   var sticks = [startTime.format('HH:mm')];
-  var limitDate = moment(date).isSame(moment(), 'date') ? moment.now() : moment(candleLast)
-  while (endTime.isBefore(limitDate)) {
+  var limitDate = moment(date).isSame(moment(), 'date') ? moment.now() : moment(candleLast, 'hours').add(1, 'hour');
+  while (endTime.isBefore(limitDate) || sticks.length < 30) {
     endTime = endTime.add(10, 'minutes');
     sticks.push(endTime.format('HH:mm'));
   }
-
-  console.log(sticks.length, 'candleSize');
-
   return sticks;
 }
 

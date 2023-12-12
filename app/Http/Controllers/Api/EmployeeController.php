@@ -314,9 +314,8 @@ class EmployeeController extends Controller
 
         $apps = RunningApps::with('employee', 'category')
             ->where('date', Carbon::parse($date)->toDateString())
-            // ->where('userid', 20)
+            // ->whereNot('end_time', NULL)
             ->orderBy('id', 'asc')
-            // ->limit(10)
             ->get();
 
         return response()->json([

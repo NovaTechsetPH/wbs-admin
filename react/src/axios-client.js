@@ -1,5 +1,10 @@
 import axios from "axios";
 import { useStateContext } from "./context/ContextProvider.jsx";
+import moment from 'moment'
+
+Date.prototype.toJSON = function () {
+  return moment(this).format();
+}
 
 const axiosClient = axios.create({
   baseURL: `${import.meta.env.VITE_API_BASE_URL}/api`

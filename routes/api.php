@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\ActivityTrackController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\AppCategoriesController;
@@ -39,6 +40,12 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // Dashboard
     Route::post('/dashboard/apps', [EmployeeController::class, 'getAllDailyOpenedApps']);
+
+    // Employees
+    // Routes here
+
+    // Activity Tracking
+    Route::post('/activity/employee', [ActivityTrackController::class, 'getEmployeeActivity']);
 });
 
 Route::post('/signup', [AuthController::class, 'signup']);
