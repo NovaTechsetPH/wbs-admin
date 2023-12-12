@@ -1,14 +1,7 @@
 import { cn } from "@/lib/utils";
 import { Button } from "@ui/button";
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "./../ui/card";
-import { Avatar, AvatarFallback, AvatarImage } from "./../ui/avatar";
-import { Separator } from "./../ui/separator";
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@ui/card";
+import { Avatar, AvatarFallback, AvatarImage } from "@ui/avatar";
 
 export function TeamAppList({ title, apps, className }) {
   const convertSeconds = (seconds) => {
@@ -35,9 +28,8 @@ export function TeamAppList({ title, apps, className }) {
     <Card>
       <CardHeader className={cn("mb-3 p-3", className)}>
         <CardTitle>{title}</CardTitle>
-        {/* <Separator className="my-4" /> */}
       </CardHeader>
-      <CardContent className="grid gap-3 py-1 px-6">
+      <CardContent className="grid gap-3 py-1 px-6" style={{ minHeight: 20 }}>
         {apps.map((app) => (
           <div
             key={app.id}

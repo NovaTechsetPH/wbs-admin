@@ -3,18 +3,15 @@ import { useEffect, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 import moment from "moment";
 
-import ActivityChart from "./components/ActivityChart";
-
 import { ScrollArea, ScrollBar } from "./components/ui/scroll-area";
 import { Separator } from "./components/ui/separator";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "./components/ui/tabs";
-
-import { PodcastEmptyPlaceholder } from "./components/extra/podcast-empty-placeholder";
-import EmployeeStatus from "./components/extra/employee-status";
-import Widget from "./components/extra/widget";
-
 import { TeamAppList } from "./components/extra/team-app-list";
 import { DatePicker } from "./components/extra/date-picker";
+
+import ActivityChart from "./components/ActivityChart";
+import SelectDialog from "./components/extra/employee-select-dialog";
+import Widget from "./components/extra/widget";
+
 import { CandleData, handleAllocateTime } from "./lib/timehash";
 import {
   useDashboardContext,
@@ -28,20 +25,29 @@ const ActivityTracking = () => {
   const [selectedDate, setSelectedDate] = useState(date);
   const [productivity, setProductivity] = useState([]);
   const [rawApps, setRawApps] = useState([]);
+  const [employees, setEmployees] = useState([]);
+  const [empId, setEmpId] = useState(0);
   const [apps, setApps] = useState({
     Productive: [],
     Unproductive: [],
     Neutral: [],
   });
 
-  const handleDateChange = (date) => {
-    setSelectedDate(date);
-  };
+  const handleDateChange = (date) => setSelectedDate(date);
+
+  const handleEmployeeChange = (id) => setEmpId(id);
+
+  useEffect(() => {
+    axiosClient
+      .get("/employees")
+      .then(({ data }) => setEmployees(data.data))
+      .catch((err) => console.log(err));
+  }, []);
 
   useEffect(() => {
     axiosClient
       .post("/activity/employee", {
-        userid: 20,
+        userid: empId,
         date: selectedDate,
       })
       .then(async ({ data }) => {
@@ -97,181 +103,91 @@ const ActivityTracking = () => {
         setApps(listApps);
       })
       .catch((err) => console.log(err));
-  }, [selectedDate]);
+  }, [selectedDate, empId]);
 
   return (
     <DashboardContextProvider>
       <div className="h-full px-4 py-6 lg:px-8">
-        <Tabs defaultValue="team_productivity" className="h-full space-y-6">
-          <div className="space-between flex items-center">
-            <TabsList>
-              <TabsTrigger value="team_productivity" className="relative">
-                Team Productivity
-              </TabsTrigger>
-              <TabsTrigger value="late">Tardiness</TabsTrigger>
-              <TabsTrigger value="absent">Absences</TabsTrigger>
-              <TabsTrigger value="present">Online Users</TabsTrigger>
-              <TabsTrigger value="anomaly">Anomalies</TabsTrigger>
-            </TabsList>
-            <div className="ml-auto mr-4">
-              <DatePicker onDateChanged={handleDateChange} />
-            </div>
+        <div className="flex items-center justify-between space-y-2">
+          <h2 className="text-3xl font-bold tracking-tight">
+            <SelectDialog
+              onEmployeeChanged={handleEmployeeChange}
+              data={employees}
+            />
+          </h2>
+          <div className="flex items-center space-x-2">
+            <DatePicker onDateChanged={handleDateChange} />
           </div>
-          {/* Team Productivity */}
-          <TabsContent
-            value="team_productivity"
-            className="h-full flex-col border-none p-0"
-          >
-            <div className="flex items-center justify-between">
-              <div className="space-y-1">
-                <h2 className="text-2xl font-semibold tracking-tight">
-                  Productivity Chart
-                </h2>
-              </div>
-            </div>
-            <Separator className="my-4" />
-            <div className="relative">
-              <ScrollArea>
-                <div className="flex space-x-4 pb-4 col">
+        </div>
+        <Separator className="my-4" />
+        <div className="relative">
+          <ScrollArea>
+            <div className="flex space-x-4 pb-4 col">
+              <div className="grid grid-cols-2 gap-4">
+                <div className="col-span-1">
+                  <ActivityChart
+                    productivity={productivity}
+                    rawApps={rawApps}
+                  />
+                </div>
+                <div className="col-span-1">
                   <div className="grid grid-cols-2 gap-4">
                     <div className="col-span-1">
-                      <ActivityChart
-                        productivity={productivity}
-                        rawApps={rawApps}
-                      />
+                      <Widget title={"Productivity"} content={"content"} />
                     </div>
                     <div className="col-span-1">
-                      <div className="grid grid-cols-2 gap-4">
-                        <div className="col-span-1">
-                          <Widget title={"Productivity"} content={"content"} />
-                        </div>
-                        <div className="col-span-1">
-                          <Widget title={"Late"} content={"content2"} />
-                        </div>
-                        <div className="col-span-1">
-                          <Widget title={"Absent"} content={"content"} />
-                        </div>
-                        <div className="col-span-1">
-                          <Widget title={"Present"} content={"content2"} />
-                        </div>
-                      </div>
+                      <Widget title={"Late"} content={"content2"} />
+                    </div>
+                    <div className="col-span-1">
+                      <Widget title={"Absent"} content={"content"} />
+                    </div>
+                    <div className="col-span-1">
+                      <Widget title={"Present"} content={"content2"} />
                     </div>
                   </div>
                 </div>
-                <ScrollBar orientation="horizontal" />
-              </ScrollArea>
-            </div>
-            <div className="mt-6 space-y-1">
-              <h2 className="text-2xl font-semibold tracking-tight">
-                Application List
-              </h2>
-              <p className="text-sm text-muted-foreground">
-                Lists of all applications used by the team.
-              </p>
-            </div>
-            <Separator className="my-4" />
-            <div className="relative">
-              <ScrollArea>
-                <div className="grid grid-cols-3 gap-4">
-                  <div className="col-span-1">
-                    <TeamAppList
-                      title={"Productive apps"}
-                      apps={apps.Productive}
-                      className={"bg-success text-success-foreground"}
-                    />
-                  </div>
-                  <div className="col-span-1">
-                    <TeamAppList
-                      title={"Unproductive apps"}
-                      apps={apps.Unproductive}
-                      className={"bg-warning text-warning-foreground"}
-                    />
-                  </div>
-                  <div className="col-span-1">
-                    <TeamAppList
-                      title={"Neutral apps"}
-                      apps={apps.Neutral}
-                      className={"bg-muted text-muted-foreground"}
-                    />
-                  </div>
-                </div>
-                <ScrollBar orientation="horizontal" />
-              </ScrollArea>
-            </div>
-          </TabsContent>
-          {/* Late */}
-          <TabsContent
-            value="present"
-            className="h-full flex-col border-none p-0 data-[state=active]:flex"
-          >
-            <div className="flex items-center justify-between">
-              <div className="space-y-1">
-                <h2 className="text-2xl font-semibold tracking-tight">
-                  Employee Tardiness
-                </h2>
-                {/* <p className="text-sm text-muted-foreground">
-                          Your favorite podcasts. Updated daily.
-                        </p> */}
               </div>
             </div>
-            <Separator className="my-4" />
-            <EmployeeStatus />
-          </TabsContent>
-          {/* Absent */}
-          <TabsContent
-            value="absent"
-            className="h-full flex-col border-none p-0 data-[state=active]:flex"
-          >
-            <div className="flex items-center justify-between">
-              <div className="space-y-1">
-                <h2 className="text-2xl font-semibold tracking-tight">
-                  New Episodes
-                </h2>
-                <p className="text-sm text-muted-foreground">
-                  Your favorite podcasts. Updated daily.
-                </p>
+            <ScrollBar orientation="horizontal" />
+          </ScrollArea>
+        </div>
+        <div className="mt-6 space-y-1">
+          <h2 className="text-2xl font-semibold tracking-tight">
+            Application List
+          </h2>
+          <p className="text-sm text-muted-foreground">
+            Lists of all applications used by the team.
+          </p>
+        </div>
+        <Separator className="my-4" />
+        <div className="relative">
+          <ScrollArea>
+            <div className="grid grid-cols-3 gap-4">
+              <div className="col-span-1">
+                <TeamAppList
+                  title={"Productive apps"}
+                  apps={apps.Productive}
+                  className={"bg-success text-success-foreground"}
+                />
+              </div>
+              <div className="col-span-1">
+                <TeamAppList
+                  title={"Unproductive apps"}
+                  apps={apps.Unproductive}
+                  className={"bg-warning text-warning-foreground"}
+                />
+              </div>
+              <div className="col-span-1">
+                <TeamAppList
+                  title={"Neutral apps"}
+                  apps={apps.Neutral}
+                  className={"bg-muted text-muted-foreground"}
+                />
               </div>
             </div>
-            <Separator className="my-4" />
-            <PodcastEmptyPlaceholder />
-          </TabsContent>
-          {/* Present */}
-          <TabsContent
-            value="late"
-            className="h-full flex-col border-none p-0 data-[state=active]:flex"
-          >
-            <div className="flex items-center justify-between">
-              <div className="space-y-1">
-                <h2 className="text-2xl font-semibold tracking-tight">
-                  New Episodes
-                </h2>
-                <p className="text-sm text-muted-foreground">
-                  Your favorite podcasts. Updated daily.
-                </p>
-              </div>
-            </div>
-            <Separator className="my-4" />
-            <PodcastEmptyPlaceholder />
-          </TabsContent>
-          {/* Late */}
-          <TabsContent
-            value="anomaly"
-            className="h-full flex-col border-none p-0 data-[state=active]:flex"
-          >
-            <div className="flex items-center justify-between">
-              <div className="space-y-1">
-                <h2 className="text-2xl font-semibold tracking-tight">
-                  Invalid time in/out
-                </h2>
-                {/* <p className="text-sm text-muted-foreground">
-                          Your favorite podcasts. Updated daily.
-                        </p> */}
-              </div>
-            </div>
-            <Separator className="my-4" />
-            <EmployeeStatus />
-          </TabsContent>
-        </Tabs>
+            <ScrollBar orientation="horizontal" />
+          </ScrollArea>
+        </div>
       </div>
     </DashboardContextProvider>
   );

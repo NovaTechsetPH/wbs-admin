@@ -48,6 +48,11 @@ class Employee extends Model
             ->where('date', '<=', Carbon::now());
     }
 
+    public function getFullNameAttribute()
+    {
+        return $this->first_name . ' ' . $this->last_name;
+    }
+
     /*
     public function categories()
     {

@@ -23,7 +23,20 @@ class EmployeeController extends Controller
      */
     public function index()
     {
-        return EmployeeResource::collection(Employee::query()->orderBy('id', 'desc')->paginate(10));
+        // return EmployeeResource::collection(Employee::query()->orderBy('id', 'desc')->paginate(10));
+
+        $employees = Employee::where('status', 'Approved')
+            ->whereIn('id', function ($query) {
+                $query->select('userid')
+                    ->from('tbltaskrunning')
+                    ->distinct()
+                    ->get();
+            })->get();
+
+        return response()->json([
+            'data' => $employees,
+            'message' => 'Successfully retrieved all employees',
+        ], 200);
     }
 
     /**
