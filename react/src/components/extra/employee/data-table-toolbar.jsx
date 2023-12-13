@@ -37,13 +37,6 @@ export function DataTableToolbar({ table }) {
             options={statuses}
           />
         )}
-        {table.getColumn("online") && (
-          <DataTableFacetedFilter
-            column={table.getColumn("online")}
-            title="Online"
-            options={priorities}
-          />
-        )}
         {isFiltered && (
           <Button
             variant="ghost"

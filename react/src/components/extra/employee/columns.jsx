@@ -32,6 +32,11 @@ const labels = [
 
 export const statuses = [
   {
+    value: "Active",
+    label: "Active",
+    icon: CheckCircledIcon,
+  },
+  {
     value: "Inactive",
     label: "Inactive",
     icon: CircleIcon,
@@ -40,21 +45,6 @@ export const statuses = [
     value: "Break",
     label: "Break",
     icon: QuestionMarkCircledIcon,
-  },
-  {
-    value: "in progress",
-    label: "In Progress",
-    icon: StopwatchIcon,
-  },
-  {
-    value: "Active",
-    label: "Active",
-    icon: CheckCircledIcon,
-  },
-  {
-    value: "canceled",
-    label: "Canceled",
-    icon: CrossCircledIcon,
   },
 ];
 

@@ -56,10 +56,13 @@ const ActivityChart = ({ productivity, rawApps }) => {
   }, [productivity]);
 
   useEffect(() => {
-    if (rawApps.length === 0) return;
-    setDataLabel(
-      CandleData(rawApps[0].time, rawApps[rawApps.length - 1].time, date)
-    );
+    if (rawApps.length === 0) {
+      setDataLabel(["NO DATA"]);
+    } else {
+      setDataLabel(
+        CandleData(rawApps[0].time, rawApps[rawApps.length - 1].time, date)
+      );
+    }
   }, [rawApps]);
 
   useEffect(() => {

@@ -33,8 +33,17 @@ class EmployeeController extends Controller
                     ->get();
             })->get();
 
+        $data = [];
+        foreach ($employees as $key => $emp) {
+            $last_activity = RunningApps::where('userid', $emp->id)
+                ->orderBy('id', 'desc')
+                ->first();
+            $emp->last_activity = $last_activity;
+            $data[] = $emp;
+        }
+
         return response()->json([
-            'data' => $employees,
+            'data' => $data,
             'message' => 'Successfully retrieved all employees',
         ], 200);
     }
