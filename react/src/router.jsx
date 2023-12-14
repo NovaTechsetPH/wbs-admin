@@ -7,12 +7,12 @@ import NotFound from "./views/NotFound";
 import Signup from "./views/Signup";
 
 import UserForm from "./views/UserForm";
-import Attendance from "./views/Attendance.jsx";
 import ActivityChart from "./components/ActivityChart.jsx";
 
 import Dashboard from "./Dashboard.jsx";
 import Employees from "./Employees.jsx";
 import ActivityTracking from "./ActivityTracking";
+import Attendance from "./Attendance";
 
 const router = createBrowserRouter([
   {
@@ -39,10 +39,6 @@ const router = createBrowserRouter([
       {
         path: "/activity-tracking",
         element: <ActivityTracking />,
-      },
-      {
-        path: "/users/:id",
-        element: <UserForm key="userUpdate" />,
       },
       {
         path: "/attendance",
