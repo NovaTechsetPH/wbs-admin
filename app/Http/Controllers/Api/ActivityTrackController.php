@@ -17,13 +17,13 @@ class ActivityTrackController extends Controller
         ], 200);
     }
 
-    public function getEmployeeActivity(Request $request)
+    public function getEmployeeActivity($userid, $date = null)
     {
         try {
-            $date = $request->date ?? Carbon::now()->toDateString();
+            $date = $date ?? Carbon::now()->toDateString();
             $apps = RunningApps::with('employee', 'category')
                 ->where('date', Carbon::parse($date)->toDateString())
-                ->where('userid', $request->userid)
+                ->where('userid', $userid)
                 ->whereNot('end_time', NULL)
                 ->orderBy('id', 'asc')
                 ->get();

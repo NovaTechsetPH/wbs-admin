@@ -45,7 +45,7 @@ Route::middleware('auth:sanctum')->group(function () {
     // Routes here
 
     // Activity Tracking
-    Route::post('/activity/employee', [ActivityTrackController::class, 'getEmployeeActivity']);
+    Route::get('/activity/employee/{userid}/{date?}', [ActivityTrackController::class, 'getEmployeeActivity']);
 });
 
 Route::post('/signup', [AuthController::class, 'signup']);

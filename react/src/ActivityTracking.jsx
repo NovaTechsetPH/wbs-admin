@@ -46,10 +46,11 @@ const ActivityTracking = () => {
 
   useEffect(() => {
     axiosClient
-      .post("/activity/employee", {
-        userid: empId,
-        date: selectedDate,
-      })
+      .get(
+        `/activity/employee/${empId}/${moment(selectedDate).format(
+          "YYYY-MM-DD"
+        )}`
+      )
       .then(async ({ data }) => {
         let listApps = {
           Productive: [],
