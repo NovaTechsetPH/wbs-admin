@@ -91,6 +91,9 @@
   }
 }
 
+.text-success {
+  color: hsl(var(--success));
+}
 
 .text-success-foreground {
   color: hsl(var(--success-foreground));

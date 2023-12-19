@@ -1,5 +1,6 @@
-import { Badge } from "../../ui/badge";
-import { Checkbox } from "../../ui/checkbox";
+import { Badge } from "@ui/badge";
+import { Checkbox } from "@ui/checkbox";
+import { cn } from "@/lib/utils";
 
 import { DataTableColumnHeader } from "./data-table-column-header";
 import { DataTableRowActions } from "./data-table-row-actions";
@@ -65,6 +66,19 @@ export const priorities = [
     icon: ArrowUpIcon,
   },
 ];
+
+const getIconColor = (value) => {
+  switch (value) {
+    case "Active":
+      return "text-green-500";
+    case "Break":
+      return "text-yellow-500";
+    case "Inactive":
+      return "text-gray-500";
+    default:
+      return "text-gray-500";
+  }
+};
 
 export const columns = [
   {
@@ -137,14 +151,18 @@ export const columns = [
       return (
         <div className="flex w-[100px] items-center">
           {status.icon && (
-            <status.icon className="mr-2 h-4 w-4 text-muted-foreground" />
+            <status.icon
+              className={cn(
+                "mr-2 h-4 w-4 text-muted-foreground",
+                getIconColor(status.value)
+              )}
+            />
           )}
           <span>{status.label}</span>
         </div>
       );
     },
     filterFn: (row, id, value) => {
-      console.log(id);
       return value.includes(row.getValue(id));
     },
   },

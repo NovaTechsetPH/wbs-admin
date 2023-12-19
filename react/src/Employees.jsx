@@ -18,7 +18,15 @@ const getLastActivity = (act) => {
   return "No Activity";
 };
 
-function Employees() {
+const getEmployeeId = (emp) => {
+  if (emp.employee_id) {
+    return emp.employee_id;
+  }
+  let zeros = 5 - emp.id.toString().length - 1;
+  return `NTP${"0".repeat(zeros)}${emp.id}`;
+};
+
+const Employees = () => {
   const [data, setData] = useState({});
   useEffect(() => {
     axiosClient
@@ -27,7 +35,7 @@ function Employees() {
         let formatData = [];
         await data.data.forEach((item) => {
           formatData.push({
-            employeeId: item.id,
+            employeeId: getEmployeeId(item),
             name: `${item.first_name} ${item.last_name}`,
             status: getOnlineStatus(item),
             online:
@@ -46,6 +54,6 @@ function Employees() {
       <DataTable data={data} columns={columns} />
     </div>
   );
-}
+};
 
 export default Employees;
