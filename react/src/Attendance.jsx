@@ -7,7 +7,7 @@ import moment from "moment";
 const getOnlineStatus = (item) => {
   if (item.active_status === "Offline") return "Inactive";
   if (item.active_status === "Active") return "Active";
-  return "Break";
+  return "Away";
 };
 
 const getLastActivity = (act) => {

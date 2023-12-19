@@ -44,11 +44,9 @@ export default function Login() {
         <div className="flex-col flex  self-center p-10 sm:max-w-5xl xl:max-w-2xl  z-10">
           <div className="self-start hidden lg:flex flex-col  text-white">
             <img src="" className="mb-3" />
-            <h1 className="mb-3 font-bold text-5xl">Hi ? Welcome Back Aji </h1>
+            <h1 className="mb-3 font-bold text-5xl">Welcome to Admin Page</h1>
             <p className="pr-3">
-              Lorem ipsum is placeholder text commonly used in the graphic,
-              print, and publishing industries for previewing layouts and visual
-              mockups
+              A strong team can take any crazy vision and turn it into reality.
             </p>
           </div>
         </div>
@@ -74,7 +72,7 @@ export default function Login() {
                     className=" w-full text-base px-4 py-2 border  border-gray-300 rounded-lg focus:outline-none focus:border-green-400"
                     type="email"
                     ref={emailRef}
-                    placeholder="mail@gmail.com"
+                    placeholder="admin@novatechset.com"
                   />
                 </div>
                 <div className="space-y-2">

@@ -2,8 +2,10 @@ import { Link } from "react-router-dom";
 import { createRef, useState } from "react";
 import axiosClient from "../axios-client.js";
 import { useStateContext } from "../context/ContextProvider.jsx";
+import React from "react";
+// import "./../assets/signup.css";
 
-export default function Signup() {
+const Signup = () => {
   const nameRef = createRef();
   const emailRef = createRef();
   const passwordRef = createRef();
@@ -35,98 +37,122 @@ export default function Signup() {
   };
 
   return (
-    <>
-      <div className="login-signup-form animated fadeInDown">
-        <div className="form">
-          <form onSubmit={onSubmit}>
-            {errors && (
-              <div className="alert">
-                {Object.keys(errors).map((key) => (
-                  <p key={key}>{errors[key][0]}</p>
-                ))}
-              </div>
-            )}
-            <div className="card w-2/5 shadow-xl image-full">
-              <figure>
-                <img
-                  className="object-contain  w-2/5"
-                  src="../src/assets/registerBackground.png"
-                />
-              </figure>
+    <div
+      className="bg-no-repeat bg-cover bg-center relative"
+      style={{
+        backgroundImage: `url(https://www.ismartrecruit.com/upload/blog/main_image/boost-employee-productivity.webp)`,
+      }}
+    >
+      <div className="absolute bg-gradient-to-b from-blue-500 to-blue-400 opacity-75 inset-0 z-0"></div>
+      <div className="min-h-screen sm:flex sm:flex-row mx-0 justify-center">
+        {/* <div className="flex-col flex  self-center p-10 sm:max-w-5xl xl:max-w-2xl  z-10">
+          <div className="self-start hidden lg:flex flex-col  text-white">
+            <img src="" className="mb-3" />
+            <h1 className="mb-3 font-bold text-5xl">Welcome to Admin Page</h1>
+            <p className="pr-3">
+              A strong team can take any crazy vision and turn it into reality.
+            </p>
+          </div>
+        </div> */}
+        <div className="flex justify-center self-center z-10">
+          <div className="p-12 bg-white mx-auto rounded-2xl w-100 ">
+            <div className="mb-4">
+              <h3 className="font-semibold text-2xl text-gray-800">Sign Up </h3>
+              <p className="text-gray-500">Administrator Registration Form.</p>
+            </div>
 
-              <div className="card-body">
-                <figure>
-                  <img
-                    className="object-contain h-20 w-13"
-                    src="/nt-logo.png"
+            <form onSubmit={onSubmit}>
+              <div className="space-y-5">
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-gray-700 tracking-wide">
+                    Email
+                  </label>
+                  <input
+                    className=" w-full text-base px-4 py-2 border  border-gray-300 rounded-lg focus:outline-none focus:border-blue-400"
+                    type="email"
+                    ref={emailRef}
+                    placeholder="admin@novatechset.com"
                   />
-                </figure>
-                <h2
-                  style={{
-                    alignSelf: "center",
-                    marginTop: "5%",
-                    marginBottom: "5%",
-                  }}
-                  className="card-title"
-                >
-                  Welcome to Nove Techset Ltd. Registration!
-                </h2>
+                </div>
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-gray-700 tracking-wide">
+                    Password
+                  </label>
+                  <input
+                    className="w-full content-center text-base px-4 py-2 border  border-gray-300 rounded-lg focus:outline-none focus:border-blue-400"
+                    type="password"
+                    ref={passwordRef}
+                    placeholder="Enter your password"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-gray-700 tracking-wide">
+                    Confirm Password
+                  </label>
+                  <input
+                    className="w-full content-center text-base px-4 py-2 border  border-gray-300 rounded-lg focus:outline-none focus:border-blue-400"
+                    type="password"
+                    ref={passwordRef}
+                    placeholder="Enter your password"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-gray-700 tracking-wide">
+                    Department
+                  </label>
+                  <select className="w-full content-center text-base px-4 py-2 border  border-gray-300 rounded-lg focus:outline-none focus:border-blue-400">
+                    <option>Technology</option>
+                    <option>Copy Editor</option>
+                    <option>HR</option>
+                    <option>Quality Assurance</option>
+                  </select>
+                  {/* <input
+                    className="w-full content-center text-base px-4 py-2 border  border-gray-300 rounded-lg focus:outline-none focus:border-blue-400"
+                    type="password"
+                    ref={passwordRef}
+                    placeholder="Enter your password"
+                  /> */}
+                </div>
 
-                <div className="flex w-full component-preview p-4 items-center justify-center gap-2 font-sans">
-                  <div className="form-control w-full max-w-xs">
-                    <label htmlFor="name" className="label">
-                      Full Name
-                    </label>
+                <div className="flex justify-end">
+                  {/* <div className="flex items-center">
                     <input
-                      ref={nameRef}
-                      type="text"
-                      placeholder="Name"
-                      className="input w-80 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                      id="remember_me"
+                      name="remember_me"
+                      type="checkbox"
+                      className="h-4 w-4 bg-blue-500 focus:ring-blue-400 border-gray-300 rounded"
                     />
-
-                    <label htmlFor="email" className="label">
-                      Email
+                    <label
+                      htmlFor="remember_me"
+                      className="ml-2 text-sm text-gray-400"
+                    >
+                      Remember me
                     </label>
-                    <input
-                      ref={nameRef}
-                      type="email"
-                      placeholder="john@novatechset.com"
-                      className="input w-80 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                    />
-
-                    <label htmlFor="password" className="label">
-                      Password
-                    </label>
-                    <input
-                      ref={nameRef}
-                      type="password"
-                      placeholder="Password"
-                      className="input w-80 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                    />
-
-                    <label htmlFor="checkPassword" className="label">
-                      Confirm Password
-                    </label>
-                    <input
-                      ref={nameRef}
-                      type="password"
-                      placeholder="Confirm Password"
-                      className="input w-80 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                    />
+                  </div> */}
+                  <div className="text-sm">
+                    <span className="text-blue-400 hover:text-blue-500">
+                      <Link to={"/login"}>Already have an account?</Link>
+                    </span>
                   </div>
                 </div>
-
-                <div className="card-actions justify-center">
-                  <button className="btn btn-primary">Register</button>
+                <div>
+                  <button
+                    type="submit"
+                    className="w-full flex justify-center bg-blue-400  hover:bg-blue-500 text-gray-100 p-3  rounded-full tracking-wide font-semibold  shadow-lg cursor-pointer transition ease-in duration-500"
+                  >
+                    Sign in
+                  </button>
                 </div>
-                <p className="message">
-                  Already registered? <Link to="/login">Sign In</Link>
-                </p>
               </div>
+            </form>
+            <div className="pt-5 text-center text-gray-400 text-xs">
+              <span>Copyright © 2023</span>
             </div>
-          </form>
+          </div>
         </div>
       </div>
-    </>
+    </div>
   );
-}
+};
+
+export default Signup;
