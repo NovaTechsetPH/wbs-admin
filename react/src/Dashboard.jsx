@@ -34,14 +34,6 @@ function Dashboard() {
   });
 
   useEffect(() => {
-    // Chart Candle Data
-    // axiosClient
-    //   .post("/employees/productivity", {
-    //     date: selectedDate,
-    //   })
-    //   .then(({ data }) => setProductivity(data?.data))
-    //   .catch((err) => console.log(err));
-
     // App Listing
     axiosClient
       .post("/dashboard/apps", {

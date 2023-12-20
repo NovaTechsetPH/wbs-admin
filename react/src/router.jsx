@@ -13,6 +13,7 @@ import Dashboard from "./Dashboard.jsx";
 import Employees from "./Employees.jsx";
 import ActivityTracking from "./ActivityTracking";
 import Attendance from "./Attendance";
+import UserApproval from "./UserApproval";
 
 const router = createBrowserRouter([
   {
@@ -43,6 +44,10 @@ const router = createBrowserRouter([
       {
         path: "/attendance",
         element: <Attendance />,
+      },
+      {
+        path: "/user-approval",
+        element: <UserApproval />,
       },
     ],
   },

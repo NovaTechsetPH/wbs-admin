@@ -346,4 +346,20 @@ class EmployeeController extends Controller
             'message' => 'Success'
         ], 200);
     }
+
+    public function getUserForApproval()
+    {
+        try {
+            $users = Employee::whereIn('status', ['Pending', 'Rejected'])
+                ->orderBy('id', 'desc')->get();
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => $e->getMessage()
+            ], 500);
+        }
+        return response()->json([
+            'data' => $users ?? [],
+            'message' => 'Success'
+        ], 200);
+    }
 }

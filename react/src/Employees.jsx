@@ -4,11 +4,11 @@ import { DataTable } from "@/components/extra/employee/data-table";
 import axiosClient from "./axios-client";
 import moment from "moment";
 
-const getOnlineStatus = (item) => {
-  if (item.active_status === "Offline") return "Inactive";
-  if (item.active_status === "Active") return "Active";
-  return "Break";
-};
+// const getOnlineStatus = (item) => {
+//   if (item.active_status === "Offline") return "Inactive";
+//   if (item.active_status === "Active") return "Active";
+//   return "Away";
+// };
 
 const getLastActivity = (act) => {
   if (act) {
@@ -37,14 +37,16 @@ const Employees = () => {
           formatData.push({
             employeeId: getEmployeeId(item),
             name: `${item.first_name} ${item.last_name}`,
-            status: getOnlineStatus(item),
+            status:
+              item.active_status === "Waiting" ? "Idle" : item.active_status,
             online:
               item.active_status === "Active"
                 ? "Now"
                 : getLastActivity(item.last_activity),
           });
         });
-        setData(formatData);
+
+        setData(formatData.sort((a, b) => (a.status > b.status ? 1 : -1)));
       })
       .catch((err) => console.log(err));
   }, []);

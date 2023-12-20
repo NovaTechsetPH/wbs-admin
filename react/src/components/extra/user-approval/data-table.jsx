@@ -17,7 +17,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "../../ui/table";
+} from "@ui/table";
 
 import { DataTablePagination } from "./data-table-pagination";
 import { DataTableToolbar } from "./data-table-toolbar";
@@ -36,9 +36,6 @@ export function DataTable({ columns, data }) {
       columnVisibility,
       rowSelection,
       columnFilters,
-    },
-    initialState: {
-      sortBy: [{ id: "status", desc: false }],
     },
     enableRowSelection: true,
     onRowSelectionChange: setRowSelection,
@@ -81,7 +78,8 @@ export function DataTable({ columns, data }) {
               table.getRowModel().rows.map((row) => (
                 <TableRow
                   key={row.id}
-                  data-state={row.original.status == "Active" && "selected"}
+                  data-state={row.original.status == "Pending" && "selected"}
+                  // className={row.original.status == "Pending" && "font-bold"}
                 >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id}>

@@ -45,6 +45,7 @@ const ActivityTracking = () => {
   }, []);
 
   useEffect(() => {
+    if (!empId) return;
     axiosClient
       .get(
         `/activity/employee/${empId}/${moment(selectedDate).format(

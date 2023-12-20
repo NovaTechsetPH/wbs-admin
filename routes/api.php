@@ -30,11 +30,6 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('/users', UserController::class);
     Route::apiResource('/appcategories', AppCategoriesController::class);
     Route::apiResource('/runningapps', RunningAppsController::class);
-    Route::get('/employees/absent', [EmployeeController::class, 'absent']);
-    Route::get('/employees/anomaly', [EmployeeController::class, 'anomaly']);
-    Route::get('/employees/runningapps', [EmployeeController::class, 'runningapps']);
-    Route::post('/employees/apps', [EmployeeController::class, 'getEmployeeApps']);
-    Route::post('/employees/productivity', [EmployeeController::class, 'getProductivity']);
     Route::apiResource('/employees', EmployeeController::class);
     Route::apiResource('/timelogs', TimeLogsController::class);
 
@@ -42,10 +37,17 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/dashboard/apps', [EmployeeController::class, 'getAllDailyOpenedApps']);
 
     // Employees
-    // Routes here
+    Route::get('/employees/absent', [EmployeeController::class, 'absent']);
+    Route::get('/employees/anomaly', [EmployeeController::class, 'anomaly']);
+    Route::get('/employees/runningapps', [EmployeeController::class, 'runningapps']);
+    Route::post('/employees/apps', [EmployeeController::class, 'getEmployeeApps']);
+    Route::post('/employees/productivity', [EmployeeController::class, 'getProductivity']);
 
     // Activity Tracking
     Route::get('/activity/employee/{userid}/{date?}', [ActivityTrackController::class, 'getEmployeeActivity']);
+
+    // UserApproval
+    Route::get('/userapproval', [EmployeeController::class, 'getUserForApproval']);
 });
 
 Route::post('/signup', [AuthController::class, 'signup']);
