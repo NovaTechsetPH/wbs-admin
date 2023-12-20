@@ -1,7 +1,8 @@
 import axios from "axios";
-import { useStateContext } from "./context/ContextProvider.jsx";
+// import { useStateContext } from "./context/ContextProvider.jsx";
 import moment from 'moment'
 
+// eslint-disable-next-line no-extend-native
 Date.prototype.toJSON = function () {
   return moment(this).format();
 }

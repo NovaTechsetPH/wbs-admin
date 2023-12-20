@@ -63,7 +63,7 @@ const ActivityChart = ({ productivity, rawApps }) => {
         CandleData(rawApps[0].time, rawApps[rawApps.length - 1].time, date)
       );
     }
-  }, [rawApps]);
+  }, [rawApps, date]);
 
   useEffect(() => {
     var myChart = Chart.getChart("track-chart");
@@ -128,7 +128,7 @@ const ActivityChart = ({ productivity, rawApps }) => {
                 let data = parseInt(context.formattedValue.replace(/,/g, ""));
                 let label = context.dataset.label;
                 let formatedData =
-                  secondsToHuman(data) == "" ? "0" : secondsToHuman(data);
+                  secondsToHuman(data) === "" ? "0" : secondsToHuman(data);
                 return `${label}: ${formatedData}`;
               },
             },
@@ -158,7 +158,7 @@ const ActivityChart = ({ productivity, rawApps }) => {
             },
             afterBuildTicks: function (myChart) {
               let tiktok = myChart.ticks;
-              if (activePeriod == "day") {
+              if (activePeriod === "day") {
                 myChart.ticks = [];
                 tiktok.forEach((e) => {
                   myChart.ticks.push(e);
@@ -198,6 +198,7 @@ const ActivityChart = ({ productivity, rawApps }) => {
         },
       },
     });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dataLabel, date]);
 
   const isFutureDate = (value) => {

@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect } from "react";
 import { Navigate, Outlet } from "react-router-dom";
 import { useStateContext } from "../context/ContextProvider";
@@ -8,17 +9,17 @@ import { Sidebar } from "./extra/sidebar";
 import { playlists } from "./data/playlists";
 
 export default function DefaultLayout() {
-  const { user, token, setUser, setToken, notification } = useStateContext();
-
-  if (!token) {
-    return <Navigate to="/login" />;
-  }
+  const { token, setUser } = useStateContext();
 
   useEffect(() => {
     axiosClient.get("/user").then(({ data }) => {
       setUser(data);
     });
   }, []);
+
+  if (!token) {
+    return <Navigate to="/login" />;
+  }
 
   return (
     <div className="md:block">

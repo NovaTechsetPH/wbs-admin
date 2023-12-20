@@ -30,19 +30,17 @@ const UserApproval = () => {
   return (
     <DashboardContextProvider>
       <div className="h-full px-4 py-6 lg:px-8">
-        <div className="h-full flex-col border-none p-0 space-y-6">
-          <div className="flex items-center justify-between">
-            <div className="space-y-1">
-              <h2 className="text-2xl font-semibold tracking-tight">
-                User Registration Approval
-              </h2>
-            </div>
+        <div className="flex items-center justify-between">
+          <div className="space-y-1">
+            <h2 className="text-2xl font-semibold tracking-tight">
+              User Registration Approval
+            </h2>
           </div>
-          <Separator className="my-4" />
-          <div className="relative">
-            <div className="hidden h-full flex-1 flex-col space-y-8 p-8 md:flex">
-              <DataTable data={data} columns={columns} />
-            </div>
+        </div>
+        <Separator className="my-4" />
+        <div className="relative">
+          <div className="hidden h-full flex-1 flex-col space-y-8 p-8 md:flex">
+            <DataTable data={data} columns={columns} />
           </div>
         </div>
       </div>

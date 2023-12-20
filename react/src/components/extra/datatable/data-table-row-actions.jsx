@@ -5,37 +5,13 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuRadioGroup,
-  DropdownMenuRadioItem,
-  DropdownMenuSeparator,
-  DropdownMenuShortcut,
-  DropdownMenuSub,
-  DropdownMenuSubContent,
-  DropdownMenuSubTrigger,
   DropdownMenuTrigger,
-} from "./../../ui/dropdown-menu";
+} from "@ui/dropdown-menu";
 
 // import { labels } from "../data/data"
 // import { taskSchema } from "../data/schema"
 
-const labels = [
-  {
-    value: "bug",
-    label: "Bug",
-  },
-  {
-    value: "feature",
-    label: "Feature",
-  },
-  {
-    value: "documentation",
-    label: "Documentation",
-  },
-];
-
 export function DataTableRowActions({ row }) {
-  const task = row.original;
-
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -49,7 +25,7 @@ export function DataTableRowActions({ row }) {
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-[160px]">
         <DropdownMenuItem>Edit</DropdownMenuItem>
-        {/* <DropdownMenuItem>Make a copy</DropdownMenuItem> 
+        {/* <DropdownMenuItem>Make a copy</DropdownMenuItem>
         <DropdownMenuItem>Favorite</DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuSub>

@@ -1,5 +1,4 @@
 import { Badge } from "@ui/badge";
-import { Checkbox } from "@ui/checkbox";
 import { cn } from "@/lib/utils";
 
 import { DataTableColumnHeader } from "./data-table-column-header";
@@ -13,7 +12,6 @@ import {
   CircleIcon,
   CrossCircledIcon,
   QuestionMarkCircledIcon,
-  StopwatchIcon,
 } from "@radix-ui/react-icons";
 
 const labels = [

@@ -11,7 +11,7 @@ const Signup = () => {
   const passwordRef = createRef();
   const passwordConfirmationRef = createRef();
   const { setUser, setToken } = useStateContext();
-  const [errors, setErrors] = useState(null);
+  const [setErrors] = useState(null);
 
   const onSubmit = (ev) => {
     ev.preventDefault();

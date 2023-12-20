@@ -19,7 +19,7 @@ const SelectDialog = ({ data, onEmployeeChanged }) => {
 
   useEffect(() => {
     onEmployeeChanged(id);
-  }, [id]);
+  }, [id, onEmployeeChanged]);
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -48,7 +48,7 @@ const SelectDialog = ({ data, onEmployeeChanged }) => {
                     setId(id === emp.id ? "" : emp.id);
                     setOpen(false);
                     setSelectedName(
-                      currentValue == selectedName
+                      currentValue === selectedName
                         ? "Search Employee..."
                         : `${emp.first_name} ${emp.last_name}`
                     );

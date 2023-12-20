@@ -81,7 +81,7 @@ export function DataTable({ columns, data }) {
               table.getRowModel().rows.map((row) => (
                 <TableRow
                   key={row.id}
-                  data-state={row.original.status == "Active" && "selected"}
+                  data-state={row.original.status === "Active" && "selected"}
                 >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id}>

@@ -1,6 +1,5 @@
 import { cn } from "@/lib/utils";
-import { Button } from "./../ui/button";
-import { ScrollArea } from "./../ui/scroll-area";
+import { Button } from "@ui/button";
 import { Link, NavLink, useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
 
@@ -23,7 +22,7 @@ export function Sidebar({ className, playlists }) {
             <Link to={"/dashboard"}>
               <Button
                 variant={
-                  currentRoute == "/dashboard" || currentRoute == "/"
+                  currentRoute === "/dashboard" || currentRoute === "/"
                     ? "secondary"
                     : "ghost"
                 }
@@ -46,7 +45,7 @@ export function Sidebar({ className, playlists }) {
                 </svg>
                 <span
                   className={
-                    currentRoute == "/dashboard"
+                    currentRoute === "/dashboard"
                       ? "font-semibold"
                       : "font-medium"
                   }
@@ -58,7 +57,7 @@ export function Sidebar({ className, playlists }) {
             <Link to={"/employee"}>
               <Button
                 variant={
-                  currentRoute == "/employee" || currentRoute == "/"
+                  currentRoute === "/employee" || currentRoute === "/"
                     ? "secondary"
                     : "ghost"
                 }
@@ -79,7 +78,7 @@ export function Sidebar({ className, playlists }) {
                 </svg>
                 <span
                   className={
-                    currentRoute == "/employee"
+                    currentRoute === "/employee"
                       ? "font-semibold"
                       : "font-medium"
                   }
@@ -91,7 +90,7 @@ export function Sidebar({ className, playlists }) {
             <Link to={"/activity-tracking"}>
               <Button
                 variant={
-                  currentRoute == "/activity-tracking" ? "secondary" : "ghost"
+                  currentRoute === "/activity-tracking" ? "secondary" : "ghost"
                 }
                 className="w-full justify-start"
               >
@@ -112,7 +111,7 @@ export function Sidebar({ className, playlists }) {
                 </svg>
                 <span
                   className={
-                    currentRoute == "/activity-tracking"
+                    currentRoute === "/activity-tracking"
                       ? "font-semibold"
                       : "font-medium"
                   }
@@ -123,7 +122,7 @@ export function Sidebar({ className, playlists }) {
             </Link>
             <NavLink to={"/attendance"}>
               <Button
-                variant={currentRoute == "/attendance" ? "secondary" : "ghost"}
+                variant={currentRoute === "/attendance" ? "secondary" : "ghost"}
                 className="w-full justify-start"
               >
                 <svg
@@ -144,7 +143,7 @@ export function Sidebar({ className, playlists }) {
                 </svg>
                 <span
                   className={
-                    currentRoute == "/attendance"
+                    currentRoute === "/attendance"
                       ? "font-semibold"
                       : "font-medium"
                   }
@@ -156,7 +155,7 @@ export function Sidebar({ className, playlists }) {
             <NavLink to={"/user-approval"}>
               <Button
                 variant={
-                  currentRoute == "/user-approval" ? "secondary" : "ghost"
+                  currentRoute === "/user-approval" ? "secondary" : "ghost"
                 }
                 className="w-full justify-start"
               >
@@ -171,7 +170,7 @@ export function Sidebar({ className, playlists }) {
                 </svg>
                 <span
                   className={
-                    currentRoute == "/user-approval"
+                    currentRoute === "/user-approval"
                       ? "font-semibold"
                       : "font-medium"
                   }

@@ -6,7 +6,6 @@ import Login from "./views/Login";
 import NotFound from "./views/NotFound";
 import Signup from "./views/Signup";
 
-import UserForm from "./views/UserForm";
 import ActivityChart from "./components/ActivityChart.jsx";
 
 import Dashboard from "./Dashboard.jsx";
