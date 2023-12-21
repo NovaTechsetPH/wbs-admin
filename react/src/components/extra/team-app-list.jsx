@@ -2,6 +2,7 @@ import { cn } from "@/lib/utils";
 import { Button } from "@ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@ui/avatar";
+import { ScrollArea, ScrollBar } from "../ui/scroll-area";
 
 export function TeamAppList({ title, apps, className }) {
   const convertSeconds = (seconds) => {
@@ -29,28 +30,51 @@ export function TeamAppList({ title, apps, className }) {
       <CardHeader className={cn("mb-3 p-3", className)}>
         <CardTitle>{title}</CardTitle>
       </CardHeader>
-      <CardContent className="grid gap-3 py-1 px-6" style={{ minHeight: 20 }}>
-        {apps.map((app) => (
-          <div
-            key={app.id}
-            className="flex items-center justify-between space-x-2"
-          >
-            <div className="flex items-center space-x-4">
-              <Avatar>
-                <AvatarImage src="/avatars/01.png" />
-                <AvatarFallback>
-                  {app.abbreviation ? app.abbreviation : app.name.slice(0, 2)}
-                </AvatarFallback>
-              </Avatar>
-              <div>
-                <p className="text-sm font-medium leading-none">{app.name}</p>
+      <CardContent>
+        <ScrollArea
+          className="grid gap-1 py-1 px-1"
+          style={{
+            height: 300,
+            paddingTop: 1,
+            paddingBottom: 1,
+            paddingRight: 5,
+            paddingLeft: 1,
+          }}
+        >
+          {apps.length > 0 ? (
+            apps.map((app) => (
+              <div
+                key={app.id}
+                className="flex items-center justify-between space-x-1 py-1.5"
+              >
+                <div className="flex items-center space-x-3">
+                  <Avatar>
+                    <AvatarImage src="/avatars/01.png" />
+                    <AvatarFallback>
+                      {app.abbreviation
+                        ? app.abbreviation
+                        : app.name.slice(0, 2)}
+                    </AvatarFallback>
+                  </Avatar>
+                  <div>
+                    <p className="text-sm font-medium leading-none">
+                      {app.name}
+                    </p>
+                  </div>
+                </div>
+                <p className="text-sm text-muted-foreground">
+                  {convertSeconds(app.totalTime)}
+                </p>
               </div>
-            </div>
-            <p className="text-sm text-muted-foreground">
-              {convertSeconds(app.totalTime)}
+            ))
+          ) : (
+            <p className="text-sm text-muted-foreground pt-1 text-center">
+              No apps found
             </p>
-          </div>
-        ))}
+          )}
+
+          <ScrollBar orientation="horizontal" />
+        </ScrollArea>
       </CardContent>
       <CardFooter className={"pt-5"}>
         <Button variant="outline" className="w-full">

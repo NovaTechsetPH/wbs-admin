@@ -5,13 +5,10 @@ import {
 import ActivityChart from "./components/ActivityChart";
 import axiosClient from "@/axios-client";
 
-import { ScrollArea, ScrollBar } from "./components/ui/scroll-area";
+import { ScrollArea } from "./components/ui/scroll-area";
 import { Separator } from "./components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "./components/ui/tabs";
 
-import { PodcastEmptyPlaceholder } from "./components/extra/podcast-empty-placeholder";
-import EmployeeStatus from "./components/extra/employee-status";
-import Widget from "./components/extra/widget";
 import { CandleData, handleAllocateTime } from "./lib/timehash";
 
 import { TeamAppList } from "./components/extra/team-app-list";
@@ -19,6 +16,8 @@ import { DatePicker } from "./components/extra/date-picker";
 import { useEffect, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 import moment from "moment";
+import { Card, CardContent, CardHeader, CardTitle } from "./components/ui/card";
+import TeamWorkHours from "./components/extra/team-work-hours";
 
 const CATEGORY = ["Unproductive", "Productive", "Neutral"];
 
@@ -98,7 +97,15 @@ function Dashboard() {
 
   return (
     <DashboardContextProvider>
-      <div className="h-full px-4 py-6 lg:px-8">
+      <div className="flex-1 space-y-4 p-8 pt-6">
+        <div className="flex items-center justify-between space-y-2">
+          <div className="space-y-1">
+            <h2 className="text-3xl font-bold tracking-tight">Dashboard</h2>
+          </div>
+          <div className="ml-auto mr-4">
+            <DatePicker onDateChanged={handleDateChange} />
+          </div>
+        </div>
         <Tabs defaultValue="team_productivity" className="h-full space-y-6">
           <div className="space-between flex items-center">
             <TabsList>
@@ -110,55 +117,97 @@ function Dashboard() {
               <TabsTrigger value="present">Online Users</TabsTrigger>
               <TabsTrigger value="anomaly">Anomalies</TabsTrigger>
             </TabsList>
-            <div className="ml-auto mr-4">
-              <DatePicker onDateChanged={handleDateChange} />
-            </div>
           </div>
-          {/* Team Productivity */}
-          <TabsContent
-            value="team_productivity"
-            className="h-full flex-col border-none p-0"
-          >
-            <div className="flex items-center justify-between">
-              <div className="space-y-1">
-                <h2 className="text-2xl font-semibold tracking-tight">
-                  Productivity Chart
-                </h2>
+          {/* Temporary Tab */}
+          <TabsContent value="team_productivity" className="space-y-4">
+            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+              <Card>
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                  <CardTitle className="text-sm font-medium">
+                    Overall Productivity
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="flex justify-between">
+                  <div className="text-2xl font-bold">$45,231.89</div>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    height="32"
+                    width="40"
+                    viewBox="0 0 640 512"
+                  >
+                    <path d="M184 48H328c4.4 0 8 3.6 8 8V96H176V56c0-4.4 3.6-8 8-8zm-56 8V96H64C28.7 96 0 124.7 0 160v96H192 352h8.2c32.3-39.1 81.1-64 135.8-64c5.4 0 10.7 .2 16 .7V160c0-35.3-28.7-64-64-64H384V56c0-30.9-25.1-56-56-56H184c-30.9 0-56 25.1-56 56zM320 352H224c-17.7 0-32-14.3-32-32V288H0V416c0 35.3 28.7 64 64 64H360.2C335.1 449.6 320 410.5 320 368c0-5.4 .2-10.7 .7-16l-.7 0zm320 16a144 144 0 1 0 -288 0 144 144 0 1 0 288 0zM496 288c8.8 0 16 7.2 16 16v48h32c8.8 0 16 7.2 16 16s-7.2 16-16 16H496c-8.8 0-16-7.2-16-16V304c0-8.8 7.2-16 16-16z" />
+                  </svg>
+                </CardContent>
+              </Card>
+              <Card>
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                  <CardTitle className="text-sm font-medium">Late</CardTitle>
+                </CardHeader>
+                <CardContent className="flex justify-between">
+                  <div className="text-2xl font-bold">+2350</div>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    height="32"
+                    width="40"
+                    viewBox="0 0 384 512"
+                  >
+                    <path d="M0 24C0 10.7 10.7 0 24 0H360c13.3 0 24 10.7 24 24s-10.7 24-24 24h-8V67c0 40.3-16 79-44.5 107.5L225.9 256l81.5 81.5C336 366 352 404.7 352 445v19h8c13.3 0 24 10.7 24 24s-10.7 24-24 24H24c-13.3 0-24-10.7-24-24s10.7-24 24-24h8V445c0-40.3 16-79 44.5-107.5L158.1 256 76.5 174.5C48 146 32 107.3 32 67V48H24C10.7 48 0 37.3 0 24zM110.5 371.5c-3.9 3.9-7.5 8.1-10.7 12.5H284.2c-3.2-4.4-6.8-8.6-10.7-12.5L192 289.9l-81.5 81.5zM284.2 128C297 110.4 304 89 304 67V48H80V67c0 22.1 7 43.4 19.8 61H284.2z" />
+                  </svg>
+                </CardContent>
+              </Card>
+              <Card>
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                  <CardTitle className="text-sm font-medium">Absent</CardTitle>
+                </CardHeader>
+                <CardContent className="flex justify-between">
+                  <div className="text-2xl font-bold">+12,234</div>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    height="32"
+                    width="40"
+                    viewBox="0 0 640 512"
+                  >
+                    <path d="M38.8 5.1C28.4-3.1 13.3-1.2 5.1 9.2S-1.2 34.7 9.2 42.9l592 464c10.4 8.2 25.5 6.3 33.7-4.1s6.3-25.5-4.1-33.7L381.9 274c48.5-23.2 82.1-72.7 82.1-130C464 64.5 399.5 0 320 0C250.4 0 192.4 49.3 178.9 114.9L38.8 5.1zM545.5 512H528L284.3 320h-59C136.2 320 64 392.2 64 481.3c0 17 13.8 30.7 30.7 30.7H545.3l.3 0z" />
+                  </svg>
+                </CardContent>
+              </Card>
+              <Card>
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                  <CardTitle className="text-sm font-medium">Present</CardTitle>
+                </CardHeader>
+                <CardContent className="flex justify-between">
+                  <div className="text-2xl font-bold">+573</div>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    height="32"
+                    width="40"
+                    viewBox="0 0 640 512"
+                  >
+                    <path d="M96 128a128 128 0 1 1 256 0A128 128 0 1 1 96 128zM0 482.3C0 383.8 79.8 304 178.3 304h91.4C368.2 304 448 383.8 448 482.3c0 16.4-13.3 29.7-29.7 29.7H29.7C13.3 512 0 498.7 0 482.3zM625 177L497 305c-9.4 9.4-24.6 9.4-33.9 0l-64-64c-9.4-9.4-9.4-24.6 0-33.9s24.6-9.4 33.9 0l47 47L591 143c9.4-9.4 24.6-9.4 33.9 0s9.4 24.6 0 33.9z" />
+                  </svg>
+                </CardContent>
+              </Card>
+            </div>
+            <div className="mb-4 grid gap-4 md:grid-cols-2 lg:grid-cols-7">
+              <div className="col-span-4">
+                <ActivityChart
+                  productivity={productivity}
+                  rawApps={rawApps}
+                  appList={appList}
+                />
               </div>
+              <Card className="col-span-3">
+                <CardHeader>
+                  <CardTitle>Employee Work Hours</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <ScrollArea>
+                    <TeamWorkHours />
+                  </ScrollArea>
+                </CardContent>
+              </Card>
             </div>
             <Separator className="my-4" />
-            <div className="relative">
-              <ScrollArea>
-                <div className="flex space-x-4 pb-4 col">
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="col-span-1">
-                      <ActivityChart
-                        productivity={productivity}
-                        rawApps={rawApps}
-                        appList={appList}
-                      />
-                    </div>
-                    <div className="col-span-1">
-                      <div className="grid grid-cols-2 gap-4">
-                        <div className="col-span-1">
-                          <Widget title={"Productivity"} content={"content"} />
-                        </div>
-                        <div className="col-span-1">
-                          <Widget title={"Late"} content={"content2"} />
-                        </div>
-                        <div className="col-span-1">
-                          <Widget title={"Absent"} content={"content"} />
-                        </div>
-                        <div className="col-span-1">
-                          <Widget title={"Present"} content={"content2"} />
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <ScrollBar orientation="horizontal" />
-              </ScrollArea>
-            </div>
             <div className="mt-6 space-y-1">
               <h2 className="text-2xl font-semibold tracking-tight">
                 Application List
@@ -169,102 +218,30 @@ function Dashboard() {
             </div>
             <Separator className="my-4" />
             <div className="relative">
-              <ScrollArea>
-                <div className="grid grid-cols-3 gap-4">
-                  <div className="col-span-1">
-                    <TeamAppList
-                      title={"Productive apps"}
-                      apps={appList.Productive}
-                      className={"bg-success text-success-foreground"}
-                    />
-                  </div>
-                  <div className="col-span-1">
-                    <TeamAppList
-                      title={"Unproductive apps"}
-                      apps={appList.Unproductive}
-                      className={"bg-warning text-warning-foreground"}
-                    />
-                  </div>
-                  <div className="col-span-1">
-                    <TeamAppList
-                      title={"Neutral apps"}
-                      apps={appList.Neutral}
-                      className={"bg-muted text-muted-foreground"}
-                    />
-                  </div>
+              <div className="grid grid-cols-3 gap-4">
+                <div className="col-span-1">
+                  <TeamAppList
+                    title={"Productive apps"}
+                    apps={appList.Productive}
+                    className={"bg-success text-success-foreground"}
+                  />
                 </div>
-                <ScrollBar orientation="horizontal" />
-              </ScrollArea>
-            </div>
-          </TabsContent>
-          {/* Late */}
-          <TabsContent
-            value="present"
-            className="h-full flex-col border-none p-0 data-[state=active]:flex"
-          >
-            <div className="flex items-center justify-between">
-              <div className="space-y-1">
-                <h2 className="text-2xl font-semibold tracking-tight">
-                  Employee Tardiness
-                </h2>
+                <div className="col-span-1">
+                  <TeamAppList
+                    title={"Unproductive apps"}
+                    apps={appList.Unproductive}
+                    className={"bg-warning text-warning-foreground"}
+                  />
+                </div>
+                <div className="col-span-1">
+                  <TeamAppList
+                    title={"Neutral apps"}
+                    apps={appList.Neutral}
+                    className={"bg-muted text-muted-foreground"}
+                  />
+                </div>
               </div>
             </div>
-            <Separator className="my-4" />
-            <EmployeeStatus />
-          </TabsContent>
-          {/* Absent */}
-          <TabsContent
-            value="absent"
-            className="h-full flex-col border-none p-0 data-[state=active]:flex"
-          >
-            <div className="flex items-center justify-between">
-              <div className="space-y-1">
-                <h2 className="text-2xl font-semibold tracking-tight">
-                  New Episodes
-                </h2>
-                <p className="text-sm text-muted-foreground">
-                  Your favorite podcasts. Updated daily.
-                </p>
-              </div>
-            </div>
-            <Separator className="my-4" />
-            <PodcastEmptyPlaceholder />
-          </TabsContent>
-          {/* Present */}
-          <TabsContent
-            value="late"
-            className="h-full flex-col border-none p-0 data-[state=active]:flex"
-          >
-            <div className="flex items-center justify-between">
-              <div className="space-y-1">
-                <h2 className="text-2xl font-semibold tracking-tight">
-                  New Episodes
-                </h2>
-                <p className="text-sm text-muted-foreground">
-                  Your favorite podcasts. Updated daily.
-                </p>
-              </div>
-            </div>
-            <Separator className="my-4" />
-            <PodcastEmptyPlaceholder />
-          </TabsContent>
-          {/* Late */}
-          <TabsContent
-            value="anomaly"
-            className="h-full flex-col border-none p-0 data-[state=active]:flex"
-          >
-            <div className="flex items-center justify-between">
-              <div className="space-y-1">
-                <h2 className="text-2xl font-semibold tracking-tight">
-                  Invalid time in/out
-                </h2>
-                {/* <p className="text-sm text-muted-foreground">
-                          Your favorite podcasts. Updated daily.
-                        </p> */}
-              </div>
-            </div>
-            <Separator className="my-4" />
-            <EmployeeStatus />
           </TabsContent>
         </Tabs>
       </div>

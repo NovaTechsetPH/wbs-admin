@@ -23,4 +23,9 @@ class TrackRecords extends Model
         'timeout',
         'dateout',
     ];
+
+    public function employee()
+    {
+        return $this->belongsTo(Employee::class, 'userid', 'id');
+    }
 }

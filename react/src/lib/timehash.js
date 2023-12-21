@@ -10,7 +10,10 @@ export const CandleData = (candleStart, candleLast, date) => {
   let startTime = moment(candleStart, 'hours'),
     endTime = startTime
   var sticks = [startTime.format('HH:mm')];
-  var limitDate = moment(date).isSame(moment(), 'date') ? moment.now() : moment(candleLast, 'hours').add(1, 'hour');
+  var limitDate =
+    moment(date).isSame(moment(), 'date')
+      ? moment.now()
+      : moment(candleLast, 'hours').add(1, 'hour');
   while (endTime.isBefore(limitDate) || sticks.length < 30) {
     endTime = endTime.add(10, 'minutes');
     sticks.push(endTime.format('HH:mm'));
@@ -51,6 +54,12 @@ export const secondsToHuman = (seconds) => {
   const hourString = hours > 0 ? `${hours}h` : "";
   const minuteString = minutes > 0 ? `${minutes}m` : "";
   const secondString = remainingSeconds > 0 ? `${remainingSeconds}s` : "";
+
+  if (hours >= 24) {
+    const days = Math.floor(hours / 24);
+    const remainderHrs = `${hours % 24}h`;
+    return `${days}d ${remainderHrs || "0 m"} ${secondString && `${secondString}`}`;
+  }
 
   if (hours > 0) {
     return `${hourString} ${minuteString || "0 m"} ${secondString && `${secondString}`

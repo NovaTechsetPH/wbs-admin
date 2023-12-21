@@ -6,9 +6,9 @@ import {
   CategoryScale,
   Chart,
   LinearScale,
-  // Title,
   Legend,
   Tooltip,
+  // Title,
 } from "chart.js";
 import * as Utils from "./../assets/utils";
 import { CandleData, secondsToHuman } from "@/lib/timehash";
@@ -19,8 +19,8 @@ Chart.register(
   CategoryScale,
   LinearScale,
   Legend,
-  // Title,
   Tooltip
+  // Title,
 );
 
 const COLORS = {

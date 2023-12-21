@@ -10,11 +10,13 @@ use App\Http\Resources\AppCategoriesResource;
 use App\Http\Resources\EmployeeResource;
 use App\Models\AppCategories;
 use App\Models\RunningApps;
+use App\Models\TrackRecords;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 
 class EmployeeController extends Controller
 {
@@ -360,6 +362,32 @@ class EmployeeController extends Controller
         return response()->json([
             'data' => $users ?? [],
             'message' => 'Success'
+        ], 200);
+    }
+
+    public function getWorkHrs($date = null)
+    {
+        try {
+            $date = $date ?? Carbon::now()->toDateString();
+            $work_hrs = TrackRecords::with('employee')
+                ->whereIn('userid', function ($qry) {
+                    $qry->select('id')
+                        ->from('accounts')
+                        ->where('status', 'Approved')
+                        ->where('department', Auth::user()->department ?? 'Technology')
+                        ->groupBy('id');
+                })->where('datein', Carbon::parse($date)->toDateString())
+                ->get();
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => $e->getMessage(),
+                'message' => 'Internal Server Error!',
+            ], 500);
+        }
+
+        return response()->json([
+            'data' => $work_hrs ?? [],
+            'message' => count($work_hrs) > 0 ? 'Success' : 'Employee not found',
         ], 200);
     }
 }
