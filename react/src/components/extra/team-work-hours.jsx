@@ -7,11 +7,17 @@ import moment from "moment";
 import { secondsToHuman } from "@/lib/timehash";
 
 const getWorkDuration = (data) => {
+  if (!moment(data.datein).isSame(moment(), "day") && data.timeout === null) {
+    return "No timeout!";
+  }
+
   let diff =
     moment(data.datein).isSame(moment(), "day") && data.timeout === null
-      ? // ? moment(data.timein, "HH:mm:ss").diff(moment(), "seconds")
-        moment().diff(moment(data.timein, "HH:mm:ss"), "seconds")
-      : moment(data.timeout, "HH:mm:ss").diff(moment(data.timein, "HH:mm:ss"));
+      ? moment().diff(moment(data.timein, "HH:mm:ss"), "seconds")
+      : moment(data.timeout, "HH:mm:ss").diff(
+          moment(data.timein, "HH:mm:ss"),
+          "seconds"
+        );
   return secondsToHuman(diff);
 };
 
@@ -21,9 +27,7 @@ const TeamWorkHours = () => {
 
   useEffect(() => {
     axiosClient
-      .get("/dashboard/workhrs", {
-        date,
-      })
+      .get(`/dashboard/workhrs/${moment(date).format("YYYY-MM-DD")}`)
       .then(({ data }) => {
         return data.data.map((item) => {
           return {
@@ -39,7 +43,18 @@ const TeamWorkHours = () => {
   useEffect(() => {
     const interval = setInterval(() => {
       setWorkLogs(
-        workLogs.map((item) => ({ ...item, duration: getWorkDuration(item) }))
+        workLogs.map((item) => {
+          if (
+            moment(item.datein).isSame(moment(), "day") &&
+            item.timeout === null
+          ) {
+            return {
+              ...item,
+              duration: getWorkDuration(item),
+            };
+          }
+          return item;
+        })
       );
     }, 1000);
     return () => {
@@ -50,7 +65,7 @@ const TeamWorkHours = () => {
   return (
     <div className="space-y-8 h-[18rem]">
       {workLogs.map((item) => (
-        <div className="flex items-center">
+        <div key={item.id} className="flex items-center">
           <Avatar className="h-9 w-9">
             <AvatarImage src="/avatars/01.png" alt="Avatar" />
             <AvatarFallback>
