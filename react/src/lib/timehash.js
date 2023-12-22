@@ -6,7 +6,7 @@ const CATEGORY = [
   'neutral'
 ]
 
-export const CandleData = (candleStart, candleLast, date) => {
+export const ACandleData = (candleStart, candleLast, date) => {
   let startTime = moment(candleStart, 'hours'),
     endTime = startTime
   var sticks = [startTime.format('HH:mm')];

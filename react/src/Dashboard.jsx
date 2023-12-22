@@ -26,11 +26,30 @@ function Dashboard() {
   const [selectedDate, setSelectedDate] = useState(date);
   const [productivity, setProductivity] = useState([]);
   const [rawApps, setRawApps] = useState([]);
+
   const [appList, setAppList] = useState({
     Productive: [],
     Unproductive: [],
     Neutral: [],
   });
+
+  const [total, setTotal] = useState({
+    productiveHrs: 0,
+    late: 0,
+    absent: 0,
+    present: 0,
+  });
+
+  useEffect(() => {
+    let tmpTotal = { ...total };
+    let productiveHrs = 0;
+    // console.log(appList.Productive);
+    appList.Productive.forEach((app) => {
+      productiveHrs += app.totalTime;
+    });
+    setTotal({ ...tmpTotal, productiveHrs: productiveHrs });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [appList.Productive]);
 
   useEffect(() => {
     // App Listing
@@ -124,11 +143,13 @@ function Dashboard() {
               <Card>
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                   <CardTitle className="text-sm font-medium">
-                    Overall Productivity
+                    Productive Hours
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="flex justify-between">
-                  <div className="text-2xl font-bold">$45,231.89</div>
+                  <div className="text-2xl font-bold">
+                    {total.productiveHrs}
+                  </div>
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     height="32"

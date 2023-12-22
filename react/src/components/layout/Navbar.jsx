@@ -1,28 +1,9 @@
-import React from "react";
-// import { useStateContext } from '@/context/ContextProvider';
-// import axiosClient from '@/axios-client';
-
-// import ProfileAvatar from "./ProfileAvatar";
 import { Input } from "../ui/input";
 import ntImage from "/nt-logo.png";
 import Logout from "./Logout";
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 
 const Navbar = () => {
-  // const { setUser, setToken, setFilterString } =
-  //   useStateContext();
-
-  // const onLogout = (ev) => {
-  //   ev.preventDefault();
-  //   axiosClient.post("/logout").then(() => {
-  //     setUser({});
-  //     setToken(null);
-  //   });
-  // };
-
-  // const filterEmployee = (event) => {
-  //   setFilterString(event.target.value);
-  // };
-
   return (
     <>
       <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -56,21 +37,10 @@ const Navbar = () => {
             aria-controls="radix-:R15hja:"
             data-state="closed"
           >
-            <svg
-              width="15"
-              height="15"
-              viewBox="0 0 15 15"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-5 w-5"
-            >
-              <path
-                d="M8 2H13.5C13.7761 2 14 2.22386 14 2.5V12.5C14 12.7761 13.7761 13 13.5 13H8V2ZM7 2H1.5C1.22386 2 1 2.22386 1 2.5V12.5C1 12.7761 1.22386 13 1.5 13H7V2ZM0 2.5C0 1.67157 0.671573 1 1.5 1H13.5C14.3284 1 15 1.67157 15 2.5V12.5C15 13.3284 14.3284 14 13.5 14H1.5C0.671573 14 0 13.3284 0 12.5V2.5Z"
-                fill="currentColor"
-                fillRule="evenodd"
-                clipRule="evenodd"
-              />
-            </svg>
+            <Avatar className="h-9 w-9 border-black-500 border">
+              <AvatarImage src="/avatars/01.png" alt="Admin" />
+              <AvatarFallback>A</AvatarFallback>
+            </Avatar>
             <span className="sr-only">Toggle Menu</span>
           </button>
           <div className="flex flex-1 items-center justify-between space-x-2 md:justify-end">
@@ -85,24 +55,6 @@ const Navbar = () => {
               >
                 <div className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-9 py-2 w-9 px-0">
                   <Logout />
-                </div>
-              </a>
-              <a
-                target="_blank"
-                rel="noreferrer"
-                href="https://twitter.com/shadcn"
-              >
-                <div className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-9 py-2 w-9 px-0">
-                  <svg
-                    className="h-3 w-3 fill-current"
-                    height="23"
-                    viewBox="0 0 1200 1227"
-                    width="23"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path d="M714.163 519.284L1160.89 0H1055.03L667.137 450.887L357.328 0H0L468.492 681.821L0 1226.37H105.866L515.491 750.218L842.672 1226.37H1200L714.137 519.284H714.163ZM569.165 687.828L521.697 619.934L144.011 79.6944H306.615L611.412 515.685L658.88 583.579L1055.08 1150.3H892.476L569.165 687.854V687.828Z" />
-                  </svg>
-                  <span className="sr-only">Twitter</span>
                 </div>
               </a>
               <button
