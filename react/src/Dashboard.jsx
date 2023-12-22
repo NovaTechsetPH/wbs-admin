@@ -9,7 +9,7 @@ import { ScrollArea } from "./components/ui/scroll-area";
 import { Separator } from "./components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "./components/ui/tabs";
 
-import { CandleData, handleAllocateTime } from "./lib/timehash";
+import { CandleData, handleAllocateTime, secondsToHuman } from "./lib/timehash";
 
 import { TeamAppList } from "./components/extra/team-app-list";
 import { DatePicker } from "./components/extra/date-picker";
@@ -43,16 +43,15 @@ function Dashboard() {
   useEffect(() => {
     let tmpTotal = { ...total };
     let productiveHrs = 0;
-    // console.log(appList.Productive);
     appList.Productive.forEach((app) => {
       productiveHrs += app.totalTime;
     });
-    setTotal({ ...tmpTotal, productiveHrs: productiveHrs });
+    setTotal({ ...tmpTotal, productiveHrs: secondsToHuman(productiveHrs) });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [appList.Productive]);
 
+  // App Listing
   useEffect(() => {
-    // App Listing
     axiosClient
       .post("/dashboard/apps", {
         date: selectedDate,
