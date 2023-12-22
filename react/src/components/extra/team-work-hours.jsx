@@ -10,7 +10,7 @@ import { useEffect, useState } from "react";
 import axiosClient from "@/axios-client";
 import { v4 as uuidv4 } from "uuid";
 import moment from "moment";
-import { secondsToHuman } from "@/lib/Timehash";
+import { secondsToHuman } from "@/lib/timehash";
 import { Skeleton } from "../ui/skeleton";
 
 const getWorkDuration = (data) => {

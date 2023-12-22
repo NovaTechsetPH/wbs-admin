@@ -9,7 +9,7 @@ import { ScrollArea } from "./components/ui/scroll-area";
 import { Separator } from "./components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "./components/ui/tabs";
 
-import { HandleAllocateTime, CandleData, secondsToHuman } from "./lib/Timehash";
+import { handleAllocateTime, CandleData, secondsToHuman } from "./lib/timehash";
 
 import { TeamAppList } from "./components/extra/team-app-list";
 import { DatePicker } from "./components/extra/date-picker";
@@ -79,7 +79,7 @@ function Dashboard() {
         });
 
         if (data.data.length === 1) return;
-        let candleData = HandleAllocateTime(data.data, cleanCandle);
+        let candleData = handleAllocateTime(data.data, cleanCandle);
 
         await data.data.forEach((app) => {
           if (app.end_time === null) return;

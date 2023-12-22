@@ -67,7 +67,7 @@ export const secondsToHuman = (seconds) => {
   return secondString;
 };
 
-export const HandleAllocateTime = (data, sticks) => {
+export const handleAllocateTime = (data, sticks) => {
   let clonedData = [...data];
   let clonedSticks = [...sticks];
 
@@ -82,22 +82,21 @@ export const HandleAllocateTime = (data, sticks) => {
     var remainderToFill = remainderAddedTime % 600;
 
     clonedSticks[item.index].value += initStickAddedTime;
-    clonedSticks[item.index].category[CATEGORY[d.category.is_productive]] +=
-      initStickAddedTime;
+    clonedSticks[item.index].category[CATEGORY[d.category.is_productive]] += initStickAddedTime;
 
     for (let i = 1; i <= sticksToFill; i++) {
       clonedSticks[item.index + i].value += 600;
-      clonedSticks[item.index + i].category[
-        CATEGORY[d.category.is_productive]
-      ] += 600;
+      clonedSticks[item.index + i].category[CATEGORY[d.category.is_productive]] += 600;
     }
 
-    if (!clonedSticks[item.index + sticksToFill + 1]) return;
-    clonedSticks[item.index + sticksToFill + 1].value += remainderToFill;
-    clonedSticks[item.index + sticksToFill + 1].category[
-      CATEGORY[d.category.is_productive]
-    ] += remainderToFill;
+    if (!clonedSticks[item.index + sticksToFill + 1]) {
+      return;
+    }
+
+    let indexer = item.index + sticksToFill + 1;
+    clonedSticks[indexer].value += remainderToFill;
+    clonedSticks[indexer].category[CATEGORY[d.category.is_productive]] += remainderToFill;
   });
 
   return clonedSticks;
-};
+}
