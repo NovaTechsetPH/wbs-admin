@@ -9,7 +9,7 @@ import { ScrollArea } from "./components/ui/scroll-area";
 import { Separator } from "./components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "./components/ui/tabs";
 
-import { CandleData, handleAllocateTime, secondsToHuman } from "./lib/timehash";
+import { HandleAllocateTime, CandleData, secondsToHuman } from "./lib/Timehash";
 
 import { TeamAppList } from "./components/extra/team-app-list";
 import { DatePicker } from "./components/extra/date-picker";
@@ -18,6 +18,7 @@ import { v4 as uuidv4 } from "uuid";
 import moment from "moment";
 import { Card, CardContent, CardHeader, CardTitle } from "./components/ui/card";
 import TeamWorkHours from "./components/extra/team-work-hours";
+import { Skeleton } from "./components/ui/skeleton";
 
 const CATEGORY = ["Unproductive", "Productive", "Neutral"];
 
@@ -78,7 +79,7 @@ function Dashboard() {
         });
 
         if (data.data.length === 1) return;
-        let candleData = handleAllocateTime(data.data, cleanCandle);
+        let candleData = HandleAllocateTime(data.data, cleanCandle);
 
         await data.data.forEach((app) => {
           if (app.end_time === null) return;
@@ -147,7 +148,9 @@ function Dashboard() {
                 </CardHeader>
                 <CardContent className="flex justify-between">
                   <div className="text-2xl font-bold">
-                    {total.productiveHrs}
+                    {total.productiveHrs || (
+                      <Skeleton className="w-[140px] h-[32px] bg-slate-200" />
+                    )}
                   </div>
                   <svg
                     xmlns="http://www.w3.org/2000/svg"

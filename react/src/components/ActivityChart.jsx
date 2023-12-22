@@ -11,7 +11,7 @@ import {
   // Title,
 } from "chart.js";
 import * as Utils from "./../assets/utils";
-import { CandleData, secondsToHuman } from "@/lib/timehash";
+import { CandleData, secondsToHuman } from "@/lib/Timehash";
 
 Chart.register(
   BarController,

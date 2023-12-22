@@ -12,7 +12,7 @@ import ActivityChart from "./components/ActivityChart";
 import SelectDialog from "./components/extra/employee-select-dialog";
 import Widget from "./components/extra/widget";
 
-import { CandleData, handleAllocateTime } from "./lib/timehash";
+import { CandleData, HandleAllocateTime } from "./lib/Timehash";
 import {
   useDashboardContext,
   DashboardContextProvider,
@@ -74,7 +74,7 @@ const ActivityTracking = () => {
         });
 
         if (data.data.length === 1) return;
-        let candleData = handleAllocateTime(data.data, cleanCandle);
+        let candleData = HandleAllocateTime(data.data, cleanCandle);
 
         await data.data.forEach((app) => {
           if (app.end_time === null) return;
