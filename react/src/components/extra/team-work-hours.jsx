@@ -1,4 +1,10 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@ui/avatar";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@ui/tooltip";
 import { useDashboardContext } from "@/context/DashboardContextProvider";
 import { useEffect, useState } from "react";
 import axiosClient from "@/axios-client";
@@ -19,6 +25,18 @@ const getWorkDuration = (data) => {
           "seconds"
         );
   return secondsToHuman(diff);
+};
+
+const getStatusStyle = (status) => {
+  switch (status) {
+    case "Active":
+      return "border-green-600";
+    case "Away":
+    case "Idle":
+      return "border-yellow-400";
+    default:
+      return "border-none";
+  }
 };
 
 const TeamWorkHours = () => {
@@ -66,13 +84,26 @@ const TeamWorkHours = () => {
     <div className="space-y-8 h-[18rem]">
       {workLogs.map((item) => (
         <div key={item.id} className="flex items-center">
-          <Avatar className="h-9 w-9">
-            <AvatarImage src="/avatars/01.png" alt="Avatar" />
-            <AvatarFallback>
-              {item.employee.first_name[0]}
-              {item.employee.last_name[0]}
-            </AvatarFallback>
-          </Avatar>
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger>
+                <Avatar
+                  className={`h-9 w-9 border-2 ${getStatusStyle(
+                    item.employee.active_status
+                  )}`}
+                >
+                  <AvatarImage src="/avatars/01.png" alt="Avatar" />
+                  <AvatarFallback>
+                    {item.employee.first_name[0]}
+                    {item.employee.last_name[0]}
+                  </AvatarFallback>
+                </Avatar>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>{item.employee.active_status}</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
           <div className="ml-4 space-y-1">
             <p className="text-sm font-medium leading-none">
               {item.employee.last_name} {item.employee.first_name}
