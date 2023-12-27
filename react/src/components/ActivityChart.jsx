@@ -135,8 +135,8 @@ const ActivityChart = ({ productivity, rawApps }) => {
           },
         },
         interaction: {
-          intersect: false,
-          mode: "index",
+          intersect: true,
+          mode: "point",
         },
         maintainAspectRatio: false,
         responsive: true,

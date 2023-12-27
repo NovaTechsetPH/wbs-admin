@@ -27,10 +27,17 @@ const ActivityTracking = () => {
   const [rawApps, setRawApps] = useState([]);
   const [employees, setEmployees] = useState([]);
   const [empId, setEmpId] = useState(0);
+  const [loading, setLoading] = useState(false);
   const [apps, setApps] = useState({
     Productive: [],
     Unproductive: [],
     Neutral: [],
+  });
+  const [summary, setSummary] = useState({
+    arrival: "–:––",
+    work: "–– ––",
+    productive: "–– ––",
+    intrack: "–– ––",
   });
 
   const handleDateChange = (date) => setSelectedDate(date);
@@ -46,6 +53,7 @@ const ActivityTracking = () => {
 
   useEffect(() => {
     if (!empId) return;
+    setLoading(true);
     axiosClient
       .get(
         `/activity/employee/${empId}/${moment(selectedDate).format(
@@ -104,6 +112,15 @@ const ActivityTracking = () => {
         setProductivity(candleData);
         setApps(listApps);
       })
+      .then(() => {
+        setLoading(false);
+        setSummary({
+          arrival: "09:01",
+          work: "12h 46m",
+          productive: "2h 38m",
+          intrack: "4h 16m",
+        });
+      })
       .catch((err) => console.log(err));
   }, [selectedDate, empId]);
 
@@ -135,16 +152,32 @@ const ActivityTracking = () => {
                 <div className="col-span-1">
                   <div className="grid grid-cols-2 gap-4">
                     <div className="col-span-1">
-                      <Widget title={"Productivity"} content={"content"} />
+                      <Widget
+                        loading={loading}
+                        title={"Arrival time"}
+                        content={summary.arrival}
+                      />
                     </div>
                     <div className="col-span-1">
-                      <Widget title={"Late"} content={"content2"} />
+                      <Widget
+                        loading={loading}
+                        title={"Time at work"}
+                        content={summary.work}
+                      />
                     </div>
                     <div className="col-span-1">
-                      <Widget title={"Absent"} content={"content"} />
+                      <Widget
+                        loading={loading}
+                        title={"Productive time"}
+                        content={summary.productive}
+                      />
                     </div>
                     <div className="col-span-1">
-                      <Widget title={"Present"} content={"content2"} />
+                      <Widget
+                        loading={loading}
+                        title={"iNTrack time"}
+                        content={summary.intrack}
+                      />
                     </div>
                   </div>
                 </div>

@@ -100,6 +100,7 @@ function Dashboard() {
               id: uuidv4(),
               name: app.category.header_name,
               totalTime: totalTime,
+              abbreviation: app.category.abbreviation,
             });
             tmp.push(app.category.header_name);
           }

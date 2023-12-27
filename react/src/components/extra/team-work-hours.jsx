@@ -12,6 +12,7 @@ import { v4 as uuidv4 } from "uuid";
 import moment from "moment";
 import { secondsToHuman } from "@/lib/timehash";
 import { Skeleton } from "../ui/skeleton";
+import "./../../main.scss";
 
 const getWorkDuration = (data) => {
   if (!moment(data.datein).isSame(moment(), "day") && data.timeout === null) {
@@ -93,17 +94,24 @@ const TeamWorkHours = () => {
               <TooltipProvider>
                 <Tooltip>
                   <TooltipTrigger>
-                    <Avatar
-                      className={`h-9 w-9 border-2 ${getStatusStyle(
-                        item.employee.active_status
-                      )}`}
+                    <div
+                      className={`avatar ${item.employee.active_status.toLowerCase()}`}
                     >
-                      <AvatarImage src="/avatars/01.png" alt="Avatar" />
-                      <AvatarFallback>
-                        {item.employee.first_name[0]}
-                        {item.employee.last_name[0]}
-                      </AvatarFallback>
-                    </Avatar>
+                      <Avatar
+                        className={`h-9 w-9 border-2 ${getStatusStyle(
+                          item.employee.active_status
+                        )}`}
+                      >
+                        <AvatarImage
+                          src={`/images/${item.userid}.png`}
+                          alt="Avatar"
+                        />
+                        <AvatarFallback>
+                          {item.employee.first_name[0]}
+                          {item.employee.last_name[0]}
+                        </AvatarFallback>
+                      </Avatar>
+                    </div>
                   </TooltipTrigger>
                   <TooltipContent>
                     <p>{item.employee.active_status}</p>

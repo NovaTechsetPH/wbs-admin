@@ -25,6 +25,14 @@ function timeStringToSecs(data) {
   return seconds;
 }
 
+/**
+ * Get the index of the stick for an item
+ * @date 12/23/2023 - 3:55:34 PM
+ *
+ * @param {*} itemTime
+ * @param {*} sticks
+ * @returns {{ index: number; secs: number; }}
+ */
 function getStickIndex(itemTime, sticks) {
   var itemSecs = timeStringToSecs(itemTime);
   var firstTick = timeStringToSecs(sticks[0].label);
@@ -34,6 +42,14 @@ function getStickIndex(itemTime, sticks) {
   return { index: index, secs: remainder };
 }
 
+/**
+ * Calculates the duration of an item in seconds
+ * @date 12/23/2023 - 3:53:28 PM
+ *
+ * @param {any} startTime
+ * @param {any} endTime
+ * @returns {number}
+ */
 function getItemDuration(startTime, endTime) {
   var startSecs = timeStringToSecs(startTime);
   var endSecs = timeStringToSecs(endTime);

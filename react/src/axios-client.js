@@ -23,7 +23,8 @@ axiosClient.interceptors.response.use((response) => {
   const { response } = error;
   if (response.status === 401) {
     localStorage.removeItem('ACCESS_TOKEN')
-    // window.location.reload();
+    alert("Session expired, please login.");
+    window.location.href = "/login";
   } else if (response.status === 404) {
     //Show not found
   }
