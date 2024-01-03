@@ -4,9 +4,9 @@ import { Button } from "../../ui/button";
 import { Input } from "../../ui/input";
 import { DataTableViewOptions } from "./data-table-view-options";
 
-import { priorities, statuses } from "./columns";
-import { DataTableFacetedFilter } from "./data-table-faceted-filter";
-import { useEffect } from "react";
+// import { priorities, statuses } from "./columns";
+// import { DataTableFacetedFilter } from "./data-table-faceted-filter";
+// import { useEffect } from "react";
 
 export function DataTableToolbar({ table }) {
   const isFiltered = table.getState().columnFilters.length > 0;
@@ -14,14 +14,14 @@ export function DataTableToolbar({ table }) {
   return (
     <div className="flex items-center justify-between">
       <div className="flex flex-1 items-center space-x-2">
-        <Input
+        {/* <Input
           placeholder="Filter by employee ID..."
           value={table.getColumn("employeeId")?.getFilterValue() ?? ""}
           onChange={(event) =>
             table.getColumn("employeeId")?.setFilterValue(event.target.value)
           }
           className="h-8 w-[150px] lg:w-[250px]"
-        />
+        /> */}
         <Input
           placeholder="Filter employee name=..."
           value={table.getColumn("name")?.getFilterValue() ?? ""}
@@ -30,13 +30,13 @@ export function DataTableToolbar({ table }) {
           }
           className="h-8 w-[150px] lg:w-[250px]"
         />{" "}
-        {table.getColumn("status") && (
+        {/* {table.getColumn("status") && (
           <DataTableFacetedFilter
             column={table.getColumn("status")}
             title="Status"
             options={statuses}
           />
-        )}
+        )} */}
         {isFiltered && (
           <Button
             variant="ghost"

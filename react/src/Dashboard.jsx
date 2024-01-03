@@ -115,6 +115,10 @@ function Dashboard() {
     setSelectedDate(newDate);
   };
 
+  const handleTotalChange = (newTotal) => {
+    setTotal(newTotal);
+  };
+
   return (
     <DashboardContextProvider>
       <div className="flex-1 space-y-4 p-8 pt-6">
@@ -168,7 +172,7 @@ function Dashboard() {
                   <CardTitle className="text-sm font-medium">Late</CardTitle>
                 </CardHeader>
                 <CardContent className="flex justify-between">
-                  <div className="text-2xl font-bold">+2350</div>
+                  <div className="text-2xl font-bold">{total.late}</div>
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     height="32"
@@ -184,7 +188,7 @@ function Dashboard() {
                   <CardTitle className="text-sm font-medium">Absent</CardTitle>
                 </CardHeader>
                 <CardContent className="flex justify-between">
-                  <div className="text-2xl font-bold">+12,234</div>
+                  <div className="text-2xl font-bold">{total.absent}</div>
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     height="32"
@@ -200,7 +204,7 @@ function Dashboard() {
                   <CardTitle className="text-sm font-medium">Present</CardTitle>
                 </CardHeader>
                 <CardContent className="flex justify-between">
-                  <div className="text-2xl font-bold">+573</div>
+                  <div className="text-2xl font-bold">{total.present}</div>
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     height="32"
@@ -226,7 +230,10 @@ function Dashboard() {
                 </CardHeader>
                 <CardContent>
                   <ScrollArea>
-                    <TeamWorkHours />
+                    <TeamWorkHours
+                      handleTotalChange={handleTotalChange}
+                      productive={total.productiveHrs}
+                    />
                   </ScrollArea>
                 </CardContent>
               </Card>

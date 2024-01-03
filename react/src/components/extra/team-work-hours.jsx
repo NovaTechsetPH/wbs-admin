@@ -41,10 +41,27 @@ const getStatusStyle = (status) => {
   }
 };
 
-const TeamWorkHours = () => {
+const TeamWorkHours = ({ productive, handleTotalChange }) => {
   const { date } = useDashboardContext();
   const [workLogs, setWorkLogs] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [total, setTotal] = useState({
+    productiveHrs: 0,
+    late: 0,
+    absent: 0,
+    present: 0,
+  });
+
+  // const lateCutOff = moment().subtract(15, "minutes").format("HH:mm:ss");
+  // const getEmployeeLate = (item) => {
+
+  // }
+
+  useEffect(
+    () => handleTotalChange(total),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [total]
+  );
 
   useEffect(() => {
     setLoading(true);
@@ -52,15 +69,32 @@ const TeamWorkHours = () => {
       .get(`/dashboard/workhrs/${moment(date).format("YYYY-MM-DD")}`)
       .then(({ data }) => {
         setLoading(false);
-        return data.data.map((item) => {
+        let empIds = [];
+        let items = data.data.map((item) => {
+          if (!empIds.includes(item.empid)) {
+            empIds.push(item.employee.id);
+          }
           return {
             id: uuidv4(),
             duration: getWorkDuration(item),
             ...item,
           };
         });
+        return {
+          empIds: empIds,
+          items,
+        };
       })
-      .then((resp) => setWorkLogs(resp));
+      .then(({ items, empIds }) => {
+        setWorkLogs(items);
+        setTotal({
+          productiveHrs: productive,
+          late: 1,
+          absent: 10 - empIds.length,
+          present: empIds.length,
+        });
+      });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [date]);
 
   useEffect(() => {
