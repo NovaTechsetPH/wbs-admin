@@ -2,6 +2,7 @@ import axiosClient from "./axios-client";
 import { useEffect, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 import moment from "moment";
+import { useQuery } from "@tanstack/react-query";
 
 import { ScrollArea, ScrollBar } from "./components/ui/scroll-area";
 import { Separator } from "./components/ui/separator";
@@ -12,13 +13,28 @@ import ActivityChart from "./components/ActivityChart";
 import SelectDialog from "./components/extra/employee-select-dialog";
 import Widget from "./components/extra/widget";
 
-import { CandleData, handleAllocateTime } from "./lib/timehash";
+import { CandleData, handleAllocateTime, secondsToHuman } from "./lib/timehash";
 import {
   useDashboardContext,
   DashboardContextProvider,
 } from "./context/DashboardContextProvider";
 
 const CATEGORY = ["Unproductive", "Productive", "Neutral"];
+
+const getWorkDuration = (data) => {
+  if (!moment(data.datein).isSame(moment(), "day") && data.timeout === null) {
+    return "No timeout!";
+  }
+
+  let diff =
+    moment(data.datein).isSame(moment(), "day") && data.timeout === null
+      ? moment().diff(moment(data.timein, "HH:mm:ss"), "seconds")
+      : moment(data.timeout, "HH:mm:ss").diff(
+          moment(data.timein, "HH:mm:ss"),
+          "seconds"
+        );
+  return secondsToHuman(diff);
+};
 
 const ActivityTracking = () => {
   const { date } = useDashboardContext();
@@ -38,6 +54,19 @@ const ActivityTracking = () => {
     work: "–– ––",
     productive: "–– ––",
     intrack: "–– ––",
+  });
+
+  const { isLoading, isError, data, error } = useQuery({
+    queryKey: ["time-log", empId],
+    queryFn: () =>
+      axiosClient
+        .get(
+          `/activity/time-log/${empId ?? "0"}/${moment(selectedDate).format(
+            "YYYY-MM-DD"
+          )}`
+        )
+        .then(({ data }) => data.data),
+    enabled: !!empId,
   });
 
   const handleDateChange = (date) => setSelectedDate(date);
@@ -112,17 +141,22 @@ const ActivityTracking = () => {
         setProductivity(candleData);
         setApps(listApps);
       })
-      .then(() => {
-        setLoading(false);
-        setSummary({
-          arrival: "09:01",
-          work: "12h 46m",
-          productive: "2h 38m",
-          intrack: "4h 16m",
-        });
-      })
+      .then(() => setLoading(false))
       .catch((err) => console.log(err));
   }, [selectedDate, empId]);
+
+  useEffect(() => {
+    if (data) {
+      setSummary({
+        ...summary,
+        arrival: data.timein,
+        work: getWorkDuration(data),
+        intrack: "–:––",
+      });
+    }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [data, isLoading, isError, error]);
 
   return (
     <DashboardContextProvider>

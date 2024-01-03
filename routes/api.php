@@ -46,6 +46,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // Activity Tracking
     Route::get('/activity/employee/{userid}/{date?}', [ActivityTrackController::class, 'getEmployeeActivity']);
+    Route::get('/activity/time-log/{userid}/{date?}', [EmployeeController::class, 'getTimeLogByEmployee']);
 
     // UserApproval
     Route::get('/userapproval', [EmployeeController::class, 'getUserForApproval']);

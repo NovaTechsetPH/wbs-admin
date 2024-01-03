@@ -390,4 +390,25 @@ class EmployeeController extends Controller
             'message' => count($work_hrs) > 0 ? 'Success' : 'Employee not found',
         ], 200);
     }
+
+    public function getTimeLogByEmployee($id, $date = null)
+    {
+        try {
+            $date = $date ?? Carbon::now()->toDateString();
+            $work_hrs = TrackRecords::with('employee')
+                ->where('userid', $id)
+                ->where('datein', Carbon::parse($date)->toDateString())
+                ->first();
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => $e->getMessage(),
+                'message' => 'Internal Server Error!',
+            ], 500);
+        }
+
+        return response()->json([
+            'data' => $work_hrs ?? [],
+            'message' => $work_hrs ? 'Success' : 'Employee not found',
+        ]);
+    }
 }
