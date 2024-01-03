@@ -13,6 +13,7 @@ import Employees from "./Employees.jsx";
 import ActivityTracking from "./ActivityTracking";
 import Attendance from "./Attendance";
 import UserApproval from "./UserApproval";
+import Report from "./Report";
 
 const router = createBrowserRouter([
   {
@@ -47,6 +48,10 @@ const router = createBrowserRouter([
       {
         path: "/user-approval",
         element: <UserApproval />,
+      },
+      {
+        path: "/reports",
+        element: <Report />,
       },
     ],
   },
