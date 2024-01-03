@@ -1,121 +1,87 @@
-/* eslint-disable no-unused-vars */
+// /* eslint-disable no-unused-vars */
 import {
   DashboardContextProvider,
   useDashboardContext,
 } from "./context/DashboardContextProvider";
-// import ActivityChart from "./components/ActivityChart";
-import axiosClient from "@/axios-client";
 
-// import { ScrollArea } from "./components/ui/scroll-area";
-// import { Separator } from "./components/ui/separator";
+// import axiosClient from "@/axios-client";
+
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "./components/ui/tabs";
 
-import { handleAllocateTime, CandleData, secondsToHuman } from "./lib/timehash";
-
-// import { TeamAppList } from "./components/extra/team-app-list";
+// import { secondsToHuman } from "./lib/timehash";
 import { DatePicker } from "./components/extra/date-picker";
 import { useEffect, useState } from "react";
-import { v4 as uuidv4 } from "uuid";
-import moment from "moment";
-// import { Card, CardContent, CardHeader, CardTitle } from "./components/ui/card";
-// import TeamWorkHours from "./components/extra/team-work-hours";
-import { ReportCard } from "./components/extra/report-card";
-// import { Skeleton } from "./components/ui/skeleton";
+// import { v4 as uuidv4 } from "uuid";
+// import moment from "moment";
 
-const CATEGORY = ["Unproductive", "Productive", "Neutral"];
+// Excel export
+// import { toast } from "sonner";
+import { Toaster } from "@ui/sonner";
+import { ReportCard } from "./components/extra/report-card";
+// import {
+//   // ATTENDANCE_SETTINGS,
+//   SETTINGS_FOR_EXPORT,
+// } from "./lib/export-settings";
 
 function Report() {
   const { date } = useDashboardContext();
   const [selectedDate, setSelectedDate] = useState(date);
-  const [productivity, setProductivity] = useState([]);
-  const [rawApps, setRawApps] = useState([]);
-
-  const [appList, setAppList] = useState({
-    Productive: [],
-    Unproductive: [],
-    Neutral: [],
-  });
-
-  const [total, setTotal] = useState({
-    productiveHrs: 0,
-    late: 0,
-    absent: 0,
-    present: 0,
-  });
-
-  useEffect(() => {
-    let tmpTotal = { ...total };
-    let productiveHrs = 0;
-    appList.Productive.forEach((app) => {
-      productiveHrs += app.totalTime;
-    });
-    setTotal({ ...tmpTotal, productiveHrs: secondsToHuman(productiveHrs) });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [appList.Productive]);
-
-  // App Listing
-  useEffect(() => {
-    axiosClient
-      .post("/dashboard/apps", {
-        date: selectedDate,
-      })
-      .then(async ({ data }) => {
-        let listApps = {
-          Productive: [],
-          Unproductive: [],
-          Neutral: [],
-        };
-        let tmp = [];
-        setRawApps(data.data);
-        let dataLength = data.data.length;
-        let cleanCandle = CandleData(
-          data.data[0]?.time,
-          data.data[dataLength - 1]?.time,
-          selectedDate
-        ).map((candle) => {
-          return {
-            label: candle,
-            value: 0,
-            category: { productive: 0, unproductive: 0, neutral: 0 },
-          };
-        });
-
-        if (data.data.length === 1) return;
-        let candleData = handleAllocateTime(data.data, cleanCandle);
-
-        await data.data.forEach((app) => {
-          if (app.end_time === null) return;
-          let endTime = moment(app.end_time, "H:mm:ss");
-          let startTime = moment(app.time, "H:mm:ss");
-          let totalTime = moment.duration(endTime.diff(startTime)).asSeconds();
-
-          if (tmp.includes(app.category.header_name)) {
-            let index = listApps[
-              CATEGORY[app.category.is_productive]
-            ].findIndex((x) => {
-              return x.name === app.category.header_name;
-            });
-            listApps[CATEGORY[app.category.is_productive]][index].totalTime +=
-              totalTime;
-          } else {
-            listApps[CATEGORY[app.category.is_productive]].push({
-              id: uuidv4(),
-              name: app.category.header_name,
-              totalTime: totalTime,
-              abbreviation: app.category.abbreviation,
-            });
-            tmp.push(app.category.header_name);
-          }
-        });
-
-        setProductivity(candleData);
-        setAppList(listApps);
-      });
-  }, [selectedDate]);
 
   const handleDateChange = (newDate) => {
     setSelectedDate(newDate);
   };
+
+  const handleAttendanceExport = () => {
+    // axiosClient
+    //   .post("/dashboard/export", {
+    //     date: selectedDate,
+    //   })
+    //   .then(({ data }) => {
+    //     if (data.success) {
+    //       toast.success(data.message);
+    //     } else {
+    //       toast.error(data.message);
+    //     }
+    //   });
+
+    const data = {
+      table1: [
+        {
+          number: 1,
+          name: "Jack",
+          sum: "",
+          math: 1,
+          physics: 2,
+          chemistry: 2,
+          informatics: 1,
+          literature: 2,
+          foreignLang: 1,
+          avg: "",
+        },
+        {
+          number: 2,
+          name: "Peter",
+          sum: "",
+          math: 2,
+          physics: 2,
+          chemistry: 1,
+          informatics: 2,
+          literature: 2,
+          foreignLang: 1,
+          avg: "",
+        },
+      ],
+    };
+    // const excelExport = new ExcelExport();
+    // excelExport.downloadExcel(SETTINGS_FOR_EXPORT, data);
+    // await excelExport.downloadExcel(ATTENDANCE_SETTINGS, data);
+
+    // toast.success("Exported Successfully");
+  };
+
+  useEffect(() => {
+    console.log(selectedDate);
+  }, [selectedDate]);
 
   return (
     <DashboardContextProvider>
@@ -146,6 +112,7 @@ function Report() {
                   description={
                     "Provides information about team member working times, arrival and leaving times."
                   }
+                  onClick={handleAttendanceExport}
                 />
               </div>
               <div className="col-span-2 grid items-start gap-6 lg:col-span-1">
@@ -169,6 +136,7 @@ function Report() {
           </TabsContent>
         </Tabs>
       </div>
+      <Toaster richColors />
     </DashboardContextProvider>
   );
 }

@@ -12,10 +12,8 @@ import {
 import { useDashboardContext } from "@/context/DashboardContextProvider";
 import { useEffect, useState } from "react";
 import moment from "moment";
-import { toast } from "sonner";
-import { Toaster } from "../ui/sonner";
 
-export function ReportCard({ description, title }) {
+export function ReportCard({ description, title, onClick }) {
   const { date } = useDashboardContext();
   const [lastExported, setLastExported] = useState(null);
 
@@ -23,16 +21,16 @@ export function ReportCard({ description, title }) {
     setLastExported(moment(date).fromNow());
   }, [date]);
 
-  const handleExport = () => {
-    console.log("Exporting...");
-    toast("Exporting data", {
-      description: moment().format("dddd, MMMM Do YYYY, h:mm:ss a"),
-      action: {
-        label: "Close",
-        onClick: () => console.log("Undo"),
-      },
-    });
-  };
+  // const handleExport = () => {
+  //   console.log("Exporting...");
+  //   toast("Exporting data", {
+  //     description: moment().format("dddd, MMMM Do YYYY, h:mm:ss a"),
+  //     action: {
+  //       label: "Close",
+  //       onClick: () => console.log("Undo"),
+  //     },
+  //   });
+  // };
 
   return (
     <>
@@ -43,7 +41,7 @@ export function ReportCard({ description, title }) {
             <CardDescription className="pt-6">{description}</CardDescription>
           </div>
           <div className="flex items-center space-x-1 rounded-md bg-primary text-primary-foreground">
-            <Button onClick={handleExport} variant="primary" className="px-3">
+            <Button onClick={onClick} variant="primary" className="px-3">
               <DownloadIcon className="mr-2 h-4 w-4" />
               Export
             </Button>
@@ -60,7 +58,6 @@ export function ReportCard({ description, title }) {
           </div>
         </CardContent>
       </Card>
-      <Toaster />
     </>
   );
 }
