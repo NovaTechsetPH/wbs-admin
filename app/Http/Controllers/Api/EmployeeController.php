@@ -411,4 +411,24 @@ class EmployeeController extends Controller
             'message' => $work_hrs ? 'Success' : 'Employee not found',
         ]);
     }
+
+    public function getAttendanceReport($date = null)
+    {
+        try {
+            $date = $date ?? Carbon::now()->toDateString();
+            $work_hrs = TrackRecords::with('employee')
+                ->where('datein', Carbon::parse($date)->toDateString())
+                ->get();
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => $e->getMessage(),
+                'message' => 'Internal Server Error!',
+            ], 500);
+        }
+
+        return response()->json([
+            'data' => $work_hrs ?? [],
+            'message' => count($work_hrs) > 0 ? 'Success' : 'Records not found',
+        ]);
+    }
 }
