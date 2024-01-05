@@ -23,7 +23,6 @@ import {
 import { DataTablePagination } from "./data-table-pagination";
 import { DataTableToolbar } from "./data-table-toolbar";
 import moment from "moment";
-import { PopoverHelper } from "@/components/layout/popover-helper";
 
 const CellBgColor = (cell) => {
   let now = moment().format("dddd").toLowerCase();
@@ -38,7 +37,9 @@ const CellBgColor = (cell) => {
 
 export function DataTable({ columns, data }) {
   const [rowSelection, setRowSelection] = React.useState({});
-  const [columnVisibility, setColumnVisibility] = React.useState({});
+  const [columnVisibility, setColumnVisibility] = React.useState({
+    sunday: false,
+  });
   const [columnFilters, setColumnFilters] = React.useState([]);
   const [sorting, setSorting] = React.useState([]);
 
@@ -50,6 +51,9 @@ export function DataTable({ columns, data }) {
       columnVisibility,
       rowSelection,
       columnFilters,
+    },
+    initialState: {
+      pagination: { pageSize: 5 },
     },
     enableRowSelection: true,
     onRowSelectionChange: setRowSelection,
@@ -97,23 +101,17 @@ export function DataTable({ columns, data }) {
                     className="h-20"
                   >
                     {row.getVisibleCells().map((cell) => (
-                      <PopoverHelper
+                      <TableCell
+                        className={`hover:bg-muted/50 ${CellBgColor(
+                          cell.column.columnDef.accessorKey
+                        )}`}
                         key={cell.id}
-                        id={cell.id}
-                        cell={
-                          <TableCell
-                            className={`hover:bg-muted/50 cursor-pointer ${CellBgColor(
-                              cell.column.columnDef.accessorKey
-                            )}`}
-                            key={cell.id}
-                          >
-                            {flexRender(
-                              cell.column.columnDef.cell,
-                              cell.getContext()
-                            )}
-                          </TableCell>
-                        }
-                      />
+                      >
+                        {flexRender(
+                          cell.column.columnDef.cell,
+                          cell.getContext()
+                        )}
+                      </TableCell>
                     ))}
                   </TableRowSingle>
                 );

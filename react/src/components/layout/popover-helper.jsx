@@ -5,7 +5,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@ui/popover";
 
 export function PopoverHelper({ cell, id }) {
   return (
-    <Popover key={id}>
+    <Popover id={id}>
       <PopoverTrigger asChild>{cell}</PopoverTrigger>
       <PopoverContent className="w-80">
         <div className="grid gap-4">

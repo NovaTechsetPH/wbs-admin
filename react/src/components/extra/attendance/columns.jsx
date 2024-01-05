@@ -1,23 +1,22 @@
-// import { Badge } from "@ui/badge";
-// import { Checkbox } from "@ui/checkbox";
-
 import { DataTableColumnHeader } from "./data-table-column-header";
-// import { DataTableRowActions } from "./data-table-row-actions";
-
 import {
   ArrowDownIcon,
   ArrowRightIcon,
   ArrowUpIcon,
   CheckCircledIcon,
   CircleIcon,
+  // CodeSandboxLogoIcon,
   CrossCircledIcon,
-  // CrossCircledIcon,
+  LapTimerIcon,
   QuestionMarkCircledIcon,
+  SketchLogoIcon,
+  // StarIcon,
   // StopwatchIcon,
+  TimerIcon,
 } from "@radix-ui/react-icons";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import "./../../../main.scss";
-// import moment from "moment";
+import { PopoverHelper } from "@/components/layout/popover-helper";
 
 export const statuses = [
   {
@@ -68,13 +67,15 @@ const getStatusStyle = (status) => {
 };
 
 const StatusIcon = ({ status }) => {
-  // <CheckCircledIcon className="h-6 w-6 text-green-500" />
   switch (status) {
     case "Present":
       return <CheckCircledIcon className="h-6 w-6 text-green-500" />;
     case "Late":
+      return <TimerIcon className="h-6 w-6 text-yellow-500" />;
     case "Undertime":
-      return <QuestionMarkCircledIcon className="h-6 w-6 text-yellow-500" />;
+      return <LapTimerIcon className="h-6 w-6 text-yellow-500" />;
+    case "Holiday":
+      return <SketchLogoIcon className="h-6 w-6 text-blue-500" />;
     case "Absent":
       return <CrossCircledIcon className="h-6 w-6 text-red-500" />;
     default:
@@ -94,8 +95,10 @@ export const columns = [
     ),
     cell: ({ row }) => {
       let status = row.original.status;
+      let firstName = row.original.firstName;
+      let lastName = row.original.lastName;
       return (
-        <div className="flex space-x-2 ml-4">
+        <div className="flex space-x-2 ml-4 items-center">
           <div className={`avatar ${status.toLowerCase()}`}>
             <Avatar className={`h-10 w-10 border-2 ${getStatusStyle(status)}`}>
               <AvatarImage
@@ -103,11 +106,11 @@ export const columns = [
                 alt="Avatar"
               />
               <AvatarFallback className="font-semi-bold">
-                {row.getValue("name")[0]}
+                {`${firstName[0]}${lastName[0]}`}
               </AvatarFallback>
             </Avatar>
           </div>
-          <div className="w-[100px]">{row.getValue("name")}</div>
+          <div className="flex">{row.getValue("name")}</div>
         </div>
       );
     },
@@ -126,9 +129,7 @@ export const columns = [
     cell: () => {
       return (
         <div className="flex justify-center">
-          <span className="max-w-[80px] truncate font-medium">
-            {/* {row.getValue("sunday")} */}
-          </span>
+          <span className="max-w-[80px] truncate font-medium"></span>
         </div>
       );
     },
@@ -143,15 +144,10 @@ export const columns = [
       />
     ),
     cell: ({ row }) => {
-      // const day = row.original.attendance.filter(
-      //   (sun) => moment(sun.datein).format("dddd") === "Monday"
-      // );
-      // const isoDay = moment(day[0]?.datein)?.format("dddd")?.toLowerCase();
-      const isoDay = "monday";
       return (
         <div className="flex justify-center">
           <span className="max-w-[80px] truncate font-medium">
-            <StatusIcon status={row.getValue(isoDay)} />
+            <StatusIcon status={row.getValue("monday")} />
           </span>
         </div>
       );
@@ -167,17 +163,17 @@ export const columns = [
       />
     ),
     cell: ({ row }) => {
-      // const day = row.original.attendance.filter(
-      //   (sun) => moment(sun.datein).format("dddd") === "Tuesday"
-      // );
-      // const isoDay = moment(day[0]?.datein)?.format("dddd")?.toLowerCase();
-      const isoDay = "tuesday";
       return (
-        <div className="flex justify-center">
-          <span className="max-w-[80px] truncate font-medium">
-            <StatusIcon status={row.getValue(isoDay)} />
-          </span>
-        </div>
+        <PopoverHelper
+          id={row.original.id}
+          cell={
+            <div className="flex justify-center cursor-pointer">
+              <span className="max-w-[80px] truncate font-medium">
+                <StatusIcon status={row.getValue("tuesday")} />
+              </span>
+            </div>
+          }
+        />
       );
     },
   },
@@ -191,15 +187,10 @@ export const columns = [
       />
     ),
     cell: ({ row }) => {
-      // const day = row.original.attendance.filter(
-      //   (sun) => moment(sun.datein).format("dddd") === "Wednesday"
-      // );
-      // const isoDay = moment(day[0]?.datein)?.format("dddd")?.toLowerCase();
-      const isoDay = "wednesday";
       return (
         <div className="flex justify-center">
           <span className="max-w-[80px] truncate font-medium">
-            <StatusIcon status={row.getValue(isoDay)} />
+            <StatusIcon status={row.getValue("wednesday")} />
           </span>
         </div>
       );
@@ -215,15 +206,10 @@ export const columns = [
       />
     ),
     cell: ({ row }) => {
-      // const day = row.original.attendance.filter(
-      //   (sun) => moment(sun.datein).format("dddd") === "Thursday"
-      // );
-      // const isoDay = moment(day[0]?.datein)?.format("dddd")?.toLowerCase();
-      const isoDay = "thursday";
       return (
         <div className="flex justify-center">
           <span className="max-w-[80px] truncate font-medium">
-            <StatusIcon status={row.getValue(isoDay)} />
+            <StatusIcon status={row.getValue("thursday")} />
           </span>
         </div>
       );
@@ -239,15 +225,10 @@ export const columns = [
       />
     ),
     cell: ({ row }) => {
-      // const day = row.original.attendance.filter(
-      //   (sun) => moment(sun.datein).format("dddd") === "Friday"
-      // );
-      // const isoDay = moment(day[0]?.datein)?.format("dddd")?.toLowerCase();
-      const isoDay = "friday";
       return (
         <div className="flex justify-center">
           <span className="max-w-[80px] truncate font-medium">
-            <StatusIcon status={row.getValue(isoDay)} />
+            <StatusIcon status={row.getValue("friday")} />
           </span>
         </div>
       );
@@ -262,17 +243,10 @@ export const columns = [
         title="Sat"
       />
     ),
-    cell: ({ row }) => {
-      // const day = row.original.attendance.filter(
-      //   (sun) => moment(sun.datein).format("dddd") === "Saturday"
-      // );
-      // const isoDay = moment(day[0]?.datein)?.format("dddd")?.toLowerCase();
-      // const isoDay = 'saturday';
+    cell: () => {
       return (
         <div className="flex justify-center">
-          <span className="max-w-[80px] truncate font-medium">
-            {/* <StatusIcon status={row.getValue(isoDay)} /> */}
-          </span>
+          <span className="max-w-[80px] truncate font-medium"></span>
         </div>
       );
     },
