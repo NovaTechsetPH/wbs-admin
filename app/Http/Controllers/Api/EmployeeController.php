@@ -431,4 +431,38 @@ class EmployeeController extends Controller
             'message' => count($work_hrs) > 0 ? 'Success' : 'Records not found',
         ]);
     }
+
+    public function getWeeklyAttendance($date = null)
+    {
+        try {
+            $date = Carbon::parse($date) ?? Carbon::now();
+            $day_of_week = Carbon::parse($date)->dayOfWeek; // 5 = Friday
+            $date_from = Carbon::parse($date)->subDays($day_of_week);
+            $date_to = Carbon::parse($date)->addDays(6 - $day_of_week);
+
+            // Get employees weekly attendance
+            $attendance = TrackRecords::with('employee')
+                ->whereBetween('datein', [$date_from->toDateString(), $date_to->toDateString()])
+                ->get();
+
+            $employees = Employee::where('status', 'Approved')
+                ->where('department', Auth::user()->department ?? 'Technology')
+                ->get();
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => $e->getMessage(),
+                'message' => 'Internal Server Error!',
+            ], 500);
+        }
+
+        return response()->json([
+            'data' => $attendance ?? [],
+            'message' => count($attendance) > 0 ? 'Success' : 'Records not found',
+            'range' => [
+                'from' => $date_from->toDateString(),
+                'to' => $date_to->toDateString()
+            ],
+            'employees' => $employees,
+        ]);
+    }
 }

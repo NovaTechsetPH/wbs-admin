@@ -57,7 +57,7 @@ const ActivityTracking = () => {
   });
 
   const { isLoading, isError, data, error } = useQuery({
-    queryKey: ["time-log", empId],
+    queryKey: ["time-log", empId, selectedDate],
     queryFn: () =>
       axiosClient
         .get(

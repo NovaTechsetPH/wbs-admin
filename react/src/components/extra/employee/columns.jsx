@@ -155,7 +155,7 @@ export const columns = [
       if (!status) {
         return null;
       }
-
+      console.log(status);
       return (
         <div className="flex w-[100px] items-center">
           {status.icon && (

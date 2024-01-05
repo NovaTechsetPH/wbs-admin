@@ -51,6 +51,18 @@ const TableRow = React.forwardRef(({ className, ...props }, ref) => (
 ));
 TableRow.displayName = "TableRow";
 
+const TableRowSingle = React.forwardRef(({ className, ...props }, ref) => (
+  <tr
+    ref={ref}
+    className={cn(
+      "border-b transition-colors data-[state=selected]:bg-muted",
+      className
+    )}
+    {...props}
+  />
+));
+TableRowSingle.displayName = "TableRowSingle";
+
 const TableHead = React.forwardRef(({ className, ...props }, ref) => (
   <th
     ref={ref}
@@ -92,6 +104,7 @@ export {
   TableFooter,
   TableHead,
   TableRow,
+  TableRowSingle,
   TableCell,
   TableCaption,
 };

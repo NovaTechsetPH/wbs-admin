@@ -17,15 +17,23 @@ import {
   TableHead,
   TableHeader,
   TableRow,
+  TableRowSingle,
 } from "@ui/table";
 
 import { DataTablePagination } from "./data-table-pagination";
 import { DataTableToolbar } from "./data-table-toolbar";
+import moment from "moment";
+import { PopoverHelper } from "@/components/layout/popover-helper";
 
 const CellBgColor = (cell) => {
+  let now = moment().format("dddd").toLowerCase();
   if (cell === "saturday" || cell === "sunday") {
-    return "bg-gray-100";
+    return "bg-gray-100 border-r";
   }
+  if (cell === now) {
+    return "bg-blue-100 border-b border-blue-200";
+  }
+  return "border-r";
 };
 
 export function DataTable({ columns, data }) {
@@ -82,27 +90,32 @@ export function DataTable({ columns, data }) {
           <TableBody className="text-center">
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => {
-                console.log(row.getVisibleCells());
                 return (
-                  <TableRow
+                  <TableRowSingle
                     key={row.id}
                     data-state={row.getIsSelected() && "selected"}
                     className="h-20"
                   >
                     {row.getVisibleCells().map((cell) => (
-                      <TableCell
-                        className={`border-r ${CellBgColor(
-                          cell.column.columnDef.accessorKey
-                        )}`}
+                      <PopoverHelper
                         key={cell.id}
-                      >
-                        {flexRender(
-                          cell.column.columnDef.cell,
-                          cell.getContext()
-                        )}
-                      </TableCell>
+                        id={cell.id}
+                        cell={
+                          <TableCell
+                            className={`hover:bg-muted/50 cursor-pointer ${CellBgColor(
+                              cell.column.columnDef.accessorKey
+                            )}`}
+                            key={cell.id}
+                          >
+                            {flexRender(
+                              cell.column.columnDef.cell,
+                              cell.getContext()
+                            )}
+                          </TableCell>
+                        }
+                      />
                     ))}
-                  </TableRow>
+                  </TableRowSingle>
                 );
               })
             ) : (

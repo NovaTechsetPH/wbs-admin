@@ -10,7 +10,7 @@ import moment from "moment";
 //   return "Away";
 // };
 
-const getLastActivity = (act) => {
+export const getLastActivity = (act) => {
   if (act) {
     let time = act.end_time ?? act.time;
     return moment(`${act.date} ${time}`).fromNow();

@@ -1,4 +1,4 @@
-import { Badge } from "@ui/badge";
+// import { Badge } from "@ui/badge";
 // import { Checkbox } from "@ui/checkbox";
 
 import { DataTableColumnHeader } from "./data-table-column-header";
@@ -10,27 +10,14 @@ import {
   ArrowUpIcon,
   CheckCircledIcon,
   CircleIcon,
+  CrossCircledIcon,
   // CrossCircledIcon,
   QuestionMarkCircledIcon,
   // StopwatchIcon,
 } from "@radix-ui/react-icons";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import "./../../../main.scss";
-
-const labels = [
-  {
-    value: "bug",
-    label: "Bug",
-  },
-  {
-    value: "feature",
-    label: "Feature",
-  },
-  {
-    value: "documentation",
-    label: "Documentation",
-  },
-];
+// import moment from "moment";
 
 export const statuses = [
   {
@@ -80,31 +67,22 @@ const getStatusStyle = (status) => {
   }
 };
 
+const StatusIcon = ({ status }) => {
+  // <CheckCircledIcon className="h-6 w-6 text-green-500" />
+  switch (status) {
+    case "Present":
+      return <CheckCircledIcon className="h-6 w-6 text-green-500" />;
+    case "Late":
+    case "Undertime":
+      return <QuestionMarkCircledIcon className="h-6 w-6 text-yellow-500" />;
+    case "Absent":
+      return <CrossCircledIcon className="h-6 w-6 text-red-500" />;
+    default:
+      return <CircleIcon className="h-6 w-6 text-gray-500" />;
+  }
+};
+
 export const columns = [
-  // {
-  //   id: "select",
-  //   header: ({ table }) => (
-  //     <Checkbox
-  //       checked={
-  //         table.getIsAllPageRowsSelected() ||
-  //         (table.getIsSomePageRowsSelected() && "indeterminate")
-  //       }
-  //       onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-  //       aria-label="Select all"
-  //       className="translate-y-[2px]"
-  //     />
-  //   ),
-  //   cell: ({ row }) => (
-  //     <Checkbox
-  //       checked={row.getIsSelected()}
-  //       onCheckedChange={(value) => row.toggleSelected(!!value)}
-  //       aria-label="Select row"
-  //       className="translate-y-[2px]"
-  //     />
-  //   ),
-  //   enableSorting: false,
-  //   enableHiding: false,
-  // },
   {
     accessorKey: "name",
     header: ({ column }) => (
@@ -117,14 +95,16 @@ export const columns = [
     cell: ({ row }) => {
       let status = row.original.status;
       return (
-        <div className="flex space-x-2">
+        <div className="flex space-x-2 ml-4">
           <div className={`avatar ${status.toLowerCase()}`}>
-            <Avatar className={`h-9 w-9 border-2 ${getStatusStyle(status)}`}>
+            <Avatar className={`h-10 w-10 border-2 ${getStatusStyle(status)}`}>
               <AvatarImage
                 src={`/images/${row.original.employeeId}.png`}
                 alt="Avatar"
               />
-              <AvatarFallback>{row.getValue("name")[0]}</AvatarFallback>
+              <AvatarFallback className="font-semi-bold">
+                {row.getValue("name")[0]}
+              </AvatarFallback>
             </Avatar>
           </div>
           <div className="w-[100px]">{row.getValue("name")}</div>
@@ -133,6 +113,25 @@ export const columns = [
     },
     enableSorting: false,
     enableHiding: false,
+  },
+  {
+    accessorKey: "sunday",
+    header: ({ column }) => (
+      <DataTableColumnHeader
+        column={column}
+        className="items-center justify-around"
+        title="Sun"
+      />
+    ),
+    cell: () => {
+      return (
+        <div className="flex justify-center">
+          <span className="max-w-[80px] truncate font-medium">
+            {/* {row.getValue("sunday")} */}
+          </span>
+        </div>
+      );
+    },
   },
   {
     accessorKey: "monday",
@@ -144,12 +143,15 @@ export const columns = [
       />
     ),
     cell: ({ row }) => {
-      const label = labels.find((label) => label.value === row.original.label);
+      // const day = row.original.attendance.filter(
+      //   (sun) => moment(sun.datein).format("dddd") === "Monday"
+      // );
+      // const isoDay = moment(day[0]?.datein)?.format("dddd")?.toLowerCase();
+      const isoDay = "monday";
       return (
-        <div className="flex space-x-2">
-          {label && <Badge variant="outline">{label.label}</Badge>}
+        <div className="flex justify-center">
           <span className="max-w-[80px] truncate font-medium">
-            {row.getValue("monday")}
+            <StatusIcon status={row.getValue(isoDay)} />
           </span>
         </div>
       );
@@ -165,12 +167,15 @@ export const columns = [
       />
     ),
     cell: ({ row }) => {
-      const label = labels.find((label) => label.value === row.original.label);
+      // const day = row.original.attendance.filter(
+      //   (sun) => moment(sun.datein).format("dddd") === "Tuesday"
+      // );
+      // const isoDay = moment(day[0]?.datein)?.format("dddd")?.toLowerCase();
+      const isoDay = "tuesday";
       return (
-        <div className="flex space-x-2">
-          {label && <Badge variant="outline">{label.label}</Badge>}
+        <div className="flex justify-center">
           <span className="max-w-[80px] truncate font-medium">
-            {row.getValue("tuesday")}
+            <StatusIcon status={row.getValue(isoDay)} />
           </span>
         </div>
       );
@@ -186,12 +191,15 @@ export const columns = [
       />
     ),
     cell: ({ row }) => {
-      const label = labels.find((label) => label.value === row.original.label);
+      // const day = row.original.attendance.filter(
+      //   (sun) => moment(sun.datein).format("dddd") === "Wednesday"
+      // );
+      // const isoDay = moment(day[0]?.datein)?.format("dddd")?.toLowerCase();
+      const isoDay = "wednesday";
       return (
-        <div className="flex space-x-2">
-          {label && <Badge variant="outline">{label.label}</Badge>}
+        <div className="flex justify-center">
           <span className="max-w-[80px] truncate font-medium">
-            {row.getValue("wednesday")}
+            <StatusIcon status={row.getValue(isoDay)} />
           </span>
         </div>
       );
@@ -207,12 +215,15 @@ export const columns = [
       />
     ),
     cell: ({ row }) => {
-      const label = labels.find((label) => label.value === row.original.label);
+      // const day = row.original.attendance.filter(
+      //   (sun) => moment(sun.datein).format("dddd") === "Thursday"
+      // );
+      // const isoDay = moment(day[0]?.datein)?.format("dddd")?.toLowerCase();
+      const isoDay = "thursday";
       return (
-        <div className="flex space-x-2">
-          {label && <Badge variant="outline">{label.label}</Badge>}
+        <div className="flex justify-center">
           <span className="max-w-[80px] truncate font-medium">
-            {row.getValue("thursday")}
+            <StatusIcon status={row.getValue(isoDay)} />
           </span>
         </div>
       );
@@ -228,12 +239,15 @@ export const columns = [
       />
     ),
     cell: ({ row }) => {
-      const label = labels.find((label) => label.value === row.original.label);
+      // const day = row.original.attendance.filter(
+      //   (sun) => moment(sun.datein).format("dddd") === "Friday"
+      // );
+      // const isoDay = moment(day[0]?.datein)?.format("dddd")?.toLowerCase();
+      const isoDay = "friday";
       return (
-        <div className="flex space-x-2">
-          {label && <Badge variant="outline">{label.label}</Badge>}
+        <div className="flex justify-center">
           <span className="max-w-[80px] truncate font-medium">
-            {row.getValue("friday")}
+            <StatusIcon status={row.getValue(isoDay)} />
           </span>
         </div>
       );
@@ -249,33 +263,15 @@ export const columns = [
       />
     ),
     cell: ({ row }) => {
-      const label = labels.find((label) => label.value === row.original.label);
+      // const day = row.original.attendance.filter(
+      //   (sun) => moment(sun.datein).format("dddd") === "Saturday"
+      // );
+      // const isoDay = moment(day[0]?.datein)?.format("dddd")?.toLowerCase();
+      // const isoDay = 'saturday';
       return (
-        <div className="flex space-x-2">
-          {label && <Badge variant="outline">{label.label}</Badge>}
+        <div className="flex justify-center">
           <span className="max-w-[80px] truncate font-medium">
-            {row.getValue("saturday")}
-          </span>
-        </div>
-      );
-    },
-  },
-  {
-    accessorKey: "sunday",
-    header: ({ column }) => (
-      <DataTableColumnHeader
-        column={column}
-        className="items-center justify-around"
-        title="Sun"
-      />
-    ),
-    cell: ({ row }) => {
-      const label = labels.find((label) => label.value === row.original.label);
-      return (
-        <div className="flex space-x-2">
-          {label && <Badge variant="outline">{label.label}</Badge>}
-          <span className="max-w-[80px] truncate font-medium">
-            {row.getValue("sunday")}
+            {/* <StatusIcon status={row.getValue(isoDay)} /> */}
           </span>
         </div>
       );
