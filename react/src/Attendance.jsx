@@ -4,18 +4,31 @@ import { DataTable } from "@/components/extra/attendance/data-table";
 import { v4 as uuidv4 } from "uuid";
 import axiosClient from "./axios-client";
 import moment from "moment";
-import { useDashboardContext } from "./context/DashboardContextProvider";
+import {
+  DashboardContextProvider,
+  useDashboardContext,
+} from "./context/DashboardContextProvider";
 import { useQuery } from "@tanstack/react-query";
 import { getLastActivity } from "./Employees";
 
 const Attendance = () => {
   const { date } = useDashboardContext();
-  const [isFetched, setIsFetched] = useState(false);
+  const [selectedDate, setSelectedDate] = useState(date);
+
+  const getDayStatus = (dayOfWeek) => {
+    let now = moment().day();
+    return dayOfWeek < now ||
+      moment(selectedDate).week() < moment().week() ||
+      moment(selectedDate).year() < moment().year()
+      ? "Absent"
+      : null;
+  };
+
   const { data, isLoading } = useQuery({
-    queryKey: ["attendance", date],
+    queryKey: ["attendance", selectedDate],
     queryFn: () =>
       axiosClient
-        .get(`/attendance/weekly/${moment(date).format("YYYY-MM-DD")}`)
+        .get(`/attendance/weekly/${moment(selectedDate).format("YYYY-MM-DD")}`)
         .then(({ data }) => {
           let formatData = [];
           data.employees.forEach((emp) => {
@@ -34,7 +47,6 @@ const Attendance = () => {
               holidays: ["2024-01-01"],
             });
           });
-          setIsFetched(true);
           return formatData;
         })
         .then((raw) => {
@@ -42,11 +54,11 @@ const Attendance = () => {
           raw.forEach((item) => {
             let days = {
               sunday: "Restday",
-              monday: "Absent",
-              tuesday: "Absent",
-              wednesday: "Absent",
-              thursday: "Absent",
-              friday: "Absent",
+              monday: getDayStatus(1),
+              tuesday: getDayStatus(2),
+              wednesday: getDayStatus(3),
+              thursday: getDayStatus(4),
+              friday: getDayStatus(5),
               saturday: "Restday",
             };
 
@@ -58,7 +70,9 @@ const Attendance = () => {
             if (item.holidays.length > 0) {
               item.holidays.forEach((holiday) => {
                 let holidayDate = moment(holiday).format("dddd");
-                days = { ...days, [holidayDate.toLowerCase()]: "Holiday" };
+                if (moment(holiday).isSame(moment(selectedDate), "week")) {
+                  days = { ...days, [holidayDate.toLowerCase()]: "Holiday" };
+                }
               });
             }
 
@@ -66,13 +80,27 @@ const Attendance = () => {
           });
           return formData;
         }),
-    enabled: !isFetched,
+    // enabled: !isFetched,
   });
 
   return (
-    <div className="hidden h-full flex-1 flex-col space-y-8 p-8 md:flex">
-      {!isLoading && <DataTable data={data} columns={columns} />}
-    </div>
+    <DashboardContextProvider>
+      <div className="hidden h-full flex-1 flex-col space-y-8 p-8 md:flex">
+        {!isLoading && (
+          <DataTable
+            data={data}
+            columns={columns}
+            dateChanged={setSelectedDate}
+          />
+        )}
+        {/* <DataTable
+          data={data}
+          columns={columns}
+          dateChanged={setSelectedDate}
+          isLoading={isLoading}
+        /> */}
+      </div>
+    </DashboardContextProvider>
   );
 };
 

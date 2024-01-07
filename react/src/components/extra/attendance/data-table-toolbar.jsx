@@ -3,13 +3,18 @@ import { Cross2Icon } from "@radix-ui/react-icons";
 import { Button } from "../../ui/button";
 import { Input } from "../../ui/input";
 import { DataTableViewOptions } from "./data-table-view-options";
+import { DatePicker } from "../date-picker";
 
 // import { priorities, statuses } from "./columns";
 // import { DataTableFacetedFilter } from "./data-table-faceted-filter";
 // import { useEffect } from "react";
 
-export function DataTableToolbar({ table }) {
+export function DataTableToolbar({ table, handleDateChange }) {
   const isFiltered = table.getState().columnFilters.length > 0;
+
+  const onDateChanged = (newDate) => {
+    handleDateChange(newDate);
+  };
 
   return (
     <div className="flex items-center justify-between">
@@ -48,7 +53,13 @@ export function DataTableToolbar({ table }) {
           </Button>
         )}
       </div>
-      <DataTableViewOptions table={table} />
+
+      <div className="flex items-center space-x-2">
+        <div className="flex items-center space-x-2">
+          <DataTableViewOptions table={table} />
+        </div>
+        <DatePicker onDateChanged={onDateChanged} />
+      </div>
     </div>
   );
 }
