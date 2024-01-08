@@ -86,6 +86,10 @@ export const secondsToHuman = (seconds) => {
 export const handleAllocateTime = (data, sticks) => {
   let clonedData = [...data];
   let clonedSticks = [...sticks];
+  let activity = {
+    working: 0,
+    idle: 0,
+  };
 
   clonedData.forEach((d) => {
     if (d.end_time == null) return;
@@ -99,6 +103,10 @@ export const handleAllocateTime = (data, sticks) => {
 
     clonedSticks[item.index].value += initStickAddedTime;
     clonedSticks[item.index].category[CATEGORY[d.category.is_productive]] += initStickAddedTime;
+
+    if (d.category.is_productive) {
+      activity.working += itemDuration;
+    }
 
     for (let i = 1; i <= sticksToFill; i++) {
       clonedSticks[item.index + i].value += 600;
@@ -114,5 +122,13 @@ export const handleAllocateTime = (data, sticks) => {
     clonedSticks[indexer].category[CATEGORY[d.category.is_productive]] += remainderToFill;
   });
 
-  return clonedSticks;
+  let now = moment().format("HH:mm:ss");
+  let officeTime = getItemDuration(clonedData[0].time, clonedData[clonedData.length - 1].end_time ?? now);
+
+  return {
+    clonedSticks, activity: {
+      working: secondsToHuman(activity.working),
+      idle: secondsToHuman(officeTime - activity.working)
+    }
+  };
 }

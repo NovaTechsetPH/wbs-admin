@@ -111,7 +111,6 @@ const ActivityChart = ({ productivity, rawApps }) => {
         animation: {
           onProgress: function (animation) {
             let progress = document.getElementById("process-bar");
-            // console.log("test progress");
             progress.value = animation.currentStep / animation.numSteps;
           },
           onComplete: function (complete) {

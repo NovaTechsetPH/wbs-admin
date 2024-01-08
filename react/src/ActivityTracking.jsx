@@ -53,7 +53,7 @@ const ActivityTracking = () => {
     arrival: "–:––",
     work: "–– ––",
     productive: "–– ––",
-    intrack: "–– ––",
+    idle: "–– ––",
   });
 
   const { isLoading, isError, data, error } = useQuery({
@@ -111,7 +111,15 @@ const ActivityTracking = () => {
         });
 
         if (data.data.length === 1) return;
-        let candleData = handleAllocateTime(data.data, cleanCandle);
+        let { clonedSticks, activity } = handleAllocateTime(
+          data.data,
+          cleanCandle
+        );
+        setSummary({
+          ...summary,
+          productive: activity.working,
+          idle: activity.idle,
+        });
 
         await data.data.forEach((app) => {
           if (app.end_time === null) return;
@@ -138,11 +146,12 @@ const ActivityTracking = () => {
           }
         });
 
-        setProductivity(candleData);
+        setProductivity(clonedSticks);
         setApps(listApps);
       })
       .then(() => setLoading(false))
       .catch((err) => console.log(err));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedDate, empId]);
 
   useEffect(() => {
@@ -151,7 +160,8 @@ const ActivityTracking = () => {
         ...summary,
         arrival: data.timein,
         work: getWorkDuration(data),
-        intrack: "–:––",
+        // productive
+        // intrack: "–:––",
       });
     }
 
@@ -209,8 +219,8 @@ const ActivityTracking = () => {
                     <div className="col-span-1">
                       <Widget
                         loading={loading}
-                        title={"iNTrack time"}
-                        content={summary.intrack}
+                        title={"Idle time"}
+                        content={summary.idle}
                       />
                     </div>
                   </div>

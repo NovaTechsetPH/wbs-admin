@@ -14,8 +14,24 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@ui/dropdown-menu";
+import { useDashboardContext } from "@/context/DashboardContextProvider";
+import moment from "moment";
+
+const DAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
 export function DataTableColumnHeader({ column, title, className }) {
+  const { date } = useDashboardContext();
+
+  const getCalendarDate = (dayOfWeek) => {
+    if (!DAYS.includes(dayOfWeek)) return dayOfWeek;
+    let num = Object.keys(DAYS).find((key) => DAYS[key] === dayOfWeek);
+    let selected = moment(date).weekday();
+    let day = moment(date)
+      .subtract(selected - num, "days")
+      .format("DD");
+    return `${dayOfWeek}-${day}`;
+  };
+
   if (!column.getCanSort()) {
     return <div className={cn(className)}>{title}</div>;
   }
@@ -29,7 +45,7 @@ export function DataTableColumnHeader({ column, title, className }) {
             size="sm"
             className="-ml-3 h-8 data-[state=open]:bg-accent"
           >
-            <span>{title}</span>
+            <span>{getCalendarDate(title)}</span>
             {column.getIsSorted() === "desc" ? (
               <ArrowDownIcon className="ml-2 h-4 w-4" />
             ) : column.getIsSorted() === "asc" ? (

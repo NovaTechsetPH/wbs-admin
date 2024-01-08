@@ -79,7 +79,7 @@ function Dashboard() {
         });
 
         if (data.data.length === 1) return;
-        let candleData = handleAllocateTime(data.data, cleanCandle);
+        let { clonedSticks } = handleAllocateTime(data.data, cleanCandle);
 
         await data.data.forEach((app) => {
           if (app.end_time === null) return;
@@ -106,7 +106,7 @@ function Dashboard() {
           }
         });
 
-        setProductivity(candleData);
+        setProductivity(clonedSticks);
         setAppList(listApps);
       });
   }, [selectedDate]);

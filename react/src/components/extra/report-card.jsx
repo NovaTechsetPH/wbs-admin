@@ -12,14 +12,6 @@ import {
 import { useDashboardContext } from "@/context/DashboardContextProvider";
 import { useEffect, useState } from "react";
 import moment from "moment";
-// import {
-//   Dialog,
-//   DialogContent,
-//   DialogDescription,
-//   DialogHeader,
-//   DialogTitle,
-//   DialogTrigger,
-// } from "../ui/dialog";
 
 export function ReportCard({ description, title, onClick }) {
   const { date } = useDashboardContext();
@@ -28,17 +20,6 @@ export function ReportCard({ description, title, onClick }) {
   useEffect(() => {
     setLastExported(moment(date).fromNow());
   }, [date]);
-
-  // const handleExport = () => {
-  //   console.log("Exporting...");
-  //   toast("Exporting data", {
-  //     description: moment().format("dddd, MMMM Do YYYY, h:mm:ss a"),
-  //     action: {
-  //       label: "Close",
-  //       onClick: () => console.log("Undo"),
-  //     },
-  //   });
-  // };
 
   return (
     <>

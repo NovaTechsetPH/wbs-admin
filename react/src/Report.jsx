@@ -57,31 +57,6 @@ function Report() {
 
   const handleAppsExport = () => setDialogOpen(!dialogOpen);
 
-  // TODO: Add export
-  // const handleAppsExportDisabled = async () => {
-  //   const { data } = await axiosClient.get(
-  //     `/reports/apps/${moment(selectedDate).format("YYYY-MM-DD")}`
-  //   );
-  //   let formattedData = formatExcelData(data.data);
-  //   toast.promise(formattedData, {
-  //     loading: "Exporting apps data...",
-  //     success: (resp) => {
-  //       const worksheet = XLSX.utils.json_to_sheet(resp);
-  //       const workbook = XLSX.utils.book_new();
-  //       XLSX.utils.book_append_sheet(workbook, worksheet, "Sheet1");
-  //       XLSX.writeFile(workbook, "iNTrack-Apps-Report.xlsx");
-  //       return `Successfully exported ${resp.length} records`;
-  //     },
-  //     error: (err) => {
-  //       console.log(err);
-  //     },
-  //     action: {
-  //       label: "Close",
-  //       onClick: () => console.log("Triggered Close"),
-  //     },
-  //   });
-  // };
-
   const handleAttendanceExport = async () => {
     const promise = () =>
       new Promise((resolve) => {

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { columns } from "@/components/extra/attendance/columns";
 import { DataTable } from "@/components/extra/attendance/data-table";
 import { v4 as uuidv4 } from "uuid";
@@ -11,17 +11,29 @@ import {
 import { useQuery } from "@tanstack/react-query";
 import { getLastActivity } from "./Employees";
 
+const CUTOFF_TIME = moment("12:00:00", "HH:mm");
+
 const Attendance = () => {
   const { date } = useDashboardContext();
   const [selectedDate, setSelectedDate] = useState(date);
 
-  const getDayStatus = (dayOfWeek) => {
-    let now = moment().day();
-    return dayOfWeek < now ||
-      moment(selectedDate).week() < moment().week() ||
-      moment(selectedDate).year() < moment().year()
-      ? "Absent"
-      : null;
+  const getDayStatus = useCallback(
+    (dayOfWeek) => {
+      let now = moment().day();
+      return dayOfWeek < now ||
+        moment(selectedDate).week() < moment().week() ||
+        moment(selectedDate).year() < moment().year()
+        ? "Absent"
+        : null;
+    },
+    [selectedDate]
+  );
+
+  const dailyAttendance = (data) => {
+    if (moment(data.timein, "HH:mm").isAfter(CUTOFF_TIME)) {
+      return "Late";
+    }
+    return "Present";
   };
 
   const { data, isLoading } = useQuery({
@@ -64,7 +76,7 @@ const Attendance = () => {
 
             item.attendance.forEach((att) => {
               let day = moment(att.datein).format("dddd");
-              days = { ...days, [day.toLowerCase()]: "Present" };
+              days = { ...days, [day.toLowerCase()]: dailyAttendance(att) };
             });
 
             if (item.holidays.length > 0) {
@@ -83,13 +95,15 @@ const Attendance = () => {
     // enabled: !isFetched,
   });
 
+  const memoizedCols = useMemo(columns, []);
+
   return (
     <DashboardContextProvider>
       <div className="hidden h-full flex-1 flex-col space-y-8 p-8 md:flex">
         {!isLoading && (
           <DataTable
             data={data}
-            columns={columns}
+            columns={memoizedCols}
             dateChanged={setSelectedDate}
           />
         )}

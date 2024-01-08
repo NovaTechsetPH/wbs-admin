@@ -83,13 +83,13 @@ const StatusIcon = ({ status }) => {
   }
 };
 
-export const columns = [
+export const columns = () => [
   {
     accessorKey: "name",
     header: ({ column }) => (
       <DataTableColumnHeader
         column={column}
-        className="text-center"
+        className="items-center justify-around"
         title="Employees"
       />
     ),
@@ -114,7 +114,7 @@ export const columns = [
         </div>
       );
     },
-    enableSorting: false,
+    enableSorting: true,
     enableHiding: false,
   },
   {
@@ -140,7 +140,7 @@ export const columns = [
       <DataTableColumnHeader
         column={column}
         className="items-center justify-around"
-        title="Mon"
+        title={`Mon`}
       />
     ),
     cell: ({ row }) => {
@@ -251,52 +251,4 @@ export const columns = [
       );
     },
   },
-  // {
-  //   accessorKey: "tuesday",
-  //   header: ({ column }) => (
-  //     <DataTableColumnHeader column={column} title="Status" />
-  //   ),
-  //   cell: ({ row }) => {
-  //     const status = statuses.find(
-  //       (status) => status.value === row.getValue("status")
-  //     );
-
-  //     if (!status) {
-  //       return null;
-  //     }
-
-  //     return (
-  //       <div className="flex w-[100px] items-center">
-  //         {status.icon && (
-  //           <status.icon className="mr-2 h-4 w-4 text-muted-foreground" />
-  //         )}
-  //         <span>{status.label}</span>
-  //       </div>
-  //     );
-  //   },
-  //   filterFn: (row, id, value) => {
-  //     console.log(id);
-  //     return value.includes(row.getValue(id));
-  //   },
-  // },
-  // {
-  //   accessorKey: "online",
-  //   header: ({ column }) => (
-  //     <DataTableColumnHeader column={column} title="Online" />
-  //   ),
-  //   cell: ({ row }) => {
-  //     return (
-  //       <div className="flex items-center">
-  //         <span>{row.getValue("online")}</span>
-  //       </div>
-  //     );
-  //   },
-  //   filterFn: (row, id, value) => {
-  //     return value.includes(row.getValue(id));
-  //   },
-  // },
-  // {
-  //   id: "actions",
-  //   cell: ({ row }) => <DataTableRowActions row={row} />,
-  // },
 ];
