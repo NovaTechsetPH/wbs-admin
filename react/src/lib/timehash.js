@@ -123,7 +123,9 @@ export const handleAllocateTime = (data, sticks) => {
   });
 
   let now = moment().format("HH:mm:ss");
-  let officeTime = getItemDuration(clonedData[0].time, clonedData[clonedData.length - 1].end_time ?? now);
+  let officeTime = clonedData.length > 0
+    ? getItemDuration(clonedData[0].time, clonedData[clonedData.length - 1].end_time ?? now)
+    : 0;
 
   return {
     clonedSticks, activity: {

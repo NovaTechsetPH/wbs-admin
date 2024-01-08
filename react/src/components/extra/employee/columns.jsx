@@ -152,10 +152,8 @@ export const columns = [
         (status) => status.value === row.getValue("status")
       );
 
-      if (!status) {
-        return null;
-      }
-      console.log(status);
+      if (!status) return null;
+
       return (
         <div className="flex w-[100px] items-center">
           {status.icon && (
