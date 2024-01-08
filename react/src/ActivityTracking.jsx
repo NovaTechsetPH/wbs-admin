@@ -2,7 +2,7 @@ import axiosClient from "./axios-client";
 import { useEffect, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 import moment from "moment";
-import { useQuery } from "@tanstack/react-query";
+// import { useQuery } from "@tanstack/react-query";
 
 import { ScrollArea, ScrollBar } from "./components/ui/scroll-area";
 import { Separator } from "./components/ui/separator";
@@ -44,6 +44,7 @@ const ActivityTracking = () => {
   const [employees, setEmployees] = useState([]);
   const [empId, setEmpId] = useState(0);
   const [loading, setLoading] = useState(false);
+  const [data, setData] = useState({});
   const [apps, setApps] = useState({
     Productive: [],
     Unproductive: [],
@@ -52,19 +53,6 @@ const ActivityTracking = () => {
   const [summary, setSummary] = useState({
     productive: "–– ––",
     idle: "–– ––",
-  });
-
-  const { data } = useQuery({
-    queryKey: ["time-log", empId, selectedDate],
-    queryFn: () =>
-      axiosClient
-        .get(
-          `/activity/time-log/${empId ?? "0"}/${moment(selectedDate).format(
-            "YYYY-MM-DD"
-          )}`
-        )
-        .then(({ data }) => data.data),
-    enabled: !!empId,
   });
 
   const handleDateChange = (date) => setSelectedDate(date);
@@ -81,6 +69,14 @@ const ActivityTracking = () => {
   useEffect(() => {
     if (!empId) return;
     setLoading(true);
+    axiosClient
+      .get(
+        `/activity/time-log/${empId ?? "0"}/${moment(selectedDate).format(
+          "YYYY-MM-DD"
+        )}`
+      )
+      .then(({ data }) => setData(data.data));
+
     axiosClient
       .get(
         `/activity/employee/${empId}/${moment(selectedDate).format(
