@@ -22,7 +22,6 @@ import {
 const CATEGORY = ["Unproductive", "Productive", "Neutral"];
 
 const getWorkDuration = (data) => {
-  console.log(data);
   if (!moment(data.datein).isSame(moment(), "day") && data.timeout === null) {
     return "No timeout!";
   }
