@@ -22,6 +22,7 @@ import {
 const CATEGORY = ["Unproductive", "Productive", "Neutral"];
 
 const getWorkDuration = (data) => {
+  console.log(data);
   if (!moment(data.datein).isSame(moment(), "day") && data.timeout === null) {
     return "No timeout!";
   }
@@ -44,7 +45,6 @@ const ActivityTracking = () => {
   const [employees, setEmployees] = useState([]);
   const [empId, setEmpId] = useState(0);
   const [loading, setLoading] = useState(false);
-  const [data, setData] = useState({});
   const [apps, setApps] = useState({
     Productive: [],
     Unproductive: [],
@@ -54,6 +54,8 @@ const ActivityTracking = () => {
     productive: "–– ––",
     idle: "–– ––",
   });
+  const [arrival, setArrival] = useState("--:--");
+  const [duty, setDuty] = useState("--:--");
 
   const handleDateChange = (date) => setSelectedDate(date);
 
@@ -75,7 +77,12 @@ const ActivityTracking = () => {
           "YYYY-MM-DD"
         )}`
       )
-      .then(({ data }) => setData(data.data));
+      .then(({ data }) => data.data)
+      .then((resp) => {
+        let convert = getWorkDuration(resp);
+        setArrival(resp?.timein ?? "--:--");
+        setDuty(convert);
+      });
 
     axiosClient
       .get(
@@ -178,14 +185,14 @@ const ActivityTracking = () => {
                       <Widget
                         loading={loading}
                         title={"Arrival time"}
-                        content={data ? data.timein : "-:--"}
+                        content={arrival}
                       />
                     </div>
                     <div className="col-span-1">
                       <Widget
                         loading={loading}
                         title={"Time at work"}
-                        content={data ? getWorkDuration(data) : "-:--"}
+                        content={duty}
                       />
                     </div>
                     <div className="col-span-1">
