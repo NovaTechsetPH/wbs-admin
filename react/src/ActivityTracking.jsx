@@ -50,13 +50,11 @@ const ActivityTracking = () => {
     Neutral: [],
   });
   const [summary, setSummary] = useState({
-    arrival: "–:––",
-    work: "–– ––",
     productive: "–– ––",
     idle: "–– ––",
   });
 
-  const { isLoading, isError, data, error } = useQuery({
+  const { data } = useQuery({
     queryKey: ["time-log", empId, selectedDate],
     queryFn: () =>
       axiosClient
@@ -116,7 +114,6 @@ const ActivityTracking = () => {
           cleanCandle
         );
         setSummary({
-          ...summary,
           productive: activity.working,
           idle: activity.idle,
         });
@@ -154,20 +151,6 @@ const ActivityTracking = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedDate, empId]);
 
-  useEffect(() => {
-    if (data) {
-      setSummary({
-        ...summary,
-        arrival: data.timein,
-        work: getWorkDuration(data),
-        // productive
-        // intrack: "–:––",
-      });
-    }
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [data, isLoading, isError, error]);
-
   return (
     <DashboardContextProvider>
       <div className="h-full px-4 py-6 lg:px-8">
@@ -199,14 +182,14 @@ const ActivityTracking = () => {
                       <Widget
                         loading={loading}
                         title={"Arrival time"}
-                        content={summary.arrival}
+                        content={data ? data.timein : "-:--"}
                       />
                     </div>
                     <div className="col-span-1">
                       <Widget
                         loading={loading}
                         title={"Time at work"}
-                        content={summary.work}
+                        content={data ? getWorkDuration(data) : "-:--"}
                       />
                     </div>
                     <div className="col-span-1">
