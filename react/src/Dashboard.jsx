@@ -131,7 +131,7 @@ function Dashboard() {
           </div>
         </div>
         <Tabs defaultValue="team_productivity" className="h-full space-y-6">
-          <div className="space-between flex items-center">
+          <div className="space-between flex items-center hidden">
             <TabsList>
               <TabsTrigger value="team_productivity" className="relative">
                 Team Productivity

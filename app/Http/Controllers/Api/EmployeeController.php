@@ -432,6 +432,51 @@ class EmployeeController extends Controller
         ]);
     }
 
+    public function getTrackingReport($date = null)
+    {
+        try {
+            $date = $date ?? Carbon::now()->toDateString();
+            $work_hrs = TrackRecords::with('employee')
+                ->where('datein', Carbon::parse($date)->toDateString())
+                ->get();
+
+            $employees = Employee::where([
+                'department' => Auth::user()->department ?? 'Technology',
+                'status' => 'Approved'
+            ])->get();
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => $e->getMessage(),
+                'message' => 'Internal Server Error!',
+            ], 500);
+        }
+
+        return response()->json([
+            'data' => $work_hrs ?? [],
+            'message' => count($work_hrs) > 0 ? 'Success' : 'Records not found',
+        ]);
+    }
+
+    public function getApplicationReport($date = null)
+    {
+        try {
+            $date = $date ?? Carbon::now()->toDateString();
+            $work_hrs = TrackRecords::with('employee')
+                ->where('datein', Carbon::parse($date)->toDateString())
+                ->get();
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => $e->getMessage(),
+                'message' => 'Internal Server Error!',
+            ], 500);
+        }
+
+        return response()->json([
+            'data' => $work_hrs ?? [],
+            'message' => count($work_hrs) > 0 ? 'Success' : 'Records not found',
+        ]);
+    }
+
     public function getWeeklyAttendance($date = null)
     {
         try {

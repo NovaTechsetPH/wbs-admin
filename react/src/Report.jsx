@@ -16,6 +16,8 @@ import { secondsToHuman } from "./lib/timehash";
 import { useState } from "react";
 import { AlertDialogTemplate } from "./components/layout/alert-dialog-template";
 
+// import { ReportsFilterForm } from "./components/extra/reports-filter-form";
+
 const getWorkDuration = (data, show = true) => {
   if (!moment(data.datein).isSame(moment(), "day") && data.timeout === null) {
     return show ? "No timeout!" : null;
@@ -34,7 +36,7 @@ const getWorkDuration = (data, show = true) => {
 function Report() {
   const { date } = useDashboardContext();
   const [selectedDate, setSelectedDate] = useState(date);
-  const [dialogOpen, setDialogOpen] = useState(true);
+  const [dialogOpen, setDialogOpen] = useState(false);
 
   const handleDateChange = (newDate) => {
     setSelectedDate(newDate);
@@ -57,6 +59,33 @@ function Report() {
 
   const handleAppsExport = () => setDialogOpen(!dialogOpen);
 
+  const handleTrackingExport = async () => {
+    const promise = () =>
+      new Promise((resolve) => {
+        axiosClient
+          .get(
+            `/reports/attendance/${moment(selectedDate).format("YYYY-MM-DD")}`
+          )
+          .then((resp) => resolve(formatExcelData(resp.data.data)));
+      });
+
+    toast.promise(promise, {
+      loading: "Exporting tracking data...",
+      success: (resp) => {
+        const worksheet = XLSX.utils.json_to_sheet(resp);
+        const workbook = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(workbook, worksheet, "Tracking");
+        XLSX.writeFile(workbook, "iNTrack-Tracking-Report.xlsx");
+        return `Successfully exported ${resp.length} records`;
+      },
+      error: (err) => console.log(err),
+      action: {
+        label: "Close",
+        onClick: () => console.log("Event has been created"),
+      },
+    });
+  };
+
   const handleAttendanceExport = async () => {
     const promise = () =>
       new Promise((resolve) => {
@@ -72,7 +101,7 @@ function Report() {
       success: (resp) => {
         const worksheet = XLSX.utils.json_to_sheet(resp);
         const workbook = XLSX.utils.book_new();
-        XLSX.utils.book_append_sheet(workbook, worksheet, "Sheet1");
+        XLSX.utils.book_append_sheet(workbook, worksheet, "Attendance");
         XLSX.writeFile(workbook, "iNTrack-Attendance-Report.xlsx");
         return `Successfully exported ${resp.length} records`;
       },
@@ -120,16 +149,16 @@ function Report() {
               </div>
               <div className="col-span-2 grid items-start gap-6 lg:col-span-1">
                 <ReportCard
-                  title={"Applications"}
+                  title={"Tracking"}
                   description={
                     "Shows all of the applications used by the selected employees and the time spent on each."
                   }
-                  onClick={handleAppsExport}
+                  onClick={handleTrackingExport}
                 />
               </div>
-              <div className="col-span-2 grid items-start gap-6 lg:col-span-2 lg:grid-cols-2 xl:col-span-1 xl:grid-cols-1">
+              <div className="col-span-2 grid items-start gap-6 lg:col-span-1">
                 <ReportCard
-                  title={"Team Members"}
+                  title={"Applications"}
                   description={
                     "Provides information about team member working times, arrival and leaving times, and productivity."
                   }
@@ -143,11 +172,13 @@ function Report() {
       </div>
       <Toaster richColors />
       <AlertDialogTemplate
-        title={"Under construction"}
+        title={"Applications Report Data"}
         open={dialogOpen}
-        description={"Sorry! comebak again later"}
+        // description={"Sorry! comebak again later"}
         setDialogOpen={setDialogOpen}
-      />
+      >
+        {/* <FilterCard /> */}
+      </AlertDialogTemplate>
     </DashboardContextProvider>
   );
 }
