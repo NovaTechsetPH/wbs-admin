@@ -18,7 +18,7 @@ import { AlertDialogTemplate } from "./components/layout/alert-dialog-template";
 
 // import { ReportsFilterForm } from "./components/extra/reports-filter-form";
 
-const getWorkDuration = (data, show = true) => {
+export const getWorkDuration = (data, show = true) => {
   if (!moment(data.datein).isSame(moment(), "day") && data.timeout === null) {
     return show ? "No timeout!" : null;
   }
