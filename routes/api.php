@@ -52,7 +52,7 @@ Route::middleware('auth:sanctum')->group(function () {
     // Reports & Analytics
     Route::get('/reports/attendance/{date?}', [EmployeeController::class, 'getAttendanceReport']);
     Route::get('/reports/tracking/{date?}', [EmployeeController::class, 'getTrackingReport']);
-    Route::get('/reports/application/{date?}', [EmployeeController::class, 'getApplicationReport']);
+    Route::get('/reports/applications/{from}/{to?}', [EmployeeController::class, 'getApplicationReport']);
 
     // UserApproval
     Route::get('/userapproval', [EmployeeController::class, 'getUserForApproval']);

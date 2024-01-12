@@ -63,6 +63,7 @@ export const AlertDialogTemplate = ({
   children,
   open,
   setDialogOpen,
+  module = "attendance",
 }) => {
   const form = useForm({ resolver: zodResolver(FormSchema) });
   const [dateRange, setDateRange] = useState({
@@ -77,10 +78,12 @@ export const AlertDialogTemplate = ({
   const onSubmit = (data) => {
     console.log(data);
     setDialogOpen(false);
+    let from = moment(dateRange.from).format("YYYY-MM-DD");
+    let to = moment(dateRange.to).format("YYYY-MM-DD");
     const promise = () =>
       new Promise((resolve) => {
         axiosClient
-          .get(`/reports/attendance/${moment().format("YYYY-MM-DD")}`)
+          .get(`/reports/${module}/${from}/${to}`)
           .then((resp) => resolve(formatExcelData(resp.data.data)));
       });
 
@@ -93,7 +96,7 @@ export const AlertDialogTemplate = ({
         XLSX.writeFile(workbook, "iNTrack-Applications-Report.xlsx");
         return `Successfully exported ${resp.length} records`;
       },
-      error: (err) => console.log(err),
+      error: (err) => JSON.stringify(err),
       action: {
         label: "Close",
         onClick: () => console.log("Event has been created"),

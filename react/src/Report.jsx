@@ -37,6 +37,7 @@ function Report() {
   const { date } = useDashboardContext();
   const [selectedDate, setSelectedDate] = useState(date);
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [selectedModule, setSelectedModule] = useState("attendance");
 
   const handleDateChange = (newDate) => {
     setSelectedDate(newDate);
@@ -57,7 +58,10 @@ function Report() {
     });
   };
 
-  const handleAppsExport = () => setDialogOpen(!dialogOpen);
+  const handleAppsExport = () => {
+    setSelectedModule("applications");
+    setDialogOpen(!dialogOpen);
+  };
 
   const handleTrackingExport = async () => {
     const promise = () =>
@@ -174,7 +178,7 @@ function Report() {
       <AlertDialogTemplate
         title={"Applications Report Data"}
         open={dialogOpen}
-        // description={"Sorry! comebak again later"}
+        module={selectedModule}
         setDialogOpen={setDialogOpen}
       >
         {/* <FilterCard /> */}

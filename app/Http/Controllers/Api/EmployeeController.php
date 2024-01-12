@@ -457,12 +457,15 @@ class EmployeeController extends Controller
         ]);
     }
 
-    public function getApplicationReport($date = null)
+    public function getApplicationReport($from, $to = null)
     {
         try {
-            $date = $date ?? Carbon::now()->toDateString();
-            $work_hrs = TrackRecords::with('employee')
-                ->where('datein', Carbon::parse($date)->toDateString())
+            $from = Carbon::parse($from)->toDateString();
+            $to = $to ?? Carbon::now()->toDateString();
+            $work_hrs = RunningApps::with('employee', 'category')
+                ->whereBetween('date', [$to, $to])
+                ->where('userid', 20)
+                // ->where('datein', Carbon::parse($date)->toDateString())
                 ->get();
         } catch (\Exception $e) {
             return response()->json([
