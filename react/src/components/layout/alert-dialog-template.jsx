@@ -81,15 +81,20 @@ const formatExcelData = (data, module) => {
       const element = data[index];
       const keys = Object.keys(element.info);
       keys.forEach((key) => {
-        let duration = 0;
-        element.info[key].forEach((d) => (duration += parseInt(d.duration)));
-        excelData.push({
-          DATE: element.info[key][0].date,
-          EMPLOYEE: element.info[key][0].userid,
-          CATEGORY: element.info[key][0].category.header_name || "",
-          TYPE: element.info[key][0].category.is_productive,
-          DURATION: convertSecsToDigital(duration),
-          SECONDS: duration,
+        let duration = {};
+        element.info[key].forEach((d) => {
+          let dn = duration[d.date] || 0;
+          duration[d.date] = dn + parseInt(d.duration);
+        });
+        Object.keys(duration).forEach((date) => {
+          excelData.push({
+            DATE: date,
+            EMPLOYEE: element.info[key][0].userid,
+            CATEGORY: element.info[key][0].category.header_name || "",
+            TYPE: element.info[key][0].category.is_productive,
+            DURATION: convertSecsToDigital(duration[date]),
+            SECONDS: duration[date],
+          });
         });
       });
     }

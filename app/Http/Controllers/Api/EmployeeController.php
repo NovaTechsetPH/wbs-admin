@@ -463,7 +463,7 @@ class EmployeeController extends Controller
             $from = Carbon::parse($from)->toDateString();
             $to = $to ?? Carbon::now()->toDateString();
             $work_hrs = RunningApps::with('category')
-                ->whereBetween('date', [$to, $to])
+                ->whereBetween('date', [$from, $to])
                 ->whereIn('userid', request('employees'))
                 ->where('status', 'Closed')
                 ->select(['*', DB::raw("TIMESTAMPDIFF(SECOND, time, end_time) as duration")])
@@ -472,6 +472,7 @@ class EmployeeController extends Controller
             $data = $work_hrs->groupBy('userid');
             $items = [];
             foreach (request('employees') as $emps) {
+                if (!isset($data[$emps])) continue;
                 $items[] = [
                     'userid' => $emps,
                     'info' => $data[$emps]->groupBy('category.header_name')
