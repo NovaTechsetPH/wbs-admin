@@ -462,11 +462,21 @@ class EmployeeController extends Controller
         try {
             $from = Carbon::parse($from)->toDateString();
             $to = $to ?? Carbon::now()->toDateString();
-            $work_hrs = RunningApps::with('employee', 'category')
+            $work_hrs = RunningApps::with('category')
                 ->whereBetween('date', [$to, $to])
-                ->where('userid', 20)
-                // ->where('datein', Carbon::parse($date)->toDateString())
+                ->whereIn('userid', request('employees'))
+                ->where('status', 'Closed')
+                ->select(['*', DB::raw("TIMESTAMPDIFF(SECOND, time, end_time) as duration")])
                 ->get();
+
+            $data = $work_hrs->groupBy('userid');
+            $items = [];
+            foreach (request('employees') as $emps) {
+                $items[] = [
+                    'userid' => $emps,
+                    'info' => $data[$emps]->groupBy('category.header_name')
+                ];
+            }
         } catch (\Exception $e) {
             return response()->json([
                 'error' => $e->getMessage(),
@@ -475,8 +485,9 @@ class EmployeeController extends Controller
         }
 
         return response()->json([
-            'data' => $work_hrs ?? [],
-            'message' => count($work_hrs) > 0 ? 'Success' : 'Records not found',
+            'data' => $items ?? [],
+            // 'data' => $work_hrs ?? [],
+            // 'message' => count($work_hrs) > 0 ? 'Success' : 'Records not found',
         ]);
     }
 

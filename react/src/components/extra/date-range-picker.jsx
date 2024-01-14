@@ -14,7 +14,6 @@ export function DateRangePicker({ className, onDateChange }) {
   });
 
   React.useEffect(() => {
-    console.log(date, "date-range-picker");
     onDateChange(date);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [date]);

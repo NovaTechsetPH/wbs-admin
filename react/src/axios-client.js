@@ -21,12 +21,12 @@ axiosClient.interceptors.response.use((response) => {
   return response
 }, (error) => {
   const { response } = error;
-  if (response.status === 401) {
+  if (response.status === 401 && localStorage.getItem('ACCESS_TOKEN')) {
     localStorage.removeItem('ACCESS_TOKEN')
     alert("Session expired, please login.");
     window.location.href = "/login";
   } else if (response.status === 404) {
-    //Show not found
+    alert('Invalid request');
   }
 
   throw error;
