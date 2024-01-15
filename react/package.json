@@ -3,7 +3,7 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
-  "proxy": "https://192.46.230.32:8081",
+  "proxy": "https://192.46.230.32:8080",
   "scripts": {
     "dev": "npx tailwindcss -i ./src/main.css -o ./dist/output.css && vite --port=3000",
     "build": "npx tailwindcss -i ./src/main.css -o ./dist/output.css && vite build",

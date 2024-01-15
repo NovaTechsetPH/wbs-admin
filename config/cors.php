@@ -19,7 +19,8 @@ return [
 
     'allowed_methods' => ['*'],
 
-    'allowed_origins' => [env('SERVER_HOST', '127.0.0.1'), '*.' . env('SERVER_HOST', '127.0.0.1')],
+    // 'allowed_origins' => [env('SERVER_HOST', '127.0.0.1'), '*.' . env('SERVER_HOST', '127.0.0.1')],
+    'allowed_origins' => ['*'],
 
     'allowed_origins_patterns' => [],
 
