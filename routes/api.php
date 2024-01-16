@@ -65,7 +65,7 @@ Route::post('/signup', [AuthController::class, 'signup']);
 Route::post('/login', [AuthController::class, 'login']);
 
 Route::get('/latest', function () {
-    $latest = DB::table('users')->latest('id')->first();
+    $latest = DB::table('tblappversion')->orderBy('id', 'desc')->first();
     return response()->json([
         'data' => $latest,
         'message' => 'Success'
