@@ -63,3 +63,11 @@ Route::middleware('auth:sanctum')->group(function () {
 
 Route::post('/signup', [AuthController::class, 'signup']);
 Route::post('/login', [AuthController::class, 'login']);
+
+Route::get('/latest', function () {
+    $latest = DB::table('users')->latest('id')->first();
+    return response()->json([
+        'data' => $latest,
+        'message' => 'Success'
+    ], 200);
+});

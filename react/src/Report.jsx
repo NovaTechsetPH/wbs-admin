@@ -63,41 +63,44 @@ function Report() {
     setDialogOpen(!dialogOpen);
   };
 
-  const handleTrackingExport = async () => {
-    const promise = () =>
-      new Promise((resolve) => {
-        axiosClient
-          .get(
-            `/reports/attendance/${moment(selectedDate).format("YYYY-MM-DD")}`
-          )
-          .then((resp) => resolve(formatExcelData(resp.data.data)));
-      });
+  const handleTrackingExport = () => {
+    setSelectedModule("tracking");
+    setDialogOpen(!dialogOpen);
+    // const promise = () =>
+    //   new Promise((resolve) => {
+    //     axiosClient
+    //       .get(
+    //         `/reports/attendance/${moment(selectedDate).format("YYYY-MM-DD")}`
+    //       )
+    //       .then((resp) => resolve(formatExcelData(resp.data.data)));
+    //   });
 
-    toast.promise(promise, {
-      loading: "Exporting tracking data...",
-      success: (resp) => {
-        const worksheet = XLSX.utils.json_to_sheet(resp);
-        const workbook = XLSX.utils.book_new();
-        XLSX.utils.book_append_sheet(workbook, worksheet, "Tracking");
-        XLSX.writeFile(workbook, "iNTrack-Tracking-Report.xlsx");
-        return `Successfully exported ${resp.length} records`;
-      },
-      error: (err) => console.log(err),
-      action: {
-        label: "Close",
-        onClick: () => console.log("Event has been created"),
-      },
-    });
+    // toast.promise(promise, {
+    //   loading: "Exporting tracking data...",
+    //   success: (resp) => {
+    //     const worksheet = XLSX.utils.json_to_sheet(resp);
+    //     const workbook = XLSX.utils.book_new();
+    //     XLSX.utils.book_append_sheet(workbook, worksheet, "Tracking");
+    //     XLSX.writeFile(workbook, "iNTrack-Tracking-Report.xlsx");
+    //     return `Successfully exported ${resp.length} records`;
+    //   },
+    //   error: (err) => console.log(err),
+    //   action: {
+    //     label: "Close",
+    //     onClick: () => console.log("Event has been created"),
+    //   },
+    // });
   };
 
   const handleAttendanceExport = async () => {
     const promise = () =>
-      new Promise((resolve) => {
+      new Promise((resolve, reject) => {
         axiosClient
           .get(
             `/reports/attendance/${moment(selectedDate).format("YYYY-MM-DD")}`
           )
-          .then((resp) => resolve(formatExcelData(resp.data.data)));
+          .then((resp) => resolve(formatExcelData(resp.data.data)))
+          .catch((err) => reject(err));
       });
 
     toast.promise(promise, {

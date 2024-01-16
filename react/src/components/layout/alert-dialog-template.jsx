@@ -54,11 +54,14 @@ const FormSchema = z.object({
 
 const defaultValues = { employees: [] };
 
-function convertSecsToDigital(seconds) {
-  const minutes = Math.floor(seconds / 60);
+const convertSecsToDigital = (seconds) => {
+  const hours = Math.floor(seconds / 3600);
+  const minutes = Math.floor((seconds % 3600) / 60);
   const remainingSeconds = seconds % 60;
-  return `${minutes}:${remainingSeconds.toString().padStart(2, "0")}`;
-}
+  return `${hours}:${minutes.toString().padStart(2, "0")}:${remainingSeconds
+    .toString()
+    .padStart(2, "0")}`;
+};
 
 const formatExcelData = (data, module) => {
   if (module === "attendance") {
@@ -75,6 +78,7 @@ const formatExcelData = (data, module) => {
       };
     });
   }
+
   if (module === "applications") {
     let excelData = [];
     for (let index = 0; index < data.length; index++) {
@@ -99,6 +103,24 @@ const formatExcelData = (data, module) => {
       });
     }
     return excelData;
+  }
+
+  if (module === "tracking") {
+    return data.map((d) => {
+      return {
+        DATE: d.datein,
+        EMPLOYEE: `${d.employee.first_name} ${d.employee.last_name}`,
+        "PRODUCTIVE-TIME": 0,
+        // ID: d.employee.employee_id,
+        // NAME: `${d.employee.first_name} ${d.employee.last_name}`,
+        // DATE: d.datein,
+        // "TIME-IN": d.timein,
+        // "TIME-OUT": d.timeout,
+        // LATE: "--:--",
+        // UNDERTIME: "--:--",
+        // TOTAL: getWorkDuration(d, false),
+      };
+    });
   }
 };
 

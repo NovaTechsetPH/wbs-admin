@@ -1,28 +1,30 @@
 import axiosClient from "../axios-client.js";
-import { createRef } from "react";
+import { createRef, useState } from "react";
 import { useStateContext } from "../context/ContextProvider.jsx";
-import { useState } from "react";
 import { Link } from "react-router-dom";
+import { Button } from "@/components/ui/button.jsx";
 
 export default function Login() {
   const emailRef = createRef();
   const passwordRef = createRef();
   const { setUser, setToken } = useStateContext();
   const [setMessage] = useState(null);
+  const [looding, setLooding] = useState(false);
 
   const onSubmit = (ev) => {
     ev.preventDefault();
 
-    const payload = {
-      email: emailRef.current.value,
-      password: passwordRef.current.value,
-    };
+    setLooding(true);
     axiosClient
-      .post("/login", payload)
+      .post("/login", {
+        email: emailRef.current.value,
+        password: passwordRef.current.value,
+      })
       .then(({ data }) => {
         setUser(data.user);
         setToken(data.token);
       })
+      .then(() => setLooding(false))
       .catch((err) => {
         const response = err.response;
         if (response && response.status === 422) {
@@ -30,6 +32,20 @@ export default function Login() {
           alert(response.data.message);
         }
       });
+
+    // axiosClient
+    //   .post("/login", payload)
+    //   .then(({ data }) => {
+    //     setUser(data.user);
+    //     setToken(data.token);
+    //   })
+    //   .catch((err) => {
+    //     const response = err.response;
+    //     if (response && response.status === 422) {
+    //       setMessage(response.data.message);
+    //       alert(response.data.message);
+    //     }
+    //   });
   };
 
   return (
@@ -110,17 +126,18 @@ export default function Login() {
                   </div>
                 </div>
                 <div>
-                  <button
+                  <Button
+                    disabled={looding}
                     type="submit"
-                    className="w-full flex justify-center bg-red-400  hover:bg-red-500 text-gray-100 p-3  rounded-full tracking-wide font-semibold  shadow-lg cursor-pointer transition ease-in duration-500"
+                    className=" w-full flex justify-center bg-red-400  hover:bg-red-500 text-gray-100 p-3  rounded-full tracking-wide font-semibold  shadow-lg cursor-pointer transition ease-in duration-500"
                   >
                     Sign in
-                  </button>
+                  </Button>
                 </div>
               </div>
             </form>
             <div className="pt-5 text-center text-gray-400 text-xs">
-              <span>Copyright © 2023</span>
+              <span>Copyright © {new Date().getFullYear()}</span>
             </div>
           </div>
         </div>
