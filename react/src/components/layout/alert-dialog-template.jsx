@@ -135,10 +135,11 @@ const formatExcelData = (data, module) => {
       };
       let totalWorkedTime = getTotalWorkedKuno(d.timein, d.timeout, d.tasks);
       let idleTime = totalWorkedTime - productiveKuno(d);
+      let productiveTime = productiveKuno(d);
       return {
         DATE: d.datein,
         EMPLOYEE: `${d.employee.first_name} ${d.employee.last_name}`,
-        "PRODUCTIVE-TIME": productiveKuno(d),
+        "PRODUCTIVE-TIME": convertSecsToDigital(productiveTime),
         "IDLE-TIME": convertSecsToDigital(idleTime),
         "TOTAL-WORK-TIME": convertSecsToDigital(totalWorkedTime),
         "TIME-IN": d.timein,
