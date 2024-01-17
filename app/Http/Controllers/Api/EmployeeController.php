@@ -432,18 +432,23 @@ class EmployeeController extends Controller
         ]);
     }
 
-    public function getTrackingReport($date = null)
+    public function getTrackingReport($from, $to = null)
     {
         try {
-            $date = $date ?? Carbon::now()->toDateString();
-            $work_hrs = TrackRecords::with('employee')
-                ->where('datein', Carbon::parse($date)->toDateString())
+            $from = Carbon::parse($from)->toDateString();
+            $to = $to ?? Carbon::now()->toDateString();
+            $track_data = TrackRecords::with([
+                'employee',
+                'tasks' => function ($query) {
+                    $query->select([
+                        '*', DB::raw("TIMESTAMPDIFF(SECOND, time, end_time) as duration"),
+                    ]);
+                },
+                'tasks.category',
+            ])
+                ->whereIn('userid', request('employees'))
+                ->whereBetween('datein', [$from, $to])
                 ->get();
-
-            $employees = Employee::where([
-                'department' => Auth::user()->department ?? 'Technology',
-                'status' => 'Approved'
-            ])->get();
         } catch (\Exception $e) {
             return response()->json([
                 'error' => $e->getMessage(),
@@ -452,8 +457,9 @@ class EmployeeController extends Controller
         }
 
         return response()->json([
-            'data' => $work_hrs ?? [],
-            'message' => count($work_hrs) > 0 ? 'Success' : 'Records not found',
+            'data' => $track_data ?? [],
+            'message' => count($track_data) > 0 ? 'Success' : 'Records not found',
+            'count' => $track_data->count(),
         ]);
     }
 
@@ -462,7 +468,7 @@ class EmployeeController extends Controller
         try {
             $from = Carbon::parse($from)->toDateString();
             $to = $to ?? Carbon::now()->toDateString();
-            $work_hrs = RunningApps::with('category')
+            $work_hrs = RunningApps::with('category', 'employee')
                 ->whereBetween('date', [$from, $to])
                 ->whereIn('userid', request('employees'))
                 ->where('status', 'Closed')
@@ -496,7 +502,7 @@ class EmployeeController extends Controller
     {
         try {
             $date = Carbon::parse($date) ?? Carbon::now();
-            $day_of_week = Carbon::parse($date)->dayOfWeek; // 5 = Friday
+            $day_of_week = Carbon::parse($date)->dayOfWeek;
             $date_from = Carbon::parse($date)->subDays($day_of_week);
             $date_to = Carbon::parse($date)->addDays(6 - $day_of_week);
 

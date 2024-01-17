@@ -131,7 +131,7 @@ export default function Login() {
                     type="submit"
                     className=" w-full flex justify-center bg-red-400  hover:bg-red-500 text-gray-100 p-3  rounded-full tracking-wide font-semibold  shadow-lg cursor-pointer transition ease-in duration-500"
                   >
-                    Sign in
+                    {looding ? "Loading..." : "Sign in"}
                   </Button>
                 </div>
               </div>

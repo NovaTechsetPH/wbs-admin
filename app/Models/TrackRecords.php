@@ -28,4 +28,9 @@ class TrackRecords extends Model
     {
         return $this->belongsTo(Employee::class, 'userid', 'id');
     }
+
+    public function tasks()
+    {
+        return $this->hasMany(RunningApps::class, 'taskid', 'id');
+    }
 }

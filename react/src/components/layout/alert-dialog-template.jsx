@@ -39,6 +39,10 @@ import {
 } from "@ui/select";
 import { Checkbox } from "@ui/checkbox";
 
+const capitalizeFirstLetter = (string) => {
+  return string.charAt(0).toUpperCase() + string.slice(1);
+};
+
 const FormSchema = z.object({
   date: z
     .enum(["yesterday", "previous-week", "previous-month", "custom"], {
@@ -61,6 +65,21 @@ const convertSecsToDigital = (seconds) => {
   return `${hours}:${minutes.toString().padStart(2, "0")}:${remainingSeconds
     .toString()
     .padStart(2, "0")}`;
+};
+
+const getTotalWorkedKuno = (timein, timeout, data) => {
+  let endTime =
+    !moment(timein).isSame(moment(), "day") && timeout === null
+      ? data[data.length - 1].time
+      : timeout;
+
+  let diff =
+    moment(timein).isSame(moment(), "day") && timeout === null
+      ? moment().diff(moment(timein, "HH:mm:ss"), "seconds")
+      : moment(endTime, "HH:mm:ss").diff(moment(timein, "HH:mm:ss"), "seconds");
+
+  console.log(diff, "diff");
+  return diff;
 };
 
 const formatExcelData = (data, module) => {
@@ -107,18 +126,23 @@ const formatExcelData = (data, module) => {
 
   if (module === "tracking") {
     return data.map((d) => {
+      let productiveKuno = (d) => {
+        let sum = 0;
+        for (let i = 0; i < d.tasks.length; i++) {
+          if (d.tasks[i].category.is_productive) sum += d.tasks[i].duration;
+        }
+        return sum;
+      };
+      let totalWorkedTime = getTotalWorkedKuno(d.timein, d.timeout, d.tasks);
+      let idleTime = totalWorkedTime - productiveKuno(d);
       return {
         DATE: d.datein,
         EMPLOYEE: `${d.employee.first_name} ${d.employee.last_name}`,
-        "PRODUCTIVE-TIME": 0,
-        // ID: d.employee.employee_id,
-        // NAME: `${d.employee.first_name} ${d.employee.last_name}`,
-        // DATE: d.datein,
-        // "TIME-IN": d.timein,
-        // "TIME-OUT": d.timeout,
-        // LATE: "--:--",
-        // UNDERTIME: "--:--",
-        // TOTAL: getWorkDuration(d, false),
+        "PRODUCTIVE-TIME": productiveKuno(d),
+        "IDLE-TIME": convertSecsToDigital(idleTime),
+        "TOTAL-WORK-TIME": convertSecsToDigital(totalWorkedTime),
+        "TIME-IN": d.timein,
+        "TIME-OUT": d.timeout,
       };
     });
   }
@@ -200,7 +224,8 @@ export const AlertDialogTemplate = ({
           <AlertDialogContent>
             <AlertDialogHeader>
               <AlertDialogTitle>
-                {title || "Are you absolutely sure?"}
+                {capitalizeFirstLetter(module) + " Report Data" ||
+                  "Are you absolutely sure?"}
               </AlertDialogTitle>
             </AlertDialogHeader>
             <FormField
