@@ -93,6 +93,7 @@ export const handleAllocateTime = (data, sticks) => {
 
   clonedData.forEach((d) => {
     if (d.end_time == null) return;
+    if (d.description === 'Windows Default Lock Screen') return;
 
     var item = getStickIndex(d.time, sticks);
     var initStickAddedTime = 600 - item.secs;
