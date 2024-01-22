@@ -1057,6 +1057,10 @@ body {
   width: 300px;
 }
 
+.w-\[420px\] {
+  width: 420px;
+}
+
 .w-\[70px\] {
   width: 70px;
 }
@@ -1071,10 +1075,6 @@ body {
 
 .w-full {
   width: 100%;
-}
-
-.w-\[420px\] {
-  width: 420px;
 }
 
 .min-w-\[8rem\] {
@@ -1507,6 +1507,11 @@ body {
   background-color: rgb(59 130 246 / var(--tw-bg-opacity));
 }
 
+.bg-blue-600 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(37 99 235 / var(--tw-bg-opacity));
+}
+
 .bg-border {
   background-color: hsl(var(--border));
 }
@@ -1561,11 +1566,6 @@ body {
 .bg-white {
   --tw-bg-opacity: 1;
   background-color: rgb(255 255 255 / var(--tw-bg-opacity));
-}
-
-.bg-blue-600 {
-  --tw-bg-opacity: 1;
-  background-color: rgb(37 99 235 / var(--tw-bg-opacity));
 }
 
 .bg-gradient-to-b {

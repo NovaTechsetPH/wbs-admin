@@ -5,9 +5,6 @@ import GuestLayout from "./components/GuestLayout";
 import Login from "./views/Login";
 import NotFound from "./views/NotFound";
 import Signup from "./views/Signup";
-
-import ActivityChart from "./components/ActivityChart.jsx";
-
 import Dashboard from "./Dashboard.jsx";
 import Employees from "./Employees.jsx";
 import ActivityTracking from "./ActivityTracking";
@@ -27,11 +24,6 @@ const router = createBrowserRouter([
       {
         path: "/dashboard",
         element: <Dashboard />,
-        // element: <Users />,
-      },
-      {
-        path: "/tracking",
-        element: <ActivityChart />,
       },
       {
         path: "/employee",

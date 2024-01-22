@@ -91,9 +91,11 @@ export const handleAllocateTime = (data, sticks) => {
     idle: 0,
   };
 
+  const idleApps = ['Windows Default Lock Screen', 'Task Switching', 'Desktop']
+
   clonedData.forEach((d) => {
     if (d.end_time == null) return;
-    if (d.description === 'Windows Default Lock Screen') return;
+    if (idleApps.includes(d.description)) return;
 
     var item = getStickIndex(d.time, sticks);
     var initStickAddedTime = 600 - item.secs;
