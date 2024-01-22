@@ -140,6 +140,7 @@ const ActivityTracking = () => {
               name: app.category.header_name,
               abbreviation: app.category.abbreviation,
               totalTime: totalTime,
+              icon: app.category.icon,
             });
             tmp.push(app.category.header_name);
           }
