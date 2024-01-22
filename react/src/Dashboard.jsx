@@ -101,6 +101,7 @@ function Dashboard() {
               name: app.category.header_name,
               totalTime: totalTime,
               abbreviation: app.category.abbreviation,
+              icon: app.category.icon,
             });
             tmp.push(app.category.header_name);
           }

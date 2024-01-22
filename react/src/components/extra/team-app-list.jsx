@@ -48,8 +48,12 @@ export function TeamAppList({ title, apps, className }) {
                 className="flex items-center justify-between space-x-1 py-1.5"
               >
                 <div className="flex items-center space-x-3">
-                  <Avatar>
-                    <AvatarImage src="/avatars/01.png" />
+                  <Avatar className="flex items-center justify-center">
+                    <AvatarImage
+                      className="h-6 w-6"
+                      src={`/icons/${app.icon}`}
+                      alt={app.name}
+                    />
                     <AvatarFallback>
                       {app.abbreviation
                         ? app.abbreviation
@@ -57,7 +61,10 @@ export function TeamAppList({ title, apps, className }) {
                     </AvatarFallback>
                   </Avatar>
                   <div>
-                    <p className="text-sm font-medium leading-none">
+                    <p
+                      className="text-sm font-medium leading-none"
+                      data-id={app.id}
+                    >
                       {app.name}
                     </p>
                   </div>
