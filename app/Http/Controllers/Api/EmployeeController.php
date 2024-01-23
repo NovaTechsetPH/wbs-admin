@@ -27,13 +27,15 @@ class EmployeeController extends Controller
     {
         // return EmployeeResource::collection(Employee::query()->orderBy('id', 'desc')->paginate(10));
 
-        $employees = Employee::where('status', 'Approved')
-            ->whereIn('id', function ($query) {
-                $query->select('userid')
-                    ->from('tbltaskrunning')
-                    ->distinct()
-                    ->get();
-            })->get();
+        // $employees = Employee::where('status', 'Approved')
+        //     ->whereIn('id', function ($query) {
+        //         $query->select('userid')
+        //             ->from('tbltaskrunning')
+        //             ->distinct()
+        //             ->get();
+        //     })->get();
+
+        $employees = Auth::user()->positions()->with('employees')->get()->pluck('employees')->flatten();
 
         $data = [];
         foreach ($employees as $key => $emp) {
@@ -335,10 +337,12 @@ class EmployeeController extends Controller
     public function getAllDailyOpenedApps(Request $request)
     {
         $date = $request->date ?? Carbon::now()->toDateString();
+        $emps_under = Auth::user()->positions()->with('employees')->get()
+            ->pluck('employees')->flatten()->pluck('id')->toArray();
 
         $apps = RunningApps::with('employee', 'category')
             ->where('date', Carbon::parse($date)->toDateString())
-            // ->whereNot('end_time', NULL)
+            ->whereIn('userid', $emps_under)
             ->orderBy('id', 'asc')
             ->get();
 
@@ -352,7 +356,10 @@ class EmployeeController extends Controller
     public function getUserForApproval()
     {
         try {
-            $users = Employee::whereIn('status', ['Pending', 'Rejected'])
+            $emps_under = Auth::user()->positions()->with('employees')->get()
+                ->pluck('employees')->flatten()->pluck('id')->toArray();
+            $users = Employee::whereIn('id', $emps_under)
+                ->whereIn('status', ['Pending', 'Rejected'])
                 ->orderBy('id', 'desc')->get();
         } catch (\Exception $e) {
             return response()->json([
@@ -368,15 +375,19 @@ class EmployeeController extends Controller
     public function getWorkHrs($date = null)
     {
         try {
+            $emps_under = Auth::user()->positions()->with('employees')->get()
+                ->pluck('employees')->flatten()->pluck('id')->toArray();
             $date = $date ?? Carbon::now()->toDateString();
             $work_hrs = TrackRecords::with('employee')
-                ->whereIn('userid', function ($qry) {
-                    $qry->select('id')
-                        ->from('accounts')
-                        ->where('status', 'Approved')
-                        ->where('department', Auth::user()->department ?? 'Technology')
-                        ->groupBy('id');
-                })->where('datein', Carbon::parse($date)->toDateString())
+                // ->whereIn('userid', function ($qry) {
+                //     $qry->select('id')
+                //         ->from('accounts')
+                //         ->where('status', 'Approved')
+                //         ->where('department', Auth::user()->department ?? 'Technology')
+                //         ->groupBy('id');
+                // })
+                ->whereIn('userid', $emps_under)
+                ->where('datein', Carbon::parse($date)->toDateString())
                 ->get();
         } catch (\Exception $e) {
             return response()->json([
@@ -388,6 +399,7 @@ class EmployeeController extends Controller
         return response()->json([
             'data' => $work_hrs ?? [],
             'message' => count($work_hrs) > 0 ? 'Success' : 'Employee not found',
+            'total' => count($emps_under),
         ], 200);
     }
 
@@ -396,6 +408,7 @@ class EmployeeController extends Controller
         try {
             $date = $date ?? Carbon::now()->toDateString();
             $work_hrs = TrackRecords::with('employee')
+                ->whereIn('userid', $emps_under)
                 ->where('userid', $id)
                 ->where('datein', Carbon::parse($date)->toDateString())
                 ->first();
@@ -412,11 +425,13 @@ class EmployeeController extends Controller
         ]);
     }
 
-    public function getAttendanceReport($date = null)
+    public function getAttendanceReport($from, $to = null)
     {
         try {
-            $date = $date ?? Carbon::now()->toDateString();
+            $from = $from ?? Carbon::now()->toDateString();
+            $to = $to ?? Carbon::now()->toDateString();
             $work_hrs = TrackRecords::with('employee')
+                ->whereIn('userid', request('employees'))
                 ->where('datein', Carbon::parse($date)->toDateString())
                 ->get();
         } catch (\Exception $e) {
@@ -505,14 +520,15 @@ class EmployeeController extends Controller
             $day_of_week = Carbon::parse($date)->dayOfWeek;
             $date_from = Carbon::parse($date)->subDays($day_of_week);
             $date_to = Carbon::parse($date)->addDays(6 - $day_of_week);
+            $employees = Auth::user()->positions()
+                ->with('employees')
+                ->get()->pluck('employees')
+                ->flatten();
 
             // Get employees weekly attendance
             $attendance = TrackRecords::with('employee')
+                ->whereIn('userid', $employees->pluck('id')->toArray())
                 ->whereBetween('datein', [$date_from->toDateString(), $date_to->toDateString()])
-                ->get();
-
-            $employees = Employee::where('status', 'Approved')
-                ->where('department', Auth::user()->department ?? 'Technology')
                 ->get();
         } catch (\Exception $e) {
             return response()->json([

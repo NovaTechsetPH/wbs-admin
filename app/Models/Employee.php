@@ -53,10 +53,8 @@ class Employee extends Model
         return $this->first_name . ' ' . $this->last_name;
     }
 
-    /*
-    public function categories()
+    public function position()
     {
-        return $this->hasMany(AppCategories::class, 'id');
+        return $this->belongsTo(Position::class, 'position_id');
     }
-    */
 }

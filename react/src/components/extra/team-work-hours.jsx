@@ -84,14 +84,15 @@ const TeamWorkHours = ({ productive, handleTotalChange }) => {
         return {
           empIds: empIds,
           items,
+          overallCount: data.total,
         };
       })
-      .then(({ items, empIds }) => {
+      .then(({ items, empIds, overallCount }) => {
         setWorkLogs(items);
         setTotal({
           productiveHrs: productive,
-          late: 1,
-          absent: 10 - empIds.length,
+          late: 0,
+          absent: overallCount - empIds.length,
           present: empIds.length,
         });
       });
