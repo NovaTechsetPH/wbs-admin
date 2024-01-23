@@ -431,7 +431,7 @@ class EmployeeController extends Controller
             $to = $to ?? Carbon::now()->toDateString();
             $work_hrs = TrackRecords::with('employee')
                 ->whereIn('userid', request('employees'))
-                ->where('datein', Carbon::parse($date)->toDateString())
+                ->whereBetween('datein', [$from, $to])
                 ->get();
         } catch (\Exception $e) {
             return response()->json([
