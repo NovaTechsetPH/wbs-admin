@@ -39,6 +39,20 @@ import {
 } from "@ui/select";
 import { Checkbox } from "@ui/checkbox";
 
+const productivityType = (type) => {
+  let id = parseInt(type);
+  switch (id) {
+    case 0:
+      return "Unproductive";
+    case 1:
+      return "Productive";
+    case 2:
+      return "Neutral";
+    default:
+      return "Neutral";
+  }
+};
+
 const capitalizeFirstLetter = (string) => {
   return string.charAt(0).toUpperCase() + string.slice(1);
 };
@@ -112,11 +126,14 @@ const formatExcelData = (data, module) => {
         Object.keys(duration).forEach((date) => {
           excelData.push({
             DATE: date,
-            EMPLOYEE: element.info[key][0].userid,
+            EMPLOYEE:
+              element.info[key][0].employee.first_name +
+              " " +
+              element.info[key][0].employee.last_name,
             CATEGORY: element.info[key][0].category.header_name || "",
-            TYPE: element.info[key][0].category.is_productive,
+            TYPE: productivityType(element.info[key][0].category.is_productive),
             DURATION: convertSecsToDigital(duration[date]),
-            SECONDS: duration[date],
+            // SECONDS: duration[date],
           });
         });
       });
@@ -161,6 +178,31 @@ export const AlertDialogTemplate = ({
     from: moment().subtract(7, "days"),
     to: moment(),
   });
+  const [disabledDate, setDisabledDate] = useState(true);
+
+  const handlePeriordChange = (period) => {
+    setDisabledDate(period === "custom");
+    if (period === "yesterday") {
+      setDateRange({
+        from: moment().subtract(1, "days"),
+        to: moment().subtract(1, "days"),
+      });
+    } else if (period === "previous-week") {
+      let from = moment().weekday(-7);
+      setDateRange({
+        from: moment().weekday(-7),
+        to: from.add(6, "days"),
+      });
+    } else if (period === "previous-month") {
+      let from = moment().subtract(1, "months");
+      setDateRange({
+        from: from.startOf("month"),
+        to: from.endOf("month"),
+      });
+    } else {
+      setDateRange(dateRange);
+    }
+  };
 
   // useEffect(() => {
   //   console.log(dateRange, "dateRange");
@@ -241,21 +283,20 @@ export const AlertDialogTemplate = ({
                   </div>
                   <FormItem className="flex items-center space-x-3 space-y-0 w-[300px]">
                     <FormControl>
-                      <Select defaultValue="custom">
+                      <Select
+                        defaultValue="custom"
+                        onValueChange={(value) => handlePeriordChange(value)}
+                      >
                         <SelectTrigger>
                           <SelectValue placeholder="Select" disabled />
                         </SelectTrigger>
                         <SelectContent className="cursor-pointer">
-                          <SelectItem value="today" disabled>
-                            Today
-                          </SelectItem>
-                          <SelectItem value="yesterday" disabled>
-                            Yesterday
-                          </SelectItem>
-                          <SelectItem value="previous-week" disabled>
+                          <SelectItem value="today">Today</SelectItem>
+                          <SelectItem value="yesterday">Yesterday</SelectItem>
+                          <SelectItem value="previous-week">
                             Previous week
                           </SelectItem>
-                          <SelectItem value="previous-month" disabled>
+                          <SelectItem value="previous-month">
                             Previous month
                           </SelectItem>
                           <SelectItem value="custom">Custom</SelectItem>
@@ -265,7 +306,10 @@ export const AlertDialogTemplate = ({
                   </FormItem>
                   <FormItem className="flex items-center space-x-3 space-y-0">
                     <FormControl>
-                      <DateRangePicker onDateChange={setDateRange} />
+                      <DateRangePicker
+                        disabled={disabledDate}
+                        onDateChange={setDateRange}
+                      />
                     </FormControl>
                   </FormItem>
                 </FormItem>
