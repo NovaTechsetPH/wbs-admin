@@ -408,7 +408,6 @@ class EmployeeController extends Controller
         try {
             $date = $date ?? Carbon::now()->toDateString();
             $work_hrs = TrackRecords::with('employee')
-                ->whereIn('userid', $emps_under)
                 ->where('userid', $id)
                 ->where('datein', Carbon::parse($date)->toDateString())
                 ->first();
