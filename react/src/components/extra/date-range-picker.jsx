@@ -7,7 +7,7 @@ import { Button } from "@ui/button";
 import { Calendar } from "@ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@ui/popover";
 
-export function DateRangePicker({ className, onDateChange }) {
+export function DateRangePicker({ className, onDateChange, disabled }) {
   const [date, setDate] = React.useState({
     from: subDays(new Date(), 20),
     to: new Date(),
@@ -25,6 +25,7 @@ export function DateRangePicker({ className, onDateChange }) {
           <Button
             id="date"
             variant={"outline"}
+            disabled={disabled}
             className={cn(
               "w-[300px] justify-start text-left font-normal",
               !date && "text-muted-foreground"
