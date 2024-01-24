@@ -67,9 +67,10 @@ export const secondsToHuman = (seconds) => {
   const secondString = remainingSeconds > 0 ? `${remainingSeconds}s` : "";
 
   if (hours >= 24) {
-    const days = Math.floor(hours / 24);
-    const remainderHrs = `${hours % 24}h`;
-    return `${days}d ${remainderHrs || "0m"} ${secondString && `${secondString}`
+    // const days = Math.floor(hours / 24);
+    // const remainderHrs = `${hours % 24}h`;
+    // return `${days}d ${remainderHrs || "0m"} ${secondString && `${secondString}`
+    return `${hourString || "0m"} ${secondString && `${secondString}`
       }`;
   }
 
@@ -125,9 +126,9 @@ export const handleAllocateTime = (data, sticks) => {
     clonedSticks[indexer].category[CATEGORY[d.category.is_productive]] += remainderToFill;
   });
 
-  let now = moment().format("HH:mm:ss");
+  // let now = moment().format("HH:mm:ss");
   let officeTime = clonedData.length > 0
-    ? getItemDuration(clonedData[0].time, clonedData[clonedData.length - 1].end_time ?? now)
+    ? getItemDuration(clonedData[0].time, clonedData[clonedData.length - 1].end_time ?? clonedData[0].time)
     : 0;
 
   return {
