@@ -90,6 +90,7 @@ export const handleAllocateTime = (data, sticks) => {
   let activity = {
     working: 0,
     idle: 0,
+    neutral: 0,
   };
 
   const idleApps = ['Windows Default Lock Screen', 'Task Switching', 'Desktop']
@@ -104,12 +105,16 @@ export const handleAllocateTime = (data, sticks) => {
     var remainderAddedTime = itemDuration - initStickAddedTime;
     var sticksToFill = Math.floor(remainderAddedTime / 600);
     var remainderToFill = remainderAddedTime % 600;
+    var k = parseInt(d.category.is_productive);
 
     clonedSticks[item.index].value += initStickAddedTime;
     clonedSticks[item.index].category[CATEGORY[d.category.is_productive]] += initStickAddedTime;
 
-    if (d.category.is_productive) {
+    if (k === 1) {
       activity.working += itemDuration;
+    }
+    if (k === 2) {
+      activity.neutral += itemDuration;
     }
 
     for (let i = 1; i <= sticksToFill; i++) {
@@ -134,7 +139,7 @@ export const handleAllocateTime = (data, sticks) => {
   return {
     clonedSticks, activity: {
       working: secondsToHuman(activity.working),
-      idle: secondsToHuman(officeTime - activity.working)
+      idle: secondsToHuman(officeTime - (activity.working + activity.neutral)),
     }
   };
 }
