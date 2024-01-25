@@ -147,17 +147,11 @@ const formatExcelData = (data, module) => {
         let sum = 0,
           neutral = 0;
         for (let i = 0; i < d.tasks.length; i++) {
-          if (
-            d.tasks[i].category.is_productive &&
-            !IDLE_APPS.includes(d.tasks[i].description)
-          ) {
+          let k = parseInt(d.tasks[i].category.is_productive);
+          if (k === 1 && !IDLE_APPS.includes(d.tasks[i].description)) {
             sum += d.tasks[i].duration;
           }
-
-          if (
-            !d.tasks[i].category.is_productive &&
-            !IDLE_APPS.includes(d.tasks[i].description)
-          ) {
+          if (k === 2 && !IDLE_APPS.includes(d.tasks[i].description)) {
             neutral += d.tasks[i].duration;
           }
         }
