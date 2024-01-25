@@ -120,8 +120,14 @@ const ActivityTracking = () => {
           idle: activity.idle,
         });
 
+        const idleApps = [
+          "Windows Default Lock Screen",
+          "Task Switching",
+          "Desktop",
+        ];
         await data.data.forEach((app) => {
-          if (app.end_time === null) return;
+          if (app.end_time === null || idleApps.includes(app.description))
+            return;
           let endTime = moment(app.end_time, "H:mm:ss");
           let startTime = moment(app.time, "H:mm:ss");
           let totalTime = moment.duration(endTime.diff(startTime)).asSeconds();
