@@ -39,6 +39,8 @@ import {
 } from "@ui/select";
 import { Checkbox } from "@ui/checkbox";
 
+const IDLE_APPS = ["Windows Default Lock Screen", "Task Switching", "Desktop"];
+
 const productivityType = (type) => {
   let id = parseInt(type);
   switch (id) {
@@ -86,13 +88,10 @@ const getTotalWorkedKuno = (timein, timeout, data) => {
     !moment(timein).isSame(moment(), "day") && timeout === null
       ? data[data.length - 1].time
       : timeout;
-
   let diff =
     moment(timein).isSame(moment(), "day") && timeout === null
       ? moment().diff(moment(timein, "HH:mm:ss"), "seconds")
       : moment(endTime, "HH:mm:ss").diff(moment(timein, "HH:mm:ss"), "seconds");
-
-  console.log(diff, "diff");
   return diff;
 };
 
@@ -125,6 +124,7 @@ const formatExcelData = (data, module) => {
         });
         Object.keys(duration).forEach((date) => {
           excelData.push({
+            ID: element.info[key][0].employee.employee_id,
             DATE: date,
             EMPLOYEE:
               element.info[key][0].employee.first_name +
@@ -144,20 +144,39 @@ const formatExcelData = (data, module) => {
   if (module === "tracking") {
     return data.map((d) => {
       let productiveKuno = (d) => {
-        let sum = 0;
+        let sum = 0,
+          neutral = 0;
         for (let i = 0; i < d.tasks.length; i++) {
-          if (d.tasks[i].category.is_productive) sum += d.tasks[i].duration;
+          if (
+            d.tasks[i].category.is_productive &&
+            !IDLE_APPS.includes(d.tasks[i].description)
+          ) {
+            sum += d.tasks[i].duration;
+          }
+
+          if (
+            !d.tasks[i].category.is_productive &&
+            !IDLE_APPS.includes(d.tasks[i].description)
+          ) {
+            neutral += d.tasks[i].duration;
+          }
         }
-        return sum;
+        return {
+          productiveTime: sum,
+          neutralTime: neutral,
+        };
       };
+      let { productiveTime, neutralTime } = productiveKuno(d);
       let totalWorkedTime = getTotalWorkedKuno(d.timein, d.timeout, d.tasks);
-      let idleTime = totalWorkedTime - productiveKuno(d);
-      let productiveTime = productiveKuno(d);
+      let idleTime = totalWorkedTime - (productiveTime + neutralTime);
+      // let productiveTime = productiveKuno(d);
       return {
+        ID: d.employee.employee_id,
         DATE: d.datein,
         EMPLOYEE: `${d.employee.first_name} ${d.employee.last_name}`,
         "PRODUCTIVE-TIME": convertSecsToDigital(productiveTime),
-        "IDLE-TIME": convertSecsToDigital(idleTime),
+        "NEUTRAL-APPS-TIME": convertSecsToDigital(neutralTime),
+        "IDLE-TIME": d.timeout && convertSecsToDigital(idleTime),
         "TOTAL-WORK-TIME": convertSecsToDigital(totalWorkedTime),
         "TIME-IN": d.timein,
         "TIME-OUT": d.timeout,
@@ -175,33 +194,16 @@ export const AlertDialogTemplate = ({
   const [employees, setEmployees] = useState([]);
   const form = useForm({ resolver: zodResolver(FormSchema), defaultValues });
   const [dateRange, setDateRange] = useState({
-    from: moment().subtract(7, "days"),
-    to: moment(),
+    from: moment().subtract(7, "days").toDate(),
+    to: moment().toDate(),
   });
-  const [disabledDate, setDisabledDate] = useState(true);
+  const [disabledDate, setDisabledDate] = useState(false);
+  const [period, setPeriod] = useState("custom");
 
   const handlePeriordChange = (period) => {
-    setDisabledDate(period === "custom");
-    if (period === "yesterday") {
-      setDateRange({
-        from: moment().subtract(1, "days"),
-        to: moment().subtract(1, "days"),
-      });
-    } else if (period === "previous-week") {
-      let from = moment().weekday(-7);
-      setDateRange({
-        from: moment().weekday(-7),
-        to: from.add(6, "days"),
-      });
-    } else if (period === "previous-month") {
-      let from = moment().subtract(1, "months");
-      setDateRange({
-        from: from.startOf("month"),
-        to: from.endOf("month"),
-      });
-    } else {
-      setDateRange(dateRange);
-    }
+    setPeriod(period);
+    setDisabledDate(period !== "custom");
+    // setDisabledDate(false);
   };
 
   // useEffect(() => {
@@ -308,7 +310,9 @@ export const AlertDialogTemplate = ({
                     <FormControl>
                       <DateRangePicker
                         disabled={disabledDate}
-                        onDateChange={setDateRange}
+                        newDate={dateRange}
+                        setDateRange={setDateRange}
+                        period={period}
                       />
                     </FormControl>
                   </FormItem>

@@ -70,7 +70,7 @@ export const secondsToHuman = (seconds) => {
     // const days = Math.floor(hours / 24);
     // const remainderHrs = `${hours % 24}h`;
     // return `${days}d ${remainderHrs || "0m"} ${secondString && `${secondString}`
-    return `${hourString || "0m"} ${secondString && `${secondString}`
+    return `${hourString || "0m"} ${minuteString} ${secondString && `${secondString}`
       }`;
   }
 
