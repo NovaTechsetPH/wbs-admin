@@ -1,7 +1,7 @@
 import { Input } from "../ui/input";
 import ntImage from "/nt-logo.png";
 import Logout from "./Logout";
-import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
+// import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 
 const Navbar = () => {
   return (
@@ -20,7 +20,7 @@ const Navbar = () => {
                 <img src={ntImage} alt="NT-Logo" width={36} height={36} />
                 <div className="font-title inline-flex text-lg md:text-2xl font-bold">
                   <span className="ml-1 hidden font-bold sm:inline-block">
-                    iNTrack
+                    nTrac
                   </span>
                   <span className="hidden font-normal sm:inline-block ml-1">
                     Admin
@@ -37,10 +37,11 @@ const Navbar = () => {
             aria-controls="radix-:R15hja:"
             data-state="closed"
           >
-            <Avatar className="h-9 w-9 border-black-500 border">
-              <AvatarImage src="/avatars/01.png" alt="Admin" />
-              <AvatarFallback>A</AvatarFallback>
-            </Avatar>
+            {/* <Avatar className="h-9 w-9 border-black-500 border">
+              <AvatarImage src={ntImage} alt="Admin" />
+              <AvatarFallback>S</AvatarFallback>
+            </Avatar> */}
+            <img src={ntImage} alt="NT-Logo" width={36} height={36} />
             <span className="sr-only">Toggle Menu</span>
           </button>
           <div className="flex flex-1 items-center justify-between space-x-2 md:justify-end">

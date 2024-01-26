@@ -26,7 +26,7 @@ const router = createBrowserRouter([
         element: <Dashboard />,
       },
       {
-        path: "/employee",
+        path: "/employees",
         element: <Employees />,
       },
       {
@@ -39,6 +39,10 @@ const router = createBrowserRouter([
       },
       {
         path: "/user-approval",
+        element: <UserApproval />,
+      },
+      {
+        path: "/categorization",
         element: <UserApproval />,
       },
       {

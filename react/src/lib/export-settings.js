@@ -1,7 +1,7 @@
 // import { alignment, defaultDataType } from "export-xlsx";
 
 export const ATTENDANCE_SETTINGS = {
-  fileName: "iNTrack-Attendance-Report",
+  fileName: "nTrac-Attendance-Report",
   workSheets: [
     {
       sheetName: "Attendance-Report",

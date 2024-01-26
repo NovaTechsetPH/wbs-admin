@@ -13,7 +13,7 @@ import {
 import { Popover, PopoverContent, PopoverTrigger } from "@ui/popover";
 
 const SelectDialog = ({ data, onEmployeeChanged }) => {
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(true);
   const [selectedName, setSelectedName] = useState("Select Employee...");
   const [id, setId] = useState("");
 

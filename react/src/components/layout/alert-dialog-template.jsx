@@ -208,6 +208,7 @@ export const AlertDialogTemplate = ({
     setDialogOpen(false);
     let from = moment(dateRange.from).format("YYYY-MM-DD");
     let to = moment(dateRange.to).format("YYYY-MM-DD");
+    let moduleName = capitalizeFirstLetter(module);
     const promise = () =>
       new Promise((resolve, reject) => {
         axiosClient
@@ -225,8 +226,8 @@ export const AlertDialogTemplate = ({
       success: (resp) => {
         const worksheet = XLSX.utils.json_to_sheet(resp);
         const workbook = XLSX.utils.book_new();
-        XLSX.utils.book_append_sheet(workbook, worksheet, "Applications");
-        XLSX.writeFile(workbook, "iNTrack-Applications-Report.xlsx");
+        XLSX.utils.book_append_sheet(workbook, worksheet, moduleName);
+        XLSX.writeFile(workbook, `nTrac-${moduleName}-Report.xlsx`);
         return `Successfully exported`;
       },
       error: (err) => console.log(err),
