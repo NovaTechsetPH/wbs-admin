@@ -19,7 +19,8 @@
     }
 
     &.offline:before {
-        background-color: hsl(var(--muted));
+        // background-color: hsl(var(--muted));
+        background-color: rgb(209 213 219 /1);
     }
 
     &.away:before,

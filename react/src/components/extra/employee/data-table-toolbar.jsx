@@ -32,6 +32,12 @@ export function DataTableToolbar({ table }) {
           <DataTableFacetedFilter
             column={table.getColumn("status")}
             title="Status"
+            options={[
+              { value: "Active", label: "Active" },
+              { value: "Away", label: "Away" },
+              { value: "Idle", label: "Idle" },
+              { value: "Offline", label: "Offline" },
+            ]}
           />
         )}
         {isFiltered && (

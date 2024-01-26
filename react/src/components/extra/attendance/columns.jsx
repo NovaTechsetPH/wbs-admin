@@ -60,6 +60,7 @@ const getStatusStyle = (status) => {
       return "border-green-600";
     case "Away":
     case "Idle":
+    case "Waiting":
       return "border-yellow-400";
     default:
       return "border-none";

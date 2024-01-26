@@ -35,6 +35,9 @@ const Employees = () => {
         let formatData = [];
         await data.data.forEach((item) => {
           formatData.push({
+            id: item.id,
+            firstName: item.first_name,
+            lastName: item.last_name,
             employeeId: getEmployeeId(item),
             name: `${item.first_name} ${item.last_name}`,
             status:

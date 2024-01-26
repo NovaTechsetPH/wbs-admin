@@ -1,4 +1,3 @@
-import { Badge } from "@ui/badge";
 import { cn } from "@/lib/utils";
 
 import { DataTableColumnHeader } from "./data-table-column-header";
@@ -13,21 +12,7 @@ import {
   CrossCircledIcon,
   QuestionMarkCircledIcon,
 } from "@radix-ui/react-icons";
-
-const labels = [
-  {
-    value: "bug",
-    label: "Bug",
-  },
-  {
-    value: "feature",
-    label: "Feature",
-  },
-  {
-    value: "documentation",
-    label: "Documentation",
-  },
-];
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 export const statuses = [
   {
@@ -84,6 +69,19 @@ const getIconColor = (value) => {
   }
 };
 
+const getStatusStyle = (status) => {
+  switch (status) {
+    case "Active":
+      return "border-green-600";
+    case "Away":
+    case "Idle":
+    case "Waiting":
+      return "border-yellow-400";
+    default:
+      return "border-gray-300";
+  }
+};
+
 export const columns = [
   // {
   //   id: "select",
@@ -130,11 +128,26 @@ export const columns = [
       <DataTableColumnHeader column={column} title="Name" />
     ),
     cell: ({ row }) => {
-      const label = labels.find((label) => label.value === row.original.label);
+      // const label = labels.find((label) => label.value === row.original.label);
+      // console.log(label);
+      let status = row.original.status;
+      let firstName = row.original.firstName;
+      let lastName = row.original.lastName;
 
       return (
-        <div className="flex space-x-2">
-          {label && <Badge variant="outline">{label.label}</Badge>}
+        <div className="flex space-x-2 ml-4 items-center">
+          {/* {label && <Badge variant="outline">{label.label}</Badge>} */}
+          <div className={`avatar ${status.toLowerCase()}`}>
+            <Avatar className={`h-10 w-10 border-2 ${getStatusStyle(status)}`}>
+              <AvatarImage
+                src={`/images/${row.original.id}.png`}
+                alt="Avatar"
+              />
+              <AvatarFallback className="font-semi-bold">
+                {`${firstName[0]}${lastName[0]}`}
+              </AvatarFallback>
+            </Avatar>
+          </div>
           <span className="max-w-[500px] truncate font-medium">
             {row.getValue("name")}
           </span>

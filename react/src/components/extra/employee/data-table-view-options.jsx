@@ -1,14 +1,14 @@
 import { DropdownMenuTrigger } from "@radix-ui/react-dropdown-menu";
 import { MixerHorizontalIcon } from "@radix-ui/react-icons";
 
-import { Button } from "../../ui/button";
+import { Button } from "@ui/button";
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
   DropdownMenuContent,
   DropdownMenuLabel,
   DropdownMenuSeparator,
-} from "../../ui/dropdown-menu";
+} from "@ui/dropdown-menu";
 
 export function DataTableViewOptions({ table }) {
   return (
