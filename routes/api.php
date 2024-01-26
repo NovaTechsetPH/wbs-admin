@@ -33,6 +33,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('/employees', EmployeeController::class);
     Route::apiResource('/timelogs', TimeLogsController::class);
 
+    Route::get('/employee/{id}', [EmployeeController::class, 'getEmployeeById']);
+
     // Dashboard
     Route::post('/dashboard/apps', [EmployeeController::class, 'getAllDailyOpenedApps']);
     Route::get('/dashboard/workhrs/{date?}', [EmployeeController::class, 'getWorkHrs']);

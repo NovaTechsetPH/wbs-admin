@@ -27,6 +27,7 @@ function Dashboard() {
   const [selectedDate, setSelectedDate] = useState(date);
   const [productivity, setProductivity] = useState([]);
   const [rawApps, setRawApps] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   const [appList, setAppList] = useState({
     Productive: [],
@@ -53,6 +54,7 @@ function Dashboard() {
 
   // App Listing
   useEffect(() => {
+    setIsLoading(true);
     axiosClient
       .post("/dashboard/apps", {
         date: selectedDate,
@@ -109,7 +111,8 @@ function Dashboard() {
 
         setProductivity(clonedSticks);
         setAppList(listApps);
-      });
+      })
+      .then(() => setIsLoading(false));
   }, [selectedDate]);
 
   const handleDateChange = (newDate) => {
@@ -154,7 +157,9 @@ function Dashboard() {
                 </CardHeader>
                 <CardContent className="flex justify-between">
                   <div className="text-2xl font-bold">
-                    {total.productiveHrs || (
+                    {!isLoading ? (
+                      total.productiveHrs
+                    ) : (
                       <Skeleton className="w-[140px] h-[32px] bg-slate-200" />
                     )}
                   </div>
@@ -223,6 +228,7 @@ function Dashboard() {
                   productivity={productivity}
                   rawApps={rawApps}
                   appList={appList}
+                  lastId={null}
                 />
               </div>
               <Card className="col-span-3">

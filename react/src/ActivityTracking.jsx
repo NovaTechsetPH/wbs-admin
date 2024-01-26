@@ -18,6 +18,7 @@ import {
   useDashboardContext,
   DashboardContextProvider,
 } from "./context/DashboardContextProvider";
+import { useParams } from "react-router-dom";
 
 const CATEGORY = ["Unproductive", "Productive", "Neutral"];
 
@@ -38,11 +39,12 @@ const getWorkDuration = (data) => {
 
 const ActivityTracking = () => {
   const { date } = useDashboardContext();
+  const idParameter = useParams().empId;
   const [selectedDate, setSelectedDate] = useState(date);
   const [productivity, setProductivity] = useState([]);
   const [rawApps, setRawApps] = useState([]);
   const [employees, setEmployees] = useState([]);
-  const [empId, setEmpId] = useState(0);
+  const [empId, setEmpId] = useState(idParameter);
   const [loading, setLoading] = useState(false);
   const [apps, setApps] = useState({
     Productive: [],
@@ -58,7 +60,9 @@ const ActivityTracking = () => {
 
   const handleDateChange = (date) => setSelectedDate(date);
 
-  const handleEmployeeChange = (id) => setEmpId(id);
+  const handleEmployeeChange = (id) => {
+    setEmpId(id);
+  };
 
   useEffect(() => {
     axiosClient
@@ -168,6 +172,7 @@ const ActivityTracking = () => {
             <SelectDialog
               onEmployeeChanged={handleEmployeeChange}
               data={employees}
+              selectedId={empId}
             />
           </h2>
           <div className="flex items-center space-x-2">

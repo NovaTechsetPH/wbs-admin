@@ -10,16 +10,36 @@ import {
   CommandItem,
 } from "@ui/command";
 
+import axiosClient from "@/axios-client";
 import { Popover, PopoverContent, PopoverTrigger } from "@ui/popover";
+import { useQuery } from "@tanstack/react-query";
+import { useNavigate, useParams } from "react-router-dom";
 
 const SelectDialog = ({ data, onEmployeeChanged }) => {
-  const [open, setOpen] = useState(true);
+  const selectedId = useParams().empId;
+  const navigate = useNavigate();
+  const [open, setOpen] = useState(!selectedId);
   const [selectedName, setSelectedName] = useState("Select Employee...");
-  const [id, setId] = useState("");
+  const [id, setId] = useState(selectedId);
+  const [enabled, setEnabled] = useState(true);
 
   useEffect(() => {
-    onEmployeeChanged(id);
-  }, [id, onEmployeeChanged]);
+    if (id !== undefined) {
+      navigate(`/activity-tracking/${id}`);
+      onEmployeeChanged(id);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [id]);
+
+  const { data: employee, isLoading } = useQuery({
+    queryKey: ["tracking", selectedId],
+    queryFn: async () => {
+      const { data } = await axiosClient.get("/employee/" + selectedId);
+      setEnabled(false);
+      return data?.data;
+    },
+    enabled: enabled && !!selectedId,
+  });
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -30,7 +50,9 @@ const SelectDialog = ({ data, onEmployeeChanged }) => {
           aria-expanded={open}
           className="w-[200px] justify-between"
         >
-          {id === "" ? "Select Employee..." : selectedName}
+          {employee && !isLoading
+            ? `${employee.first_name} ${employee.last_name}`
+            : selectedName}
           <CaretSortIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>

@@ -52,6 +52,15 @@ class EmployeeController extends Controller
         ], 200);
     }
 
+    public function getEmployeeById($id)
+    {
+        $employee = Employee::find($id);
+        return response()->json([
+            'data' => $employee,
+            'message' => 'Success'
+        ], 200);
+    }
+
     /**
      * Show the form for creating a new resource.
      */
@@ -400,6 +409,7 @@ class EmployeeController extends Controller
             'data' => $work_hrs ?? [],
             'message' => count($work_hrs) > 0 ? 'Success' : 'Employee not found',
             'total' => count($emps_under),
+            'emps' => $emps_under
         ], 200);
     }
 

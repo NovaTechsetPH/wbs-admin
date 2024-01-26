@@ -30,6 +30,10 @@ const router = createBrowserRouter([
         element: <Employees />,
       },
       {
+        path: "/activity-tracking/:empId",
+        element: <ActivityTracking />,
+      },
+      {
         path: "/activity-tracking",
         element: <ActivityTracking />,
       },

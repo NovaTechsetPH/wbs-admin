@@ -42,6 +42,11 @@ const getStatusStyle = (status) => {
   }
 };
 
+const isWeekend = (date) => {
+  const day = moment(date).day();
+  return day === 0 || day === 6;
+};
+
 const TeamWorkHours = ({ productive, handleTotalChange }) => {
   const { date } = useDashboardContext();
   const [workLogs, setWorkLogs] = useState([]);
@@ -72,7 +77,7 @@ const TeamWorkHours = ({ productive, handleTotalChange }) => {
         setLoading(false);
         let empIds = [];
         let items = data.data.map((item) => {
-          if (!empIds.includes(item.empid)) {
+          if (!empIds.includes(item.employee.id)) {
             empIds.push(item.employee.id);
           }
           return {
@@ -92,7 +97,7 @@ const TeamWorkHours = ({ productive, handleTotalChange }) => {
         setTotal({
           productiveHrs: productive,
           late: 0,
-          absent: overallCount - empIds.length,
+          absent: isWeekend(date) ? 0 : overallCount - empIds.length,
           present: empIds.length,
         });
       });
