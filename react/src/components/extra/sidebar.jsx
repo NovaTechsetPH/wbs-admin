@@ -8,9 +8,7 @@ export function Sidebar({ className }) {
   const location = useLocation();
   const [currentRoute, setCurrentRoute] = useState("");
 
-  useEffect(() => {
-    setCurrentRoute(location.pathname);
-  }, [location]);
+  useEffect(() => setCurrentRoute(location.pathname), [location]);
 
   const navItems = [
     {
@@ -144,21 +142,25 @@ export function Sidebar({ className }) {
             {navItems.map((item) => (
               <Link key={item.name} to={item.href}>
                 <Button
-                  variant={currentRoute === item.href ? "default" : "ghost"}
+                  variant={
+                    currentRoute.includes(item.href) ? "default" : "ghost"
+                  }
                   className={cn(
                     buttonVariants({
-                      variant: currentRoute === item.href ? "default" : "ghost",
+                      variant: currentRoute.includes(item.href)
+                        ? "default"
+                        : "ghost",
                       size: "icon",
                     }),
                     "w-full justify-start",
-                    currentRoute === item.href &&
+                    currentRoute.includes(item.href) &&
                       "dark:bg-muted dark:text-muted-foreground dark:hover:bg-muted dark:hover:text-white"
                   )}
                 >
                   {item.icon}
                   <span
                     className={
-                      currentRoute === item.href
+                      currentRoute.includes(item.href)
                         ? "font-semibold"
                         : "font-medium"
                     }
