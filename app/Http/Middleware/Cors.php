@@ -25,10 +25,11 @@ class Cors
             //The client-side application can set only headers allowed in Access-Control-Allow-Headers
             // return response()->json('OK', 200, $headers);
             $details = [
-                'ip' => $request->ip(),
+                'ip' => $request->header('x-forwarded-for'),
                 'user' => $request->user(),
                 'method' => $request->method(),
-                'mac_address' => exec('getmac')
+                'referer' => url()->full(),
+                'mac_address' => exec('getmac'),
             ];
             Log::channel('accesslog')->info(json_encode($details, JSON_PRETTY_PRINT));
         }
