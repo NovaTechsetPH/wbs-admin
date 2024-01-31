@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useMemo, useState, createContext } from "react";
 import { columns } from "@/components/extra/attendance/columns";
 import { DataTable } from "@/components/extra/attendance/data-table";
 import { v4 as uuidv4 } from "uuid";
@@ -12,6 +12,8 @@ import { useQuery } from "@tanstack/react-query";
 import { getLastActivity } from "./Employees";
 
 const CUTOFF_TIME = moment("12:00:00", "HH:mm");
+
+const PaginationContext = createContext(5);
 
 const Attendance = () => {
   const { date } = useDashboardContext();
@@ -56,7 +58,7 @@ const Attendance = () => {
               status: emp.active_status,
               online: getLastActivity(emp.last_activity),
               attendance: filterByEmployee,
-              holidays: ["2024-01-01"],
+              holidays: ["2024-01-01", "2024-02-14"],
             });
           });
           return formatData;
@@ -101,11 +103,13 @@ const Attendance = () => {
     <DashboardContextProvider>
       <div className="hidden h-full flex-1 flex-col space-y-8 p-8 md:flex">
         {!isLoading && (
-          <DataTable
-            data={data}
-            columns={memoizedCols}
-            dateChanged={setSelectedDate}
-          />
+          <PaginationContext.Provider>
+            <DataTable
+              data={data}
+              columns={memoizedCols}
+              dateChanged={setSelectedDate}
+            />
+          </PaginationContext.Provider>
         )}
         {/* <DataTable
           data={data}
