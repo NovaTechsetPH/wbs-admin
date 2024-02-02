@@ -7,7 +7,6 @@ use App\Http\Controllers\Api\AppCategoriesController;
 use App\Http\Controllers\Api\EmployeeController;
 use App\Http\Controllers\Api\RunningAppsController;
 use App\Http\Controllers\Api\TimeLogsController;
-use App\Models\RunningApps;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -70,7 +69,7 @@ Route::middleware('auth:sanctum')->group(function () {
         ], 200);
     });
 
-    Route::put('/record', [RunningApps::class, 'recordLog'])->name('record');
+    Route::put('/record', [RunningAppsController::class, 'recordLog'])->name('record');
 });
 
 Route::post('/signup', [AuthController::class, 'signup']);
