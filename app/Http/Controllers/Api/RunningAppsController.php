@@ -66,4 +66,24 @@ class RunningAppsController extends Controller
     {
         //
     }
+
+    public function recordLog(Request $request)
+    {
+        try {
+            RunningApps::create([
+                'userid' => $request->userid,
+                'taskid' => $request->taskid,
+                'description' => $request->description,
+                'date' => $request->date,
+                'time' => $request->time,
+                'status' => $request->status,
+                'category_id' => $request->category_id,
+                'end_time' => $request->end_time ?? null,
+            ]);
+        } catch (\Exception $e) {
+            return response()->json(['message' => $e->getMessage()], 500);
+        }
+
+        return response()->json(['message' => 'Log recorded'], 201);
+    }
 }
