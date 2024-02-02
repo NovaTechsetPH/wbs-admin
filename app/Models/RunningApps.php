@@ -21,6 +21,8 @@ class RunningApps extends Model
         'status',
         'category_id',
         'end_time',
+        'created_at',
+        'updated_at',
     ];
 
     // Define your relationships
