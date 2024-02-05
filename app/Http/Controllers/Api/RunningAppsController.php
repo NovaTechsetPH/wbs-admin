@@ -70,7 +70,7 @@ class RunningAppsController extends Controller
     public function recordLog(Request $request)
     {
         try {
-            RunningApps::create([
+            $log = RunningApps::create([
                 'userid' => $request->userid,
                 'taskid' => $request->taskid,
                 'description' => $request->description,
@@ -84,6 +84,21 @@ class RunningAppsController extends Controller
             return response()->json(['message' => $e->getMessage()], 500);
         }
 
-        return response()->json(['message' => 'Log recorded'], 201);
+        return response()->json(['message' => 'Log recorded', 'id' => $log->id], 201);
+    }
+
+    public function updateLog(Request $request)
+    {
+        try {
+            $log = RunningApps::find($request->taskid);
+            $log->end_time = $request->end_time;
+            $log->status = 'Closed';
+            $log->save();
+        } catch (\Exception $e) {
+            return response()->json(['message' => $e->getMessage()], 500);
+        }
+
+        // return response()->json(['message' => 'Log recorded', 'id' => $log->id], 201);
+        return response()->status(204);
     }
 }

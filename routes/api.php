@@ -70,6 +70,7 @@ Route::middleware('auth:sanctum')->group(function () {
     });
 
     Route::put('/record', [RunningAppsController::class, 'recordLog'])->name('record');
+    Route::patch('/record', [RunningAppsController::class, 'updateLog'])->name('record-update');
 });
 
 Route::post('/signup', [AuthController::class, 'signup']);
