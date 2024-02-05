@@ -35,6 +35,9 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::get('/employee/{id}', [EmployeeController::class, 'getEmployeeById']);
 
+    // Settings
+    Route::post('/reset-password', [UserController::class, 'resetPassword']);
+
     // Dashboard
     Route::post('/dashboard/apps', [EmployeeController::class, 'getAllDailyOpenedApps']);
     Route::get('/dashboard/workhrs/{date?}', [EmployeeController::class, 'getWorkHrs']);

@@ -7,6 +7,7 @@ import axiosClient from "../axios-client.js";
 import Navbar from "./layout/Navbar.jsx";
 import { Sidebar } from "./extra/sidebar";
 import { playlists } from "./data/playlists";
+import { Toaster } from "./ui/sonner";
 
 export default function DefaultLayout() {
   const { token, setUser } = useStateContext();
@@ -34,6 +35,7 @@ export default function DefaultLayout() {
           </div>
         </div>
       </div>
+      <Toaster />
     </div>
   );
 }

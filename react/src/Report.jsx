@@ -1,6 +1,6 @@
 import { DashboardContextProvider } from "./context/DashboardContextProvider";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "./components/ui/tabs";
-import { Toaster } from "@ui/sonner";
+// import { Toaster } from "@ui/sonner";
 import { ReportCard } from "./components/extra/report-card";
 import moment from "moment";
 import { secondsToHuman } from "./lib/timehash";
@@ -93,7 +93,7 @@ function Report() {
           </TabsContent>
         </Tabs>
       </div>
-      <Toaster richColors />
+
       <AlertDialogTemplate
         title={"Applications Report Data"}
         open={dialogOpen}

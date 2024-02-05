@@ -72,6 +72,10 @@
   }
 }
 
+.FormLabel[data-invalid] {
+  color: red;
+}
+
 .text-success {
   color: hsl(var(--success));
 }

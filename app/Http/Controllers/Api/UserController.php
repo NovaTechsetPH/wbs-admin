@@ -7,7 +7,13 @@ use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
 use Illuminate\Http\Request;
 use App\Http\Resources\UserResource;
+use App\Models\PasswordReset as ModelsPasswordReset;
 use App\Models\User;
+use Illuminate\Auth\Events\PasswordReset;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Password;
+use Illuminate\Support\Str;
 
 class UserController extends Controller
 {
@@ -76,5 +82,34 @@ class UserController extends Controller
         $user->delete();
 
         return response("", 204);
+    }
+
+    public function resetPassword(Request $request)
+    {
+        try {
+            $crypt = bcrypt($request->password);
+            $user = User::where('email', $request->email)->first();
+            if (Hash::check($request->password, $user->password)) {
+                $user->password = bcrypt($request->new_password);
+                $user->save();
+                $status = Password::PASSWORD_RESET;
+            } else {
+                $status = Password::INVALID_USER;
+            }
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => $e->getMessage()
+            ], 500);
+        }
+
+        return response()->json([
+            'password_reset' => Password::PASSWORD_RESET,
+            'status' => $status,
+            'meh' => __($status),
+            'user' => $request->user(),
+            'pass' => $request->user()->password,
+            'encrypted' => $crypt,
+            'password' => bcrypt($request->password)
+        ]);
     }
 }

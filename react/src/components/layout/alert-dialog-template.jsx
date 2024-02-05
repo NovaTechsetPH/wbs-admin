@@ -180,7 +180,6 @@ const formatExcelData = (data, module) => {
 };
 
 export const AlertDialogTemplate = ({
-  title,
   open,
   setDialogOpen,
   module = "attendance",
@@ -227,7 +226,10 @@ export const AlertDialogTemplate = ({
         const worksheet = XLSX.utils.json_to_sheet(resp);
         const workbook = XLSX.utils.book_new();
         XLSX.utils.book_append_sheet(workbook, worksheet, moduleName);
-        XLSX.writeFile(workbook, `nTrac-${moduleName}-Report.xlsx`);
+        XLSX.writeFile(
+          workbook,
+          `nTrac-${moduleName}-Report-${moment().unix()}.xlsx`
+        );
         return `Successfully exported`;
       },
       error: (err) => console.log(err),

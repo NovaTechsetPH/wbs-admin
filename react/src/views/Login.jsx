@@ -4,12 +4,43 @@ import { useStateContext } from "../context/ContextProvider.jsx";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button.jsx";
 
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@ui/alert-dialog";
+
+const ErrorAlert = ({ alertOpen, setAlertOpen, message }) => {
+  return (
+    <AlertDialog open={alertOpen} onOpenChange={setAlertOpen}>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>Error</AlertDialogTitle>
+          <AlertDialogDescription>
+            {message ? message : "Something went wrong"}
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel>Cancel</AlertDialogCancel>
+          <AlertDialogAction>OK</AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
+  );
+};
+
 export default function Login() {
   const emailRef = createRef();
   const passwordRef = createRef();
   const { setUser, setToken } = useStateContext();
-  const [setMessage] = useState(null);
+  const [message, setMessage] = useState(null);
   const [looding, setLooding] = useState(false);
+  const [alertOpen, setAlertOpen] = useState(false);
 
   const onSubmit = (ev) => {
     ev.preventDefault();
@@ -23,14 +54,17 @@ export default function Login() {
       .then(({ data }) => {
         setUser(data.user);
         setToken(data.token);
+        localStorage.setItem("SESSION_EMAIL", data.user.email);
       })
       .then(() => setLooding(false))
       .catch((err) => {
         const response = err.response;
         if (response && response.status === 422) {
           setMessage(response.data.message);
-          alert(response.data.message);
+          // alert(response.data.message);
+          setAlertOpen(true);
         }
+        setLooding(false);
       });
 
     // axiosClient
@@ -70,13 +104,10 @@ export default function Login() {
             <div className="mb-4">
               <h3 className="font-semibold text-2xl text-gray-800">Sign In </h3>
               <p className="text-gray-500">Please sign in to your account.</p>
-              {/* {message && (
-                <div className="alert text-error bold">
-                  <p>{message}</p>
-                </div>
-              )} */}
+              <div className="alert text-error text-red-500">
+                <p>{message}</p>
+              </div>
             </div>
-
             <form onSubmit={onSubmit}>
               <div className="space-y-5">
                 <div className="space-y-2">
@@ -142,6 +173,11 @@ export default function Login() {
           </div>
         </div>
       </div>
+      <ErrorAlert
+        alertOpen={alertOpen}
+        setAlertOpen={setAlertOpen}
+        message={message}
+      />
     </div>
   );
 }
