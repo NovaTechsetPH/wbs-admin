@@ -52,6 +52,14 @@ class EmployeeController extends Controller
         ], 200);
     }
 
+    public function getImageById($id)
+    {
+        $employee = Employee::find($id);
+        return response()->make($employee->user_image)
+            ->header('Content-Type', 'image/jpeg')
+            ->header('Cache-Control', 'max-age=31536000');
+    }
+
     public function getEmployeeById($id)
     {
         $employee = Employee::find($id);
@@ -417,10 +425,15 @@ class EmployeeController extends Controller
     {
         try {
             $date = $date ?? Carbon::now()->toDateString();
-            $work_hrs = TrackRecords::with('employee')
+            $track_records = TrackRecords::with('employee')
                 ->where('userid', $id)
                 ->where('datein', Carbon::parse($date)->toDateString())
-                ->first();
+                ->get();
+
+            $work_hrs = $track_records->first();
+            if (count($track_records) > 1) {
+                $work_hrs->timeout = $track_records->last()->timeout;
+            }
         } catch (\Exception $e) {
             return response()->json([
                 'error' => $e->getMessage(),
