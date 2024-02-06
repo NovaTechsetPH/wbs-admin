@@ -144,7 +144,8 @@ const TeamWorkHours = ({ productive, handleTotalChange }) => {
                         )}`}
                       >
                         <AvatarImage
-                          src={`/images/${item.userid}.png`}
+                          // src={`/images/${item.userid}.png`}
+                          src={`https://192.46.230.32/api/employees/image/${item.employee.id}`}
                           alt="Avatar"
                         />
                         <AvatarFallback>
