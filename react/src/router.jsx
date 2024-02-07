@@ -11,6 +11,7 @@ import ActivityTracking from "./ActivityTracking";
 import Attendance from "./Attendance";
 import UserApproval from "./UserApproval";
 import Report from "./Report";
+import Categorization from "./Categorization";
 
 const router = createBrowserRouter([
   {
@@ -47,7 +48,7 @@ const router = createBrowserRouter([
       },
       {
         path: "/categorization",
-        element: <UserApproval />,
+        element: <Categorization />,
       },
       {
         path: "/reports",

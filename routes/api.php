@@ -34,6 +34,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('/timelogs', TimeLogsController::class);
 
     Route::get('/employee/{id}', [EmployeeController::class, 'getEmployeeById']);
+    Route::get('/teams', [EmployeeController::class, 'getTeams']);
 
     // Settings
     Route::post('/reset-password', [UserController::class, 'resetPassword']);

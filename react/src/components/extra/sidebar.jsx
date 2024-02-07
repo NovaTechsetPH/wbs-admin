@@ -3,10 +3,14 @@ import { Button, buttonVariants } from "@ui/button";
 import { Link, useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { LayersIcon } from "@radix-ui/react-icons";
+import { Separator } from "../ui/separator";
+import { TeamSwitcher } from "../layout/team-switcher";
 
 export function Sidebar({ className }) {
   const location = useLocation();
   const [currentRoute, setCurrentRoute] = useState("");
+  // const [isCollapsed, setIsCollapsed] = useState(false);
+  const isCollapsed = false;
 
   useEffect(() => setCurrentRoute(location.pathname), [location]);
 
@@ -135,9 +139,18 @@ export function Sidebar({ className }) {
     <div className={cn("pb-12", className)}>
       <div className="space-y-4 py-4">
         <div className="px-3 py-2">
-          <h2 className="mb-2 px-4 text-lg font-semibold tracking-tight">
-            Admin Panel
-          </h2>
+          <div
+            className={cn(
+              "flex h-[52px] items-center justify-center font-bold pb-2",
+              isCollapsed ? "h-[52px]" : "px-0"
+            )}
+          >
+            {/* <h2 className="mb-2 text-lg font-semibold tracking-tight"> */}
+            {/* Admin Panel */}
+            <TeamSwitcher isCollapsed={isCollapsed} />
+            {/* </h2> */}
+          </div>
+          <Separator />
           <div className="space-y-1">
             {navItems.map((item) => (
               <Link key={item.name} to={item.href}>

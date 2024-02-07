@@ -84,6 +84,9 @@ const StatusIcon = ({ status }) => {
   }
 };
 
+const getImage = (id) =>
+  `${import.meta.env.VITE_API_BASE_URL}/api/employees/image/${id}`;
+
 export const columns = () => [
   {
     accessorKey: "name",
@@ -103,7 +106,8 @@ export const columns = () => [
           <div className={`avatar ${status.toLowerCase()}`}>
             <Avatar className={`h-10 w-10 border-2 ${getStatusStyle(status)}`}>
               <AvatarImage
-                src={`/images/${row.original.employeeId}.png`}
+                // src={`/images/${row.original.employeeId}.png`}
+                src={getImage(row.original.employeeId)}
                 alt="Avatar"
               />
               <AvatarFallback className="font-semi-bold">
