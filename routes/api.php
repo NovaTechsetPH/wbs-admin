@@ -49,7 +49,6 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/employees/runningapps', [EmployeeController::class, 'runningapps']);
     Route::post('/employees/apps', [EmployeeController::class, 'getEmployeeApps']);
     Route::post('/employees/productivity', [EmployeeController::class, 'getProductivity']);
-    Route::get('/employees/image/{id}', [EmployeeController::class, 'getImageById']);
 
     // Activity Tracking
     Route::get('/activity/employee/{userid}/{date?}', [ActivityTrackController::class, 'getEmployeeActivity']);
@@ -80,3 +79,5 @@ Route::middleware('auth:sanctum')->group(function () {
 
 Route::post('/signup', [AuthController::class, 'signup']);
 Route::post('/login', [AuthController::class, 'login']);
+
+Route::get('/employees/image/{id}', [EmployeeController::class, 'getImageById']);
