@@ -5,7 +5,7 @@ import { ReportCard } from "./components/extra/report-card";
 import moment from "moment";
 import { secondsToHuman } from "./lib/timehash";
 import { useState } from "react";
-import { AlertDialogTemplate } from "./components/layout/alert-dialog-template";
+import { AlertDialogTemplate } from "./components/layout/report-alert-dialog";
 
 export const getWorkDuration = (data, show = true) => {
   if (!moment(data.datein).isSame(moment(), "day") && data.timeout === null) {

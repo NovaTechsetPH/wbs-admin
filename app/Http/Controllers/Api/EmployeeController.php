@@ -4,14 +4,12 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Employee;
-use App\Http\Requests\StoreEmployeeRequest;
-use App\Http\Requests\UpdateEmployeeRequest;
 use App\Http\Resources\AppCategoriesResource;
 use App\Http\Resources\EmployeeResource;
 use App\Models\AppCategories;
 use App\Models\RunningApps;
+use App\Models\Team;
 use App\Models\TrackRecords;
-use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -65,6 +63,15 @@ class EmployeeController extends Controller
         $employee = Employee::find($id);
         return response()->json([
             'data' => $employee,
+            'message' => 'Success'
+        ], 200);
+    }
+
+    public function getTeams()
+    {
+        $teams = Team::where('manager_id', Auth::user()->id)->get();
+        return response()->json([
+            'data' => $teams,
             'message' => 'Success'
         ], 200);
     }
