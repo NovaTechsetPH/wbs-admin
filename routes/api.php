@@ -65,14 +65,6 @@ Route::middleware('auth:sanctum')->group(function () {
     // Attendance
     Route::get('/attendance/weekly/{date?}', [EmployeeController::class, 'getWeeklyAttendance']);
 
-    Route::get('/latest', function () {
-        $latest = DB::table('tblappversion')->orderBy('id', 'desc')->first();
-        return response()->json([
-            'data' => $latest,
-            'message' => 'Success'
-        ], 200);
-    });
-
     Route::put('/record', [RunningAppsController::class, 'recordLog'])->name('record');
     Route::patch('/record', [RunningAppsController::class, 'updateLog'])->name('record-update');
 });
@@ -81,3 +73,12 @@ Route::post('/signup', [AuthController::class, 'signup']);
 Route::post('/login', [AuthController::class, 'login']);
 
 Route::get('/employees/image/{id}', [EmployeeController::class, 'getImageById']);
+
+
+Route::get('/latest', function () {
+    $latest = DB::table('tblappversion')->orderBy('id', 'desc')->first();
+    return response()->json([
+        'data' => $latest,
+        'message' => 'Success'
+    ], 200);
+});
