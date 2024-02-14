@@ -82,3 +82,11 @@ Route::get('/latest', function () {
         'message' => 'Success'
     ], 200);
 });
+
+Route::get('/versions', function () {
+    $versions = DB::table('tblappversion')->orderBy('id', 'desc')->get();
+    return response()->json([
+        'data' => $versions,
+        'message' => 'Success'
+    ], 200);
+});
