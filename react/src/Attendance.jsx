@@ -58,7 +58,7 @@ const Attendance = () => {
               status: emp.active_status,
               online: getLastActivity(emp.last_activity),
               attendance: filterByEmployee,
-              holidays: ["2024-01-01", "2024-02-14"],
+              holidays: ["2024-01-01"],
             });
           });
           return formatData;
