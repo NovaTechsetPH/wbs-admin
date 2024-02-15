@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect } from "react";
-import { Navigate, Outlet } from "react-router-dom";
+import { Navigate, Outlet, useLocation } from "react-router-dom";
 import { useStateContext } from "../context/ContextProvider";
 import axiosClient from "../axios-client.js";
 
@@ -11,6 +11,11 @@ import { Toaster } from "./ui/sonner";
 
 export default function DefaultLayout() {
   const { token, setUser } = useStateContext();
+  const location = useLocation();
+
+  useEffect(() => {
+    document.title = "nTrac Admin | " + location.pathname.split("/")[1];
+  }, [location]);
 
   useEffect(() => {
     axiosClient.get("/user").then(({ data }) => {
