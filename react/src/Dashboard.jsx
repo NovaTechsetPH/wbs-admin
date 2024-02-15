@@ -19,11 +19,13 @@ import moment from "moment";
 import { Card, CardContent, CardHeader, CardTitle } from "./components/ui/card";
 import TeamWorkHours from "./components/extra/team-work-hours";
 import { Skeleton } from "./components/ui/skeleton";
+import { useStateContext } from "./context/ContextProvider";
 
 const CATEGORY = ["Unproductive", "Productive", "Neutral"];
 
 function Dashboard() {
   const { date } = useDashboardContext();
+  const { currentTeam } = useStateContext();
   const [selectedDate, setSelectedDate] = useState(date);
   const [productivity, setProductivity] = useState([]);
   const [rawApps, setRawApps] = useState([]);
@@ -50,7 +52,7 @@ function Dashboard() {
     });
     setTotal({ ...tmpTotal, productiveHrs: secondsToHuman(productiveHrs) });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [appList.Productive]);
+  }, [appList.Productive, currentTeam]);
 
   // App Listing
   useEffect(() => {
@@ -58,6 +60,7 @@ function Dashboard() {
     axiosClient
       .post("/dashboard/apps", {
         date: selectedDate,
+        teamId: currentTeam,
       })
       .then(async ({ data }) => {
         let listApps = {
@@ -113,7 +116,7 @@ function Dashboard() {
         setAppList(listApps);
       })
       .then(() => setIsLoading(false));
-  }, [selectedDate]);
+  }, [selectedDate, currentTeam]);
 
   const handleDateChange = (newDate) => {
     setSelectedDate(newDate);

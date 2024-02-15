@@ -38,6 +38,7 @@ import {
   SelectValue,
 } from "@ui/select";
 import { Checkbox } from "@ui/checkbox";
+import { useStateContext } from "@/context/ContextProvider";
 
 const IDLE_APPS = ["Windows Default Lock Screen", "Task Switching", "Desktop"];
 
@@ -185,6 +186,7 @@ export const AlertDialogTemplate = ({
   module = "attendance",
 }) => {
   const [employees, setEmployees] = useState([]);
+  const { currentTeam } = useStateContext();
   const form = useForm({ resolver: zodResolver(FormSchema), defaultValues });
   const [dateRange, setDateRange] = useState({
     from: moment().subtract(7, "days").toDate(),
@@ -242,7 +244,7 @@ export const AlertDialogTemplate = ({
 
   useEffect(() => {
     axiosClient
-      .get("/employees")
+      .get(`/employees/team/${currentTeam}`)
       .then(({ data }) => {
         let items = data.data;
         setEmployees(items);
@@ -253,7 +255,7 @@ export const AlertDialogTemplate = ({
       })
       .catch((err) => console.log(err));
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [currentTeam]);
 
   return (
     <AlertDialog open={open} onOpenChange={setDialogOpen}>

@@ -19,6 +19,7 @@ import {
   DashboardContextProvider,
 } from "./context/DashboardContextProvider";
 import { useParams } from "react-router-dom";
+import { useStateContext } from "./context/ContextProvider";
 
 const CATEGORY = ["Unproductive", "Productive", "Neutral"];
 
@@ -39,6 +40,7 @@ const getWorkDuration = (data) => {
 
 const ActivityTracking = () => {
   const { date } = useDashboardContext();
+  const { currentTeam } = useStateContext();
   const idParameter = useParams().empId;
   const [selectedDate, setSelectedDate] = useState(date);
   const [productivity, setProductivity] = useState([]);
@@ -66,10 +68,10 @@ const ActivityTracking = () => {
 
   useEffect(() => {
     axiosClient
-      .get("/employees")
+      .get(`/employees/team/status/${currentTeam}`)
       .then(({ data }) => setEmployees(data.data))
       .catch((err) => console.log(err));
-  }, []);
+  }, [currentTeam]);
 
   useEffect(() => {
     if (!empId) return;

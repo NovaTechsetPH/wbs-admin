@@ -2,6 +2,7 @@ import { createContext, useContext, useState } from "react";
 
 const StateContext = createContext({
   currentUser: null,
+  currentTeam: null,
   token: null,
   notification: null,
   setUser: () => {},
@@ -9,6 +10,8 @@ const StateContext = createContext({
   setNotification: () => {},
   setFilterString: () => {},
   setEmployees: () => {},
+  setTeams: () => {},
+  setCurrentTeam: () => {},
 });
 
 export const ContextProvider = ({ children }) => {
@@ -17,6 +20,8 @@ export const ContextProvider = ({ children }) => {
   const [notification, _setNotification] = useState("");
   const [filterString, _setFilterString] = useState("");
   const [employees, setEmployees] = useState({});
+  const [teams, setTeams] = useState([]);
+  const [currentTeam, setCurrentTeam] = useState(1);
 
   const setToken = (token) => {
     _setToken(token);
@@ -37,9 +42,6 @@ export const ContextProvider = ({ children }) => {
 
   const setFilterString = (term) => {
     _setFilterString(term);
-    // return employees.map((emp) => {
-    //   return emp.name.toLowerCase().includes(term.toLowerCase());
-    // });
   };
 
   return (
@@ -55,6 +57,10 @@ export const ContextProvider = ({ children }) => {
         setFilterString,
         employees,
         setEmployees,
+        teams,
+        setTeams,
+        currentTeam,
+        setCurrentTeam,
       }}
     >
       {children}

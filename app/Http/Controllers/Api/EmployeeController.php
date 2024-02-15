@@ -7,6 +7,8 @@ use App\Models\Employee;
 use App\Http\Resources\AppCategoriesResource;
 use App\Http\Resources\EmployeeResource;
 use App\Models\AppCategories;
+use App\Models\ManagerTeam;
+use App\Models\Position;
 use App\Models\RunningApps;
 use App\Models\Team;
 use App\Models\TrackRecords;
@@ -21,7 +23,7 @@ class EmployeeController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index($teamid = null)
     {
         // return EmployeeResource::collection(Employee::query()->orderBy('id', 'desc')->paginate(10));
 
@@ -50,6 +52,22 @@ class EmployeeController extends Controller
         ], 200);
     }
 
+    public function getEmployeesStatus($teamid = null)
+    {
+        $positions = Position::where('team_id', $teamid)->get();
+        $data = [];
+        foreach ($positions as $position) {
+            for ($i = 0; $i < count($position->employees); $i++) {
+                array_push($data, $position->employees[$i]);
+            }
+        }
+
+        return response()->json([
+            'data' => $data,
+            'message' => 'Successfully retrieved all employees',
+        ], 200);
+    }
+
     public function getImageById($id)
     {
         $employee = Employee::find($id);
@@ -69,9 +87,29 @@ class EmployeeController extends Controller
 
     public function getTeams()
     {
-        $teams = Team::where('manager_id', Auth::user()->id)->get();
+        $manager_teams = ManagerTeam::where('manager_id', Auth::user()->id)->get();
+        $teams = [];
+        foreach ($manager_teams as $team) {
+            $teams[] = Team::find($team->team_id);
+        }
+
         return response()->json([
             'data' => $teams,
+            'message' => 'Success'
+        ], 200);
+    }
+
+    public function getEmployeesByTeam($id)
+    {
+        $positions = Position::where('team_id', $id)->get();
+        $employees = [];
+        foreach ($positions as $postion) {
+            foreach ($postion->employees as $emps) {
+                array_push($employees, $emps);
+            }
+        }
+        return response()->json([
+            'data' => $employees,
             'message' => 'Success'
         ], 200);
     }
@@ -361,8 +399,16 @@ class EmployeeController extends Controller
     public function getAllDailyOpenedApps(Request $request)
     {
         $date = $request->date ?? Carbon::now()->toDateString();
-        $emps_under = Auth::user()->positions()->with('employees')->get()
-            ->pluck('employees')->flatten()->pluck('id')->toArray();
+        // $emps_under = Auth::user()->positions()->with('employees')->get()
+        //     ->pluck('employees')->flatten()->pluck('id')->toArray();
+
+        $positions = Position::where('team_id', $request->teamId)->get();
+        $emps_under = [];
+        foreach ($positions as $position) {
+            foreach ($position->employees as $emps) {
+                array_push($emps_under, $emps->id);
+            }
+        }
 
         $apps = RunningApps::with('employee', 'category')
             ->where('date', Carbon::parse($date)->toDateString())
@@ -396,20 +442,22 @@ class EmployeeController extends Controller
         ], 200);
     }
 
-    public function getWorkHrs($date = null)
+    public function getWorkHrs($date = null, $teamid = null)
     {
         try {
-            $emps_under = Auth::user()->positions()->with('employees')->get()
-                ->pluck('employees')->flatten()->pluck('id')->toArray();
+            // $emps_under = Auth::user()->positions()->with('employees')->get()
+            //     ->pluck('employees')->flatten()->pluck('id')->toArray();
+
+            $positions = Position::where('team_id', $teamid)->get();
+            $emps_under = [];
+            foreach ($positions as $position) {
+                foreach ($position->employees as $emps) {
+                    array_push($emps_under, $emps->id);
+                }
+            }
+
             $date = $date ?? Carbon::now()->toDateString();
             $work_hrs = TrackRecords::with('employee')
-                // ->whereIn('userid', function ($qry) {
-                //     $qry->select('id')
-                //         ->from('accounts')
-                //         ->where('status', 'Approved')
-                //         ->where('department', Auth::user()->department ?? 'Technology')
-                //         ->groupBy('id');
-                // })
                 ->whereIn('userid', $emps_under)
                 ->where('datein', Carbon::parse($date)->toDateString())
                 ->get();
@@ -542,21 +590,26 @@ class EmployeeController extends Controller
         ]);
     }
 
-    public function getWeeklyAttendance($date = null)
+    public function getWeeklyAttendance($date = null, $teamid = null)
     {
         try {
             $date = Carbon::parse($date) ?? Carbon::now();
             $day_of_week = Carbon::parse($date)->dayOfWeek;
             $date_from = Carbon::parse($date)->subDays($day_of_week);
             $date_to = Carbon::parse($date)->addDays(6 - $day_of_week);
-            $employees = Auth::user()->positions()
-                ->with('employees')
-                ->get()->pluck('employees')
-                ->flatten();
+            $positions = Position::where('team_id', $teamid)->get();
+            $employees = [];
+            $ids = [];
+            foreach ($positions as $position) {
+                foreach ($position->employees as $emps) {
+                    array_push($employees, $emps);
+                    array_push($ids, $emps->id);
+                }
+            }
 
             // Get employees weekly attendance
             $attendance = TrackRecords::with('employee')
-                ->whereIn('userid', $employees->pluck('id')->toArray())
+                ->whereIn('userid', $ids)
                 ->whereBetween('datein', [$date_from->toDateString(), $date_to->toDateString()])
                 ->get();
         } catch (\Exception $e) {

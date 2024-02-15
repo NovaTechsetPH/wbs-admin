@@ -52,4 +52,9 @@ class User extends Authenticatable
     {
         return $this->positions()->employees();
     }
+
+    public function manager_teams()
+    {
+        return $this->hasMany(ManagerTeam::class, 'manager_id', 'id');
+    }
 }

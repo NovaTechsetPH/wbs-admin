@@ -5,8 +5,6 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-use Carbon\Carbon;
-
 class Position extends Model
 {
     use HasFactory;
@@ -19,6 +17,7 @@ class Position extends Model
         'description',
         'department',
         'manager_id',
+        'team_id',
         'active',
     ];
 

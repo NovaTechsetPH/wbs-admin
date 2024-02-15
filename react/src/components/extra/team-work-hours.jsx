@@ -13,6 +13,7 @@ import moment from "moment";
 import { secondsToHuman } from "@/lib/timehash";
 import { Skeleton } from "../ui/skeleton";
 import "./../../main.scss";
+import { useStateContext } from "@/context/ContextProvider";
 
 const getWorkDuration = (data) => {
   if (!moment(data.datein).isSame(moment(), "day") && data.timeout === null) {
@@ -49,6 +50,7 @@ const isWeekend = (date) => {
 
 const TeamWorkHours = ({ productive, handleTotalChange }) => {
   const { date } = useDashboardContext();
+  const { currentTeam } = useStateContext();
   const [workLogs, setWorkLogs] = useState([]);
   const [loading, setLoading] = useState(false);
   const [total, setTotal] = useState({
@@ -57,11 +59,6 @@ const TeamWorkHours = ({ productive, handleTotalChange }) => {
     absent: 0,
     present: 0,
   });
-
-  // const lateCutOff = moment().subtract(15, "minutes").format("HH:mm:ss");
-  // const getEmployeeLate = (item) => {
-
-  // }
 
   useEffect(
     () => handleTotalChange(total),
@@ -72,7 +69,9 @@ const TeamWorkHours = ({ productive, handleTotalChange }) => {
   useEffect(() => {
     setLoading(true);
     axiosClient
-      .get(`/dashboard/workhrs/${moment(date).format("YYYY-MM-DD")}`)
+      .get(
+        `/dashboard/workhrs/${moment(date).format("YYYY-MM-DD")}/${currentTeam}`
+      )
       .then(({ data }) => {
         setLoading(false);
         let empIds = [];
@@ -102,7 +101,7 @@ const TeamWorkHours = ({ productive, handleTotalChange }) => {
         });
       });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [date]);
+  }, [date, currentTeam]);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -145,7 +144,9 @@ const TeamWorkHours = ({ productive, handleTotalChange }) => {
                       >
                         <AvatarImage
                           // src={`/images/${item.userid}.png`}
-                          src={`https://192.46.230.32/api/employees/image/${item.employee.id}`}
+                          src={`${
+                            import.meta.env.VITE_BASE_IMG_URL
+                          }/api/employees/image/${item.employee.id}`}
                           alt="Avatar"
                         />
                         <AvatarFallback>

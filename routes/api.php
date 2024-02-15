@@ -41,7 +41,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // Dashboard
     Route::post('/dashboard/apps', [EmployeeController::class, 'getAllDailyOpenedApps']);
-    Route::get('/dashboard/workhrs/{date?}', [EmployeeController::class, 'getWorkHrs']);
+    Route::get('/dashboard/workhrs/{date?}/{teamid?}', [EmployeeController::class, 'getWorkHrs']);
 
     // Employees
     Route::get('/employees/absent', [EmployeeController::class, 'absent']);
@@ -49,6 +49,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/employees/runningapps', [EmployeeController::class, 'runningapps']);
     Route::post('/employees/apps', [EmployeeController::class, 'getEmployeeApps']);
     Route::post('/employees/productivity', [EmployeeController::class, 'getProductivity']);
+    Route::get('/employees/team/{team}', [EmployeeController::class, 'getEmployeesByTeam']);
+    Route::get('/employees/team/status/{team?}', [EmployeeController::class, 'getEmployeesStatus']);
 
     // Activity Tracking
     Route::get('/activity/employee/{userid}/{date?}', [ActivityTrackController::class, 'getEmployeeActivity']);
@@ -63,7 +65,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/userapproval', [EmployeeController::class, 'getUserForApproval']);
 
     // Attendance
-    Route::get('/attendance/weekly/{date?}', [EmployeeController::class, 'getWeeklyAttendance']);
+    Route::get('/attendance/weekly/{date?}/{teamid?}', [EmployeeController::class, 'getWeeklyAttendance']);
 
     Route::put('/record', [RunningAppsController::class, 'recordLog'])->name('record');
     Route::patch('/record', [RunningAppsController::class, 'updateLog'])->name('record-update');

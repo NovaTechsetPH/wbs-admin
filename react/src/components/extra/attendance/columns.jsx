@@ -103,7 +103,7 @@ export const columns = () => [
       let lastName = row.original.lastName;
       return (
         <div className="flex space-x-2 ml-4 items-center">
-          <div className={`avatar ${status.toLowerCase()}`}>
+          <div className={`avatar ${status?.toLowerCase()}`}>
             <Avatar className={`h-10 w-10 border-2 ${getStatusStyle(status)}`}>
               <AvatarImage
                 // src={`/images/${row.original.employeeId}.png`}

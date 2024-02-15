@@ -1,4 +1,10 @@
-import { useCallback, useMemo, useState, createContext } from "react";
+import {
+  useCallback,
+  useMemo,
+  useState,
+  createContext,
+  useEffect,
+} from "react";
 import { columns } from "@/components/extra/attendance/columns";
 import { DataTable } from "@/components/extra/attendance/data-table";
 import { v4 as uuidv4 } from "uuid";
@@ -10,6 +16,7 @@ import {
 } from "./context/DashboardContextProvider";
 import { useQuery } from "@tanstack/react-query";
 import { getLastActivity } from "./Employees";
+import { useStateContext } from "./context/ContextProvider";
 
 const CUTOFF_TIME = moment("12:00:00", "HH:mm");
 
@@ -17,6 +24,7 @@ const PaginationContext = createContext(5);
 
 const Attendance = () => {
   const { date } = useDashboardContext();
+  const { currentTeam } = useStateContext();
   const [selectedDate, setSelectedDate] = useState(date);
 
   const getDayStatus = useCallback(
@@ -31,6 +39,8 @@ const Attendance = () => {
     [selectedDate]
   );
 
+  const [pagination, setPagination] = useState(PaginationContext);
+
   const dailyAttendance = (data) => {
     if (moment(data.timein, "HH:mm").isAfter(CUTOFF_TIME)) {
       return "Late";
@@ -39,10 +49,14 @@ const Attendance = () => {
   };
 
   const { data, isLoading } = useQuery({
-    queryKey: ["attendance", selectedDate],
+    queryKey: ["attendance", selectedDate, currentTeam],
     queryFn: () =>
       axiosClient
-        .get(`/attendance/weekly/${moment(selectedDate).format("YYYY-MM-DD")}`)
+        .get(
+          `/attendance/weekly/${moment(selectedDate).format(
+            "YYYY-MM-DD"
+          )}/${currentTeam}`
+        )
         .then(({ data }) => {
           let formatData = [];
           data.employees.forEach((emp) => {
@@ -58,7 +72,7 @@ const Attendance = () => {
               status: emp.active_status,
               online: getLastActivity(emp.last_activity),
               attendance: filterByEmployee,
-              holidays: ["2024-01-01", "2024-02-14"],
+              holidays: ["2024-01-01"],
             });
           });
           return formatData;
@@ -99,11 +113,15 @@ const Attendance = () => {
 
   const memoizedCols = useMemo(columns, []);
 
+  useEffect(() => {
+    setPagination(PaginationContext);
+  }, []);
+
   return (
     <DashboardContextProvider>
       <div className="hidden h-full flex-1 flex-col space-y-8 p-8 md:flex">
         {!isLoading && (
-          <PaginationContext.Provider>
+          <PaginationContext.Provider value={pagination}>
             <DataTable
               data={data}
               columns={memoizedCols}
@@ -111,12 +129,6 @@ const Attendance = () => {
             />
           </PaginationContext.Provider>
         )}
-        {/* <DataTable
-          data={data}
-          columns={columns}
-          dateChanged={setSelectedDate}
-          isLoading={isLoading}
-        /> */}
       </div>
     </DashboardContextProvider>
   );

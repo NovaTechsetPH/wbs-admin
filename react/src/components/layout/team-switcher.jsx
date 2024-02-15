@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
-import axiosClient from "@/axios-client";
 import { cn } from "@/lib/utils";
 import FormAlert from "./form-alert";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
+import { useStateContext } from "@/context/ContextProvider";
+import axiosClient from "@/axios-client";
 
 import {
   Select,
@@ -93,8 +94,8 @@ export function TeamSwitcher({ isCollapsed }) {
     return data.data;
   };
 
+  const { setCurrentTeam, setTeams, teams } = useStateContext();
   const [selectedAccount, setSelectedAccount] = useState("");
-  const [teams, setTeams] = useState([]);
   const [dialogOpen, setDialogOpen] = useState(false);
 
   const handleAddTeam = () => {
@@ -107,6 +108,9 @@ export function TeamSwitcher({ isCollapsed }) {
       handleAddTeam();
       value = selectedAccount;
     }
+
+    let teamId = teams.find((team) => team.name === value).id;
+    setCurrentTeam(parseInt(teamId));
     setSelectedAccount(value);
   };
 
@@ -115,7 +119,7 @@ export function TeamSwitcher({ isCollapsed }) {
       setSelectedAccount(data[0].name);
       setTeams(data);
     });
-  }, []);
+  }, [setTeams]);
 
   return (
     <>
