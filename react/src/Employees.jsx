@@ -3,12 +3,7 @@ import { columns } from "@/components/extra/employee/columns";
 import { DataTable } from "@/components/extra/employee/data-table";
 import axiosClient from "./axios-client";
 import moment from "moment";
-
-// const getOnlineStatus = (item) => {
-//   if (item.active_status === "Offline") return "Inactive";
-//   if (item.active_status === "Active") return "Active";
-//   return "Away";
-// };
+import { useStateContext } from "./context/ContextProvider";
 
 export const getLastActivity = (act) => {
   if (act) {
@@ -28,9 +23,10 @@ const getEmployeeId = (emp) => {
 
 const Employees = () => {
   const [data, setData] = useState({});
+  const { currentTeam } = useStateContext();
   useEffect(() => {
     axiosClient
-      .get("/employees")
+      .get(`/employees/team/${currentTeam}`)
       .then(async ({ data }) => {
         let formatData = [];
         await data.data.forEach((item) => {
@@ -52,7 +48,7 @@ const Employees = () => {
         setData(formatData.sort((a, b) => (a.status > b.status ? 1 : -1)));
       })
       .catch((err) => console.log(err));
-  }, []);
+  }, [currentTeam]);
 
   return (
     <div className="hidden h-full flex-1 flex-col space-y-8 p-8 md:flex">
