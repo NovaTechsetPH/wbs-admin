@@ -118,8 +118,9 @@ export function TeamSwitcher({ isCollapsed }) {
     getTeams().then((data) => {
       setSelectedAccount(data[0].name);
       setTeams(data);
+      setCurrentTeam(data[0].id);
     });
-  }, [setTeams]);
+  }, [setTeams, setCurrentTeam]);
 
   return (
     <>
