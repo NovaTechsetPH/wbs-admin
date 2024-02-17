@@ -88,7 +88,12 @@ const getTotalWorkedKuno = (timein, timeout, data) => {
   let endTime =
     !moment(timein).isSame(moment(), "day") && timeout === null
       ? data[data.length - 1].time
-      : timeout;
+      : moment(timeout, "HH:mm:ss").diff(
+          moment(timein, "HH:mm:ss"),
+          "seconds"
+        ) > 0
+      ? timeout
+      : "23:59:59";
   let diff =
     moment(timein).isSame(moment(), "day") && timeout === null
       ? moment().diff(moment(timein, "HH:mm:ss"), "seconds")
