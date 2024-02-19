@@ -19,7 +19,7 @@ export function DrawerMenu({ children, openDrawer }) {
   }, [isDesktop, openDrawer]);
 
   return (
-    <Drawer direction="left" open={open} onOpenChange={onOpenChange}>
+    <Drawer direction="left" open={false} onOpenChange={onOpenChange}>
       <DrawerTrigger asChild>{children}</DrawerTrigger>
       <DrawerContent
         className="h-full w-3/4 mt-0"
