@@ -6,11 +6,17 @@ import { LayersIcon } from "@radix-ui/react-icons";
 import { Separator } from "../ui/separator";
 import { TeamSwitcher } from "../layout/team-switcher";
 
-export function Sidebar({ className }) {
+export function Sidebar({ className, open, setOpen }) {
   const location = useLocation();
   const [currentRoute, setCurrentRoute] = useState("");
   // const [isCollapsed, setIsCollapsed] = useState(false);
   const isCollapsed = false;
+
+  const handleOnClick = () => {
+    if (open) {
+      setOpen(false);
+    }
+  };
 
   useEffect(() => setCurrentRoute(location.pathname), [location]);
 
@@ -171,6 +177,7 @@ export function Sidebar({ className }) {
             {navItems.map((item) => (
               <Link key={item.name} to={item.href}>
                 <Button
+                  onClick={handleOnClick}
                   variant={
                     currentRoute.includes(item.href) ? "default" : "ghost"
                   }

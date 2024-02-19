@@ -94,12 +94,11 @@ export function TeamSwitcher({ isCollapsed }) {
     return data.data;
   };
 
-  const { setCurrentTeam, setTeams, teams } = useStateContext();
+  const { setCurrentTeam, setTeams, teams, currentTeam } = useStateContext();
   const [selectedAccount, setSelectedAccount] = useState("");
   const [dialogOpen, setDialogOpen] = useState(false);
 
   const handleAddTeam = () => {
-    console.log("add team");
     setDialogOpen(true);
   };
 
@@ -111,16 +110,22 @@ export function TeamSwitcher({ isCollapsed }) {
 
     let teamId = teams.find((team) => team.name === value).id;
     setCurrentTeam(parseInt(teamId));
+    localStorage.setItem("currentTeam", teamId);
     setSelectedAccount(value);
   };
 
   useEffect(() => {
     getTeams().then((data) => {
-      setSelectedAccount(data[0].name);
+      let value = !currentTeam ? data[0].id : currentTeam;
+      let team = data.find((team) => team.id === value);
+      setSelectedAccount(team.name);
       setTeams(data);
-      setCurrentTeam(data[0].id);
+      if (!currentTeam) {
+        setCurrentTeam(team.id);
+      }
     });
-  }, [setTeams, setCurrentTeam]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [setCurrentTeam, setTeams]);
 
   return (
     <>

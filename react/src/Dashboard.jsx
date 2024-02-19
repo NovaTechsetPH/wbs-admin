@@ -128,12 +128,14 @@ function Dashboard() {
 
   return (
     <DashboardContextProvider>
-      <div className="flex-1 space-y-4 p-8 pt-6">
-        <div className="flex items-center justify-between space-y-2">
+      <div className="flex-1 w-full space-y-4 sm:p-4 md:p-6 lg:p-8 pt-6">
+        <div className="flex flex-wrap items-center md:justify-between md:flex-nowrap space-y-6">
           <div className="space-y-1">
-            <h2 className="text-3xl font-bold tracking-tight">Dashboard</h2>
+            <h2 className="text-3xl md:text-3xl font-bold tracking-tight">
+              Dashboard
+            </h2>
           </div>
-          <div className="ml-auto mr-4">
+          <div className="shrink ml-auto md:ml-auto lg:ml-auto">
             <DatePicker onDateChanged={handleDateChange} />
           </div>
         </div>
@@ -151,7 +153,7 @@ function Dashboard() {
           </div>
           {/* Temporary Tab */}
           <TabsContent value="team_productivity" className="space-y-4">
-            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4 sm:grid-cols-1">
               <Card>
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                   <CardTitle className="text-sm font-medium">
@@ -225,8 +227,9 @@ function Dashboard() {
                 </CardContent>
               </Card>
             </div>
+            {/* Adjust here */}
             <div className="mb-4 grid gap-4 md:grid-cols-2 lg:grid-cols-7">
-              <div className="col-span-4">
+              <div className="col-span-4 overflow-x-auto">
                 <ActivityChart
                   productivity={productivity}
                   rawApps={rawApps}
@@ -235,10 +238,10 @@ function Dashboard() {
                 />
               </div>
               <Card className="col-span-3">
-                <CardHeader>
+                <CardHeader className={"px-2 p-4 md:p-4 lg:p-6"}>
                   <CardTitle>Employee Work Hours</CardTitle>
                 </CardHeader>
-                <CardContent>
+                <CardContent className={"p-2 md:p-4 lg:p-6"}>
                   <ScrollArea>
                     <TeamWorkHours
                       handleTotalChange={handleTotalChange}
@@ -259,28 +262,22 @@ function Dashboard() {
             </div>
             <Separator className="my-4" />
             <div className="relative">
-              <div className="grid grid-cols-3 gap-4">
-                <div className="col-span-1">
-                  <TeamAppList
-                    title={"Productive apps"}
-                    apps={appList.Productive}
-                    className={"bg-success text-success-foreground"}
-                  />
-                </div>
-                <div className="col-span-1">
-                  <TeamAppList
-                    title={"Unproductive apps"}
-                    apps={appList.Unproductive}
-                    className={"bg-warning text-warning-foreground"}
-                  />
-                </div>
-                <div className="col-span-1">
-                  <TeamAppList
-                    title={"Neutral apps"}
-                    apps={appList.Neutral}
-                    className={"bg-muted text-muted-foreground"}
-                  />
-                </div>
+              <div className="grid gap-4 md:grid-cols-1 lg:grid-cols-3 sm:grid-cols-1">
+                <TeamAppList
+                  title={"Productive apps"}
+                  apps={appList.Productive}
+                  className={"bg-success text-success-foreground"}
+                />
+                <TeamAppList
+                  title={"Unproductive apps"}
+                  apps={appList.Unproductive}
+                  className={"bg-warning text-warning-foreground"}
+                />
+                <TeamAppList
+                  title={"Neutral apps"}
+                  apps={appList.Neutral}
+                  className={"bg-muted text-muted-foreground"}
+                />
               </div>
             </div>
           </TabsContent>

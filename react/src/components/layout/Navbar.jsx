@@ -1,21 +1,27 @@
 import { Input } from "../ui/input";
 import ntImage from "/nt-logo.png";
 import Logout from "./Logout";
-// import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
+import { DrawerMenu } from "./drawer-menu";
+import { Link } from "react-router-dom";
+import { useState } from "react";
 
 const Navbar = () => {
+  const [open, setOpen] = useState(false);
+
+  const handleOnClick = () => {
+    setOpen((prevValue) => !prevValue);
+    return open;
+  };
+
   return (
     <>
       <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-        <div className="container flex h-14 items-center">
+        <div className="container flex h-14 max-w-screen-2xl items-center">
           <div className="mr-4 hidden md:flex">
             <div className="mr-6 flex items-center space-x-2">
-              <a
-                href="/"
-                aria-current="page"
-                aria-label="Homepage"
+              <Link
+                to={"/"}
                 className="flex btn btn-ghost px-2 flex-row space-between"
-                data-svelte-h="svelte-pw6yxt"
               >
                 <img src={ntImage} alt="NT-Logo" width={36} height={36} />
                 <div className="font-title inline-flex text-lg md:text-2xl font-bold">
@@ -26,38 +32,61 @@ const Navbar = () => {
                     Admin
                   </span>
                 </div>
-              </a>
+              </Link>
             </div>
           </div>
-          <button
-            className="inline-flex items-center justify-center whitespace-nowrap rounded-md font-medium transition-colors focus-visible:outline-none focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 hover:text-accent-foreground h-9 py-2 mr-2 px-0 text-base hover:bg-transparent focus-visible:bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0 md:hidden"
-            type="button"
-            aria-haspopup="dialog"
-            aria-expanded="false"
-            aria-controls="radix-:R15hja:"
-            data-state="closed"
-          >
-            {/* <Avatar className="h-9 w-9 border-black-500 border">
-              <AvatarImage src={ntImage} alt="Admin" />
-              <AvatarFallback>S</AvatarFallback>
-            </Avatar> */}
-            <img src={ntImage} alt="NT-Logo" width={36} height={36} />
-            <span className="sr-only">Toggle Menu</span>
-          </button>
+          <DrawerMenu openDrawer={open}>
+            <button
+              onClick={handleOnClick}
+              className="inline-flex items-center justify-center whitespace-nowrap rounded-md font-medium transition-colors focus-visible:outline-none focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 hover:text-accent-foreground h-9 py-2 mr-2 px-0 text-base hover:bg-transparent focus-visible:bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0 lg:hidden"
+            >
+              <svg
+                strokeWidth="1.5"
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-5 w-5"
+              >
+                <path
+                  d="M3 5H11"
+                  stroke="currentColor"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                ></path>
+                <path
+                  d="M3 12H16"
+                  stroke="currentColor"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                ></path>
+                <path
+                  d="M3 19H21"
+                  stroke="currentColor"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                ></path>
+              </svg>
+              <span className="sr-only">Toggle Menu</span>
+            </button>
+          </DrawerMenu>
+          <img
+            src={ntImage}
+            className="md:hidden"
+            alt="NT-Logo"
+            width={36}
+            height={36}
+          />
           <div className="flex flex-1 items-center justify-between space-x-2 md:justify-end">
             <div className="w-full flex-1 md:w-auto md:flex-none">
               <Input />
             </div>
             <nav className="flex items-center">
-              <a
-                target="_blank"
-                rel="noreferrer"
-                href="https://github.com/shadcn-ui/ui"
-              >
-                <div className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-9 py-2 w-9 px-0">
-                  <Logout />
-                </div>
-              </a>
+              <div className="cursor-pointer inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-9 py-2 w-9 px-0">
+                <Logout />
+              </div>
               <button
                 className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-9 py-2 w-9 px-0"
                 type="button"
