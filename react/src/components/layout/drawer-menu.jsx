@@ -8,7 +8,7 @@ export function DrawerMenu({ children, openDrawer }) {
   const isDesktop = useMediaQuery("(min-width: 768px)");
 
   const onOpenChange = (open) => {
-    if (!open) setOpen(open);
+    // if (!open) setOpen(open);
   };
 
   useEffect(() => {
