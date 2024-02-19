@@ -1,9 +1,11 @@
 import { Drawer, DrawerContent, DrawerTrigger } from "@/components/ui/drawer";
 import { Sidebar } from "../extra/sidebar";
 import { useEffect, useState } from "react";
+import { useMediaQuery } from "@/lib/media-query";
 
 export function DrawerMenu({ children, openDrawer }) {
   const [open, setOpen] = useState(openDrawer);
+  const isDesktop = useMediaQuery("(min-width: 768px)");
 
   const onOpenChange = (open) => {
     if (!open) setOpen(open);
@@ -11,7 +13,10 @@ export function DrawerMenu({ children, openDrawer }) {
 
   useEffect(() => {
     setOpen((prevValue) => !prevValue);
-  }, [openDrawer]);
+    if (isDesktop) {
+      setOpen(false);
+    }
+  }, [isDesktop, openDrawer]);
 
   return (
     <Drawer direction="left" open={open} onOpenChange={onOpenChange}>
