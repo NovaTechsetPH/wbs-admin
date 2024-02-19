@@ -10,10 +10,7 @@ import { DataTable } from "@/components/extra/attendance/data-table";
 import { v4 as uuidv4 } from "uuid";
 import axiosClient from "./axios-client";
 import moment from "moment";
-import {
-  DashboardContextProvider,
-  useDashboardContext,
-} from "./context/DashboardContextProvider";
+import { useDashboardContext } from "@/context/DashboardContextProvider";
 import { useQuery } from "@tanstack/react-query";
 import { getLastActivity } from "./Employees";
 import { useStateContext } from "./context/ContextProvider";
@@ -25,18 +22,17 @@ const PaginationContext = createContext(5);
 const Attendance = () => {
   const { date } = useDashboardContext();
   const { currentTeam } = useStateContext();
-  const [selectedDate, setSelectedDate] = useState(date);
 
   const getDayStatus = useCallback(
     (dayOfWeek) => {
       let now = moment().day();
       return dayOfWeek < now ||
-        moment(selectedDate).week() < moment().week() ||
-        moment(selectedDate).year() < moment().year()
+        moment(date).week() < moment().week() ||
+        moment(date).year() < moment().year()
         ? "Absent"
         : null;
     },
-    [selectedDate]
+    [date]
   );
 
   const [pagination, setPagination] = useState(PaginationContext);
@@ -49,11 +45,11 @@ const Attendance = () => {
   };
 
   const { data, isLoading } = useQuery({
-    queryKey: ["attendance", selectedDate, currentTeam],
+    queryKey: ["attendance", date, currentTeam],
     queryFn: () =>
       axiosClient
         .get(
-          `/attendance/weekly/${moment(selectedDate).format(
+          `/attendance/weekly/${moment(date).format(
             "YYYY-MM-DD"
           )}/${currentTeam}`
         )
@@ -98,7 +94,7 @@ const Attendance = () => {
             if (item.holidays.length > 0) {
               item.holidays.forEach((holiday) => {
                 let holidayDate = moment(holiday).format("dddd");
-                if (moment(holiday).isSame(moment(selectedDate), "week")) {
+                if (moment(holiday).isSame(moment(date), "week")) {
                   days = { ...days, [holidayDate.toLowerCase()]: "Holiday" };
                 }
               });
@@ -117,20 +113,18 @@ const Attendance = () => {
     setPagination(PaginationContext);
   }, []);
 
+  useEffect(() => {
+    console.log(date);
+  }, [date]);
+
   return (
-    <DashboardContextProvider>
-      <div className="hidden h-full flex-1 flex-col space-y-8 p-8 md:flex">
-        {!isLoading && (
-          <PaginationContext.Provider value={pagination}>
-            <DataTable
-              data={data}
-              columns={memoizedCols}
-              dateChanged={setSelectedDate}
-            />
-          </PaginationContext.Provider>
-        )}
-      </div>
-    </DashboardContextProvider>
+    <div className="hidden h-full flex-1 flex-col space-y-8 p-8 md:flex">
+      {!isLoading && (
+        <PaginationContext.Provider value={pagination}>
+          <DataTable data={data} columns={memoizedCols} />
+        </PaginationContext.Provider>
+      )}
+    </div>
   );
 };
 

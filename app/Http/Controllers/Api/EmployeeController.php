@@ -105,6 +105,11 @@ class EmployeeController extends Controller
         $employees = [];
         foreach ($positions as $postion) {
             foreach ($postion->employees as $emps) {
+                $last_activity = RunningApps::where('userid', $emps->id)
+                    ->orderBy('id', 'desc')
+                    ->first();
+
+                $emps->last_activity = $last_activity;
                 array_push($employees, $emps);
             }
         }

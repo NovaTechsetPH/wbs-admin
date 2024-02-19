@@ -1,32 +1,16 @@
 import { Cross2Icon } from "@radix-ui/react-icons";
 
-import { Button } from "../../ui/button";
-import { Input } from "../../ui/input";
+import { Button } from "@ui/button";
+import { Input } from "@ui/input";
 import { DataTableViewOptions } from "./data-table-view-options";
 import { DatePicker } from "../date-picker";
 
-// import { priorities, statuses } from "./columns";
-// import { DataTableFacetedFilter } from "./data-table-faceted-filter";
-// import { useEffect } from "react";
-
-export function DataTableToolbar({ table, handleDateChange }) {
+export function DataTableToolbar({ table }) {
   const isFiltered = table.getState().columnFilters.length > 0;
-
-  const onDateChanged = (newDate) => {
-    handleDateChange(newDate);
-  };
 
   return (
     <div className="flex items-center justify-between">
       <div className="flex flex-1 items-center space-x-2">
-        {/* <Input
-          placeholder="Filter by employee ID..."
-          value={table.getColumn("employeeId")?.getFilterValue() ?? ""}
-          onChange={(event) =>
-            table.getColumn("employeeId")?.setFilterValue(event.target.value)
-          }
-          className="h-8 w-[150px] lg:w-[250px]"
-        /> */}
         <Input
           placeholder="Filter employee name=..."
           value={table.getColumn("name")?.getFilterValue() ?? ""}
@@ -35,13 +19,6 @@ export function DataTableToolbar({ table, handleDateChange }) {
           }
           className="h-8 w-[150px] lg:w-[250px]"
         />{" "}
-        {/* {table.getColumn("status") && (
-          <DataTableFacetedFilter
-            column={table.getColumn("status")}
-            title="Status"
-            options={statuses}
-          />
-        )} */}
         {isFiltered && (
           <Button
             variant="ghost"
@@ -58,7 +35,7 @@ export function DataTableToolbar({ table, handleDateChange }) {
         <div className="flex items-center space-x-2">
           <DataTableViewOptions table={table} />
         </div>
-        <DatePicker onDateChanged={onDateChanged} />
+        <DatePicker />
       </div>
     </div>
   );

@@ -35,7 +35,7 @@ const CellBgColor = (cell) => {
   return "border-r";
 };
 
-export function DataTable({ columns, data, dateChanged }) {
+export function DataTable({ columns, data }) {
   const [rowSelection, setRowSelection] = React.useState({});
   const [columnVisibility, setColumnVisibility] = React.useState({
     sunday: false,
@@ -68,13 +68,9 @@ export function DataTable({ columns, data, dateChanged }) {
     getFacetedUniqueValues: getFacetedUniqueValues(),
   });
 
-  const handleDateChange = (date) => {
-    dateChanged(date);
-  };
-
   return (
     <div className="space-y-4">
-      <DataTableToolbar table={table} handleDateChange={handleDateChange} />
+      <DataTableToolbar table={table} />
       <div className="rounded-md border">
         <Table>
           <TableHeader>
