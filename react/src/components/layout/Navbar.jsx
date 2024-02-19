@@ -10,7 +10,6 @@ const Navbar = () => {
 
   const handleOnClick = () => {
     setOpen((prevValue) => !prevValue);
-    return open;
   };
 
   return (
