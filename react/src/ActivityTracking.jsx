@@ -14,10 +14,7 @@ import SelectDialog from "./components/extra/employee-select-dialog";
 import Widget from "./components/extra/widget";
 
 import { CandleData, handleAllocateTime, secondsToHuman } from "./lib/timehash";
-import {
-  useDashboardContext,
-  DashboardContextProvider,
-} from "./context/DashboardContextProvider";
+import { useDashboardContext } from "@/context/DashboardContextProvider";
 import { useParams } from "react-router-dom";
 import { useStateContext } from "./context/ContextProvider";
 
@@ -42,7 +39,6 @@ const ActivityTracking = () => {
   const { date } = useDashboardContext();
   const { currentTeam } = useStateContext();
   const idParameter = useParams().empId;
-  const [selectedDate, setSelectedDate] = useState(date);
   const [productivity, setProductivity] = useState([]);
   const [rawApps, setRawApps] = useState([]);
   const [employees, setEmployees] = useState([]);
@@ -60,8 +56,6 @@ const ActivityTracking = () => {
   const [arrival, setArrival] = useState("--:--");
   const [duty, setDuty] = useState("--:--");
 
-  const handleDateChange = (date) => setSelectedDate(date);
-
   const handleEmployeeChange = (id) => {
     setEmpId(id);
   };
@@ -78,7 +72,7 @@ const ActivityTracking = () => {
     setLoading(true);
     axiosClient
       .get(
-        `/activity/time-log/${empId ?? "0"}/${moment(selectedDate).format(
+        `/activity/time-log/${empId ?? "0"}/${moment(date).format(
           "YYYY-MM-DD"
         )}`
       )
@@ -90,11 +84,7 @@ const ActivityTracking = () => {
       });
 
     axiosClient
-      .get(
-        `/activity/employee/${empId}/${moment(selectedDate).format(
-          "YYYY-MM-DD"
-        )}`
-      )
+      .get(`/activity/employee/${empId}/${moment(date).format("YYYY-MM-DD")}`)
       .then(async ({ data }) => {
         let listApps = {
           Productive: [],
@@ -107,7 +97,7 @@ const ActivityTracking = () => {
         let cleanCandle = CandleData(
           data.data[0]?.time,
           data.data[dataLength - 1]?.time,
-          selectedDate
+          date
         ).map((candle) => {
           return {
             label: candle,
@@ -164,110 +154,109 @@ const ActivityTracking = () => {
       .then(() => setLoading(false))
       .catch((err) => console.log(err));
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedDate, empId]);
+  }, [date, empId]);
 
   return (
-    <DashboardContextProvider>
-      <div className="h-full px-4 py-6 lg:px-8">
-        <div className="flex items-center justify-between space-y-2">
-          <h2 className="text-3xl font-bold tracking-tight">
-            <SelectDialog
-              onEmployeeChanged={handleEmployeeChange}
-              data={employees}
-              selectedId={empId}
-            />
-          </h2>
-          <div className="flex items-center space-x-2">
-            <DatePicker onDateChanged={handleDateChange} />
-          </div>
+    <div className="h-full px-4 py-6 lg:px-8">
+      <div className="flex items-center justify-between space-y-2">
+        <h2 className="text-3xl font-bold tracking-tight">
+          <SelectDialog
+            onEmployeeChanged={handleEmployeeChange}
+            data={employees}
+            selectedId={empId}
+          />
+        </h2>
+        <div className="flex items-center space-x-2">
+          <DatePicker />
         </div>
-        <Separator className="my-4" />
-        <div className="relative">
-          <ScrollArea>
-            <div className="flex space-x-4 pb-4 col">
-              <div className="grid grid-cols-2 gap-4">
-                <div className="col-span-1">
-                  <ActivityChart
-                    productivity={productivity}
-                    rawApps={rawApps}
-                  />
-                </div>
-                <div className="col-span-1">
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="col-span-1">
-                      <Widget
-                        loading={loading}
-                        title={"Arrival time"}
-                        content={arrival}
-                      />
-                    </div>
-                    <div className="col-span-1">
-                      <Widget
-                        loading={loading}
-                        title={"Time at work"}
-                        content={duty}
-                      />
-                    </div>
-                    <div className="col-span-1">
-                      <Widget
-                        loading={loading}
-                        title={"Productive time"}
-                        content={summary.productive}
-                      />
-                    </div>
-                    <div className="col-span-1">
-                      <Widget
-                        loading={loading}
-                        title={"Idle time"}
-                        content={summary.idle}
-                      />
-                    </div>
+      </div>
+      <Separator className="my-4" />
+      <div className="relative">
+        <ScrollArea>
+          <div className="flex space-x-4 pb-4 col">
+            <div className="grid grid-cols-2 gap-4">
+              <div className="col-span-1">
+                <ActivityChart
+                  isLoading={loading}
+                  productivity={productivity}
+                  rawApps={rawApps}
+                />
+              </div>
+              <div className="col-span-1">
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="col-span-1">
+                    <Widget
+                      loading={loading}
+                      title={"Arrival time"}
+                      content={arrival}
+                    />
+                  </div>
+                  <div className="col-span-1">
+                    <Widget
+                      loading={loading}
+                      title={"Time at work"}
+                      content={duty}
+                    />
+                  </div>
+                  <div className="col-span-1">
+                    <Widget
+                      loading={loading}
+                      title={"Productive time"}
+                      content={summary.productive}
+                    />
+                  </div>
+                  <div className="col-span-1">
+                    <Widget
+                      loading={loading}
+                      title={"Idle time"}
+                      content={summary.idle}
+                    />
                   </div>
                 </div>
               </div>
             </div>
-            <ScrollBar orientation="horizontal" />
-          </ScrollArea>
-        </div>
-        <div className="mt-6 space-y-1">
-          <h2 className="text-2xl font-semibold tracking-tight">
-            Application List
-          </h2>
-          <p className="text-sm text-muted-foreground">
-            Lists of all applications used by the team.
-          </p>
-        </div>
-        <Separator className="my-4" />
-        <div className="relative">
-          <ScrollArea>
-            <div className="grid grid-cols-3 gap-4">
-              <div className="col-span-1">
-                <TeamAppList
-                  title={"Productive apps"}
-                  apps={apps.Productive}
-                  className={"bg-success text-success-foreground"}
-                />
-              </div>
-              <div className="col-span-1">
-                <TeamAppList
-                  title={"Unproductive apps"}
-                  apps={apps.Unproductive}
-                  className={"bg-warning text-warning-foreground"}
-                />
-              </div>
-              <div className="col-span-1">
-                <TeamAppList
-                  title={"Neutral apps"}
-                  apps={apps.Neutral}
-                  className={"bg-muted text-muted-foreground"}
-                />
-              </div>
-            </div>
-            <ScrollBar orientation="horizontal" />
-          </ScrollArea>
-        </div>
+          </div>
+          <ScrollBar orientation="horizontal" />
+        </ScrollArea>
       </div>
-    </DashboardContextProvider>
+      <div className="mt-6 space-y-1">
+        <h2 className="text-2xl font-semibold tracking-tight">
+          Application List
+        </h2>
+        <p className="text-sm text-muted-foreground">
+          Lists of all applications used by the team.
+        </p>
+      </div>
+      <Separator className="my-4" />
+      <div className="relative">
+        <ScrollArea>
+          <div className="grid grid-cols-3 gap-4">
+            <div className="col-span-1">
+              <TeamAppList
+                title={"Productive apps"}
+                apps={apps.Productive}
+                className={"bg-success text-success-foreground"}
+              />
+            </div>
+            <div className="col-span-1">
+              <TeamAppList
+                title={"Unproductive apps"}
+                apps={apps.Unproductive}
+                className={"bg-warning text-warning-foreground"}
+              />
+            </div>
+            <div className="col-span-1">
+              <TeamAppList
+                title={"Neutral apps"}
+                apps={apps.Neutral}
+                className={"bg-muted text-muted-foreground"}
+              />
+            </div>
+          </div>
+          <ScrollBar orientation="horizontal" />
+        </ScrollArea>
+      </div>
+    </div>
   );
 };
 

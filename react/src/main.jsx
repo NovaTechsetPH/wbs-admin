@@ -5,15 +5,18 @@ import { RouterProvider } from "react-router-dom";
 import router from "./router.jsx";
 import { ContextProvider } from "./context/ContextProvider.jsx";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { DashboardContextProvider } from "./context/DashboardContextProvider";
 
 const queryClient = new QueryClient();
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
     <QueryClientProvider client={queryClient}>
-      <ContextProvider>
-        <RouterProvider router={router} />
-      </ContextProvider>
+      <DashboardContextProvider>
+        <ContextProvider>
+          <RouterProvider router={router} />
+        </ContextProvider>
+      </DashboardContextProvider>
     </QueryClientProvider>
   </React.StrictMode>
 );

@@ -1,5 +1,6 @@
 import { useDashboardContext } from "@/context/DashboardContextProvider";
-import React, { useEffect, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import LoadingOverlay from "react-loading-overlay-ts";
 import {
   BarController,
   BarElement,
@@ -29,15 +30,21 @@ const COLORS = {
   neutral: "240 4.8% 95.9%",
 };
 
-const ActivityChart = ({ productivity, rawApps }) => {
+const ActivityChart = ({ productivity, rawApps, isLoading }) => {
   const { date } = useDashboardContext();
   const [dataLabel, setDataLabel] = useState([]);
   const DATA_COUNT = 13;
-  const NUMBER_CFG = { count: DATA_COUNT, min: 0, max: 30 };
   const activePeriod = "day";
   const [productive, setProductive] = useState([]);
   const [unproductive, setUnproductive] = useState([]);
   const [neutral, setNeutral] = useState([]);
+  const progress = useRef(null);
+
+  const isFutureDate = (value) => {
+    let d_now = new Date();
+    let d_inp = new Date(value);
+    return d_now < d_inp;
+  };
 
   useEffect(() => {
     let tmpProductive = [];
@@ -55,7 +62,7 @@ const ActivityChart = ({ productivity, rawApps }) => {
     setNeutral(tmpNeutral);
   }, [productivity]);
 
-  useEffect(() => {
+  useMemo(() => {
     if (rawApps.length === 0) {
       setDataLabel(["NO DATA"]);
     } else {
@@ -63,9 +70,11 @@ const ActivityChart = ({ productivity, rawApps }) => {
         CandleData(rawApps[0].time, rawApps[rawApps.length - 1].time, date)
       );
     }
-  }, [rawApps, date]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [rawApps]);
 
-  useEffect(() => {
+  useMemo(() => {
+    const NUMBER_CFG = { count: DATA_COUNT, min: 0, max: 30 };
     var myChart = Chart.getChart("track-chart");
     if (myChart) myChart.destroy();
 
@@ -109,12 +118,14 @@ const ActivityChart = ({ productivity, rawApps }) => {
       },
       options: {
         animation: {
+          duration: 1000,
           onProgress: function (animation) {
-            let progress = document.getElementById("process-bar");
             progress.value = animation.currentStep / animation.numSteps;
           },
-          onComplete: function (complete) {
-            // console.log(complete, "complete");
+          onComplete: function (animation) {
+            window.setTimeout(function () {
+              progress.value = 0;
+            }, 2000);
           },
         },
         plugins: {
@@ -198,19 +209,14 @@ const ActivityChart = ({ productivity, rawApps }) => {
       },
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [dataLabel, date]);
-
-  const isFutureDate = (value) => {
-    let d_now = new Date();
-    let d_inp = new Date(value);
-    return d_now < d_inp;
-  };
+  }, [dataLabel, neutral, productive, unproductive]);
 
   return (
     <div className="bg-base-100 rounded-lg border shadow-sm">
       <div className="chart-container">
-        <div id="process-bar"></div>
-        <canvas id="track-chart"></canvas>
+        <LoadingOverlay active={isLoading} spinner text="Loading graph...">
+          <canvas id="track-chart"></canvas>
+        </LoadingOverlay>
       </div>
     </div>
   );

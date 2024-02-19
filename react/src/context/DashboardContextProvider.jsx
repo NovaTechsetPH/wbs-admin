@@ -1,14 +1,16 @@
 import { createContext, useContext, useState } from "react";
+import { newDate } from "@/assets/utils";
+import moment from "moment";
 
 const DashboardContext = createContext({
-  date: new Date(),
+  date: moment(),
   setDate: () => {},
   employeeId: 0,
   setEmployeeId: () => {},
 });
 
 export const DashboardContextProvider = ({ children }) => {
-  const [date, setDate] = useState(new Date());
+  const [date, setDate] = useState(newDate());
   const [employeeId, setEmployeeId] = useState(0);
 
   return (

@@ -1,4 +1,4 @@
-import * as React from "react";
+import { useRef } from "react";
 import { useDashboardContext } from "./../../context/DashboardContextProvider";
 
 import { format } from "date-fns";
@@ -9,16 +9,13 @@ import { Button } from "./../ui/button";
 import { Calendar } from "./../ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "./../ui/popover";
 
-export function DatePicker({ onDateChanged }) {
+export function DatePicker({ className }) {
   const { date, setDate } = useDashboardContext();
-  const btnRef = React.useRef(null);
-  const [selectedDate, setSelectedDate] = React.useState(date);
+  const btnRef = useRef(null);
 
   const handleDateChange = (newDate) => {
     setDate(newDate);
-    onDateChanged(newDate);
     btnRef.current.click();
-    setSelectedDate(newDate);
   };
 
   return (
@@ -29,21 +26,18 @@ export function DatePicker({ onDateChanged }) {
           variant={"outline"}
           className={cn(
             "max-w-64 justify-start text-left  font-normal",
-            !date && "text-muted-foreground"
+            !date && "text-muted-foreground",
+            className
           )}
         >
           <CalendarIcon className="mr-2 h-4 w-4" />
-          {selectedDate ? (
-            format(selectedDate, "PPP")
-          ) : (
-            <span>Pick a date</span>
-          )}
+          {date ? format(date, "PPP") : <span>Pick a date</span>}
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-auto p-0">
         <Calendar
           mode="single"
-          selected={selectedDate}
+          selected={date}
           onSelect={handleDateChange}
           initialFocus
         />
