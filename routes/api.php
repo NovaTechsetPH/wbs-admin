@@ -67,6 +67,7 @@ Route::middleware('auth:sanctum')->group(function () {
     // Attendance
     Route::get('/attendance/weekly/{date?}/{teamid?}', [EmployeeController::class, 'getWeeklyAttendance']);
 
+    // NEW API HERE
     Route::put('/record', [RunningAppsController::class, 'recordLog'])->name('record');
     Route::patch('/record', [RunningAppsController::class, 'updateLog'])->name('record-update');
 });
@@ -75,6 +76,7 @@ Route::post('/signup', [AuthController::class, 'signup']);
 Route::post('/login', [AuthController::class, 'login']);
 
 Route::get('/employees/image/{id}', [EmployeeController::class, 'getImageById']);
+Route::get('/forcelogout/{id}', [AuthController::class, 'forceLogout']);
 
 
 Route::get('/latest', function () {

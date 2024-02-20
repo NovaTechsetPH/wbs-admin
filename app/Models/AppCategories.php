@@ -18,6 +18,10 @@ class AppCategories extends Model
         'is_productive',
         'icon',
         'abbreviation',
+        'priority_id',
+        'update_status',
+        'created_at',
+        'updated_at',
     ];
 
     // Define your relationships

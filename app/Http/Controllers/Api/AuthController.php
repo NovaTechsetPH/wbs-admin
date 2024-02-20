@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\LoginRequest;
 use App\Http\Requests\SignupRequest;
+use App\Models\Employee;
 use App\Models\User;
 use http\Env\Response;
 use Illuminate\Http\Request;
@@ -55,5 +56,17 @@ class AuthController extends Controller
 
         //dd(Auth::user());        
         return response()->json(['message' => 'Logout Success!'], 200);
+    }
+
+    public function forceLogout($id)
+    {
+        $employee = Employee::find($id);
+        $employee->incremented = 0;
+        $employee->active_status = 'Offline';
+        $employee->save();
+
+        return response()->json([
+            'message' => 'Logout Success!'
+        ], 200);
     }
 }
