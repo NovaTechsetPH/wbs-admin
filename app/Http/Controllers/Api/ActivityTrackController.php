@@ -25,6 +25,7 @@ class ActivityTrackController extends Controller
                 ->where('date', Carbon::parse($date)->toDateString())
                 ->where('userid', $userid)
                 ->whereNot('end_time', NULL)
+                // ->whereColumn('end_time', '>', 'time')
                 ->orderBy('id', 'asc')
                 ->get();
         } catch (\Exception $e) {

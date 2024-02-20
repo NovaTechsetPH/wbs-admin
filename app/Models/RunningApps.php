@@ -25,6 +25,11 @@ class RunningApps extends Model
         'updated_at',
     ];
 
+    protected $hidden = [
+        'created_at',
+        'updated_at',
+    ];
+
     // Define your relationships
     public function employee()
     {

@@ -70,6 +70,9 @@ Route::middleware('auth:sanctum')->group(function () {
     // NEW API HERE
     Route::put('/record', [RunningAppsController::class, 'recordLog'])->name('record');
     Route::patch('/record', [RunningAppsController::class, 'updateLog'])->name('record-update');
+
+    Route::get('/employee/info/{empid}', [EmployeeController::class, 'getInfoByEmployeeId']);
+    Route::get('/employee/log/{empid}/{date}', [EmployeeController::class, 'getEmployeeActivity']);
 });
 
 Route::post('/signup', [AuthController::class, 'signup']);
@@ -77,6 +80,7 @@ Route::post('/login', [AuthController::class, 'login']);
 
 Route::get('/employees/image/{id}', [EmployeeController::class, 'getImageById']);
 Route::get('/forcelogout/{id}', [AuthController::class, 'forceLogout']);
+Route::get('/minimum/speed', [RunningAppsController::class, 'getMinSpeed']);
 
 
 Route::get('/latest', function () {

@@ -6,7 +6,10 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
 use App\Http\Resources\RunningAppsResource;
+
 use App\Models\RunningApps;
+use App\Models\Settings;
+
 use Illuminate\Http\Request;
 
 class RunningAppsController extends Controller
@@ -99,6 +102,19 @@ class RunningAppsController extends Controller
         }
 
         // return response()->json(['message' => 'Log recorded', 'id' => $log->id], 201);
-        return response()->status(204);
+        return response()->json(['message' => 'Log updated'], 204);
+    }
+
+    public function getMinSpeed()
+    {
+        $up = Settings::where('type', 'UPSPEED')->first();
+        $down = Settings::where('type', 'DOWNSPEED')->first();
+
+        return response()->json([
+            'data' => [
+                'up' => $up->value,
+                'down' => $down->value,
+            ]
+        ]);
     }
 }

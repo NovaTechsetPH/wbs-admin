@@ -417,6 +417,7 @@ class EmployeeController extends Controller
 
         $apps = RunningApps::with('employee', 'category')
             ->where('date', Carbon::parse($date)->toDateString())
+            ->whereColumn('time', '<', 'end_time')
             ->whereIn('userid', $emps_under)
             ->orderBy('id', 'asc')
             ->get();
@@ -466,6 +467,21 @@ class EmployeeController extends Controller
                 ->whereIn('userid', $emps_under)
                 ->where('datein', Carbon::parse($date)->toDateString())
                 ->get();
+
+            $data = [];
+            $endest = '23:59:59';
+            foreach ($work_hrs as $track) {
+                if ($track->timeout != null && ($track->timein > $track->timeout)) {
+                    $track->timeout = $endest;
+
+                    $tmp = TrackRecords::find($track->id);
+                    $tmp->timeout = $endest;
+                    $tmp->dateout = Carbon::parse($date)->toDateString();
+                    $tmp->save();
+                }
+
+                $data[] = $track;
+            }
         } catch (\Exception $e) {
             return response()->json([
                 'error' => $e->getMessage(),
@@ -632,6 +648,84 @@ class EmployeeController extends Controller
                 'to' => $date_to->toDateString()
             ],
             'employees' => $employees,
+        ]);
+    }
+
+    public function getInfoByEmployeeId($empid)
+    {
+        try {
+            $employee = Employee::where('employee_id', $empid)->first();
+            if ($employee->id === 0)
+                throw new \Exception('Employee not found');
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => $e->getMessage(),
+                'message' => 'Internal Server Error!',
+            ], 500);
+        }
+
+        return response()->json([
+            'data' => $employee ?? null,
+            'message' => $employee ? 'Success' : 'Records not found',
+        ], 200);
+    }
+
+    public function getEmployeeLog($empid, $date = null, $category_id = [])
+    {
+        try {
+            $date = Carbon::parse($date) ?? Carbon::now();
+
+            $employee = Employee::find($empid);
+            if (!$employee)
+                throw new \Exception('Employee not found');
+
+            $log = RunningApps::where('userid', $empid)
+                ->where('date', $date->toDateString());
+
+            if (count($category_id) > 0)
+                $log = $log->whereIn('category_id', $category_id);
+
+            $start = $log->first();
+
+            $end = $log->whereNot('end_time', null)
+                ->orderBy('id', 'desc')
+                ->first();
+        } catch (\Exception $e) {
+            return [
+                'error' => $e->getMessage(),
+                'message' => 'Internal Server Error!',
+            ];
+        }
+
+        return !$start && !$end ? [] : [
+            'start' => $start,
+            'end' => $end,
+            'date' => $date->toDateString(),
+        ];
+    }
+
+    public function getEmployeeActivity($empid, $date = null)
+    {
+        try {
+            $categories = AppCategories::all();
+            $all = $this->getEmployeeLog($empid, $date);
+            $productive = $this->getEmployeeLog($empid, $date, $categories->where('is_productive', 1)->pluck('id')->toArray());
+            $unproductive = $this->getEmployeeLog($empid, $date, $categories->where('is_productive', 0)->pluck('id')->toArray());
+            $neutral = $this->getEmployeeLog($empid, $date, [6]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => $e->getMessage(),
+                'message' => 'Internal Server Error!',
+            ]);
+        }
+
+        return response()->json([
+            'data' => [
+                'all' => $all,
+                'productive' => $productive,
+                'unproductive' => $unproductive,
+                'neutral' => $neutral
+            ]
         ]);
     }
 }
