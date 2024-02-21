@@ -8,7 +8,7 @@ export const CandleData = (candleStart, candleLast, date) => {
   var sticks = [startTime.format("HH:mm")];
   var limitDate = moment(date).isSame(moment(), "date")
     ? moment.now()
-    : moment(candleLast, "hours").add(2, "hour");
+    : moment(candleLast, "hours").add(24, "hour");
   while (endTime.isBefore(limitDate) || sticks.length < 30) {
     endTime = endTime.add(10, "minutes");
     sticks.push(endTime.format("HH:mm"));
@@ -131,10 +131,15 @@ export const handleAllocateTime = (data, sticks) => {
     clonedSticks[indexer].category[CATEGORY[d.category.is_productive]] += remainderToFill;
   });
 
-  // let now = moment().format("HH:mm:ss");
   let officeTime = clonedData.length > 0
     ? getItemDuration(clonedData[0].time, clonedData[clonedData.length - 1].end_time ?? clonedData[0].time)
     : 0;
+
+  let poppedSticks = [...clonedSticks];
+  for (let index = poppedSticks.length - 1; index > 0; index--) {
+    if (poppedSticks[index].value !== 0) break;
+    clonedSticks = clonedSticks.slice(0, -1);
+  }
 
   return {
     clonedSticks, activity: {

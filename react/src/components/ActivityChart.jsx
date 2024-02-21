@@ -39,6 +39,7 @@ const ActivityChart = ({ productivity, rawApps, isLoading }) => {
   const [unproductive, setUnproductive] = useState([]);
   const [neutral, setNeutral] = useState([]);
   const progress = useRef(null);
+  const [dataLength, setDataLength] = useState(0);
 
   const isFutureDate = (value) => {
     let d_now = new Date();
@@ -50,6 +51,8 @@ const ActivityChart = ({ productivity, rawApps, isLoading }) => {
     let tmpProductive = [];
     let tmpUnproductive = [];
     let tmpNeutral = [];
+
+    setDataLength(productivity.length);
 
     for (const key in productivity) {
       tmpProductive.push(productivity[key].category["productive"]);
@@ -66,12 +69,15 @@ const ActivityChart = ({ productivity, rawApps, isLoading }) => {
     if (rawApps.length === 0) {
       setDataLabel(["NO DATA"]);
     } else {
-      setDataLabel(
-        CandleData(rawApps[0].time, rawApps[rawApps.length - 1].time, date)
+      let tmp = CandleData(
+        rawApps[0].time,
+        rawApps[rawApps.length - 1].time,
+        date
       );
+      setDataLabel(tmp.slice(0, dataLength + 1));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [rawApps]);
+  }, [rawApps, dataLength]);
 
   useMemo(() => {
     const NUMBER_CFG = { count: DATA_COUNT, min: 0, max: 30 };
