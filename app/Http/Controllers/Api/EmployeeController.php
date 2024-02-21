@@ -675,11 +675,15 @@ class EmployeeController extends Controller
         try {
             $date = Carbon::parse($date) ?? Carbon::now();
 
-            $employee = Employee::find($empid);
-            if (!$employee)
-                throw new \Exception('Employee not found');
+            // $employee = Employee::find($empid);
+            if (!$empid)
+                throw new \Exception('Employee not found 1');
 
-            $log = RunningApps::where('userid', $empid)
+            $employee = Employee::where('employee_id', $empid)->first();
+            if (!$employee)
+                throw new \Exception('Employee ID ' . $empid . ' not found');
+
+            $log = RunningApps::where('userid', $employee->id)
                 ->where('date', $date->toDateString());
 
             if (count($category_id) > 0)

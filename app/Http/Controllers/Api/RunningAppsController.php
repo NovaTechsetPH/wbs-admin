@@ -9,8 +9,10 @@ use App\Http\Resources\RunningAppsResource;
 
 use App\Models\RunningApps;
 use App\Models\Settings;
-
+use App\Models\TrackRecords;
+use App\Models\AppCategories;
 use Illuminate\Http\Request;
+use PhpParser\Node\Expr\Cast\Object_;
 
 class RunningAppsController extends Controller
 {
@@ -73,21 +75,49 @@ class RunningAppsController extends Controller
     public function recordLog(Request $request)
     {
         try {
-            $log = RunningApps::create([
+            $task = TrackRecords::where('userid', $request->userid)
+                ->where('datein', $request->date)
+                ->first();
+
+            if (!$task) {
+                $task = TrackRecords::create([
+                    'userid' => $request->userid,
+                    'datein' => $request->date,
+                    'timein' => $request->time,
+                ]);
+            }
+
+            $categories = AppCategories::orderBy('priority_id', 'ASC')
+                ->orderBy('id', 'ASC')
+                ->get();
+
+            $category_id = 6;
+            foreach ($categories as $category) {
+                if (str_contains(strtolower($request->description), strtolower($category->name))) {
+                    $category_id = $category->id;
+                    break;
+                }
+            }
+
+            $data = RunningApps::create([
                 'userid' => $request->userid,
-                'taskid' => $request->taskid,
+                'taskid' => $task->id,
                 'description' => $request->description,
                 'date' => $request->date,
                 'time' => $request->time,
                 'status' => $request->status,
-                'category_id' => $request->category_id,
+                'category_id' => $category_id,
                 'end_time' => $request->end_time ?? null,
             ]);
         } catch (\Exception $e) {
-            return response()->json(['message' => $e->getMessage()], 500);
+            return response()->json(['message' => $e->getMessage(), 'status' => false], 500);
         }
 
-        return response()->json(['message' => 'Log recorded', 'id' => $log->id], 201);
+        return response()->json([
+            'message' => 'Log recorded',
+            'status' => true,
+            'data' => $data,
+        ], 201);
     }
 
     public function updateLog(Request $request)
