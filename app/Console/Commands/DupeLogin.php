@@ -33,18 +33,20 @@ class DupeLogin extends Command
         $employees = Employee::select('id')
             ->where('status', 'Approved')->get();
 
-        \Log::info("STARTED SCRIPT AT: " . Carbon::now()->toDateString());
-        $date_to_del = '2024-02-21';
+        \Log::info("STARTED SCRIPT AT: " . Carbon::now()->toDateTimeString());
+        $date_to_del = TrackRecords::orderBy('id', 'DESC')->first()->datein;
 
         $apps = TrackRecords::select('id', 'userid', 'datein')
             ->whereIn('userid', $employees)
-            ->whereBetween('datein', ['2024-02-19', $date_to_del])
+            ->where('datein', $date_to_del)
             ->orderBy('id', 'asc')->get();
 
 
         foreach ($apps as $app) {
             if (count($app->tasks) === 0) {
                 \Log::info("Total: " . json_encode($app));
+                $del = $app->delete();
+                \Log::info("Deleted ID: " . $app->userid . " TASKID: " . $app->id . "- " . $del);
             }
 
             // foreach($array as $value) {
@@ -57,7 +59,7 @@ class DupeLogin extends Command
 
             //     if ($track->tasks->count() === 0) {
             //         if ($date_to_del === date('Y-m-d')) {
-            //             sleep(5); // if current date    
+            //             sleep(5); // if current date
             //         }
 
             //         // $del = $track->delete();
@@ -68,6 +70,6 @@ class DupeLogin extends Command
         }
 
         // End of script
-        \Log::info("ENDED SCRIPT AT: " . Carbon::now()->toDateString());
+        \Log::info("ENDED SCRIPT AT: " . Carbon::now()->toDateTimeString());
     }
 }

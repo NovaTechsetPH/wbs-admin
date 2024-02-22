@@ -16,6 +16,8 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         // $schedule->command('inspire')->hourly();
+        $schedule->command('app:dupe-login')->hourly();
+        $schedule->command('check:active-status')->everyTenSeconds();
     }
 
     /**

@@ -23,6 +23,15 @@ class EventServiceProvider extends ServiceProvider
     public $finished_time;
 
     /**
+     * Log these commands
+     */
+    private $exec_commands = [
+        'budol:time-log',
+        'app:dupe-login',
+        'app:fix-category',
+    ];
+
+    /**
      * The event to listener mappings for the application.
      *
      * @var array<class-string, array<int, class-string>>
@@ -49,7 +58,9 @@ class EventServiceProvider extends ServiceProvider
             $time = (($this->finished_time - $this->starting_time)); // time in seconds
 
             // here you can store, display or log time for future use.
-            Log::info("Command [$event->command] takes $time seconds.");
+            if(in_array($event->command, $this->exec_commands)) {
+                Log::info("Command [$event->command] takes $time seconds.");
+            }
         });
     }
 
