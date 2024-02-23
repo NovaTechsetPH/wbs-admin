@@ -35,6 +35,7 @@ class DupeLogin extends Command
 
         \Log::info("STARTED SCRIPT AT: " . Carbon::now()->toDateTimeString());
         $date_to_del = TrackRecords::orderBy('id', 'DESC')->first()->datein;
+        // $date_to_del = '2024-02-22';
 
         $apps = TrackRecords::select('id', 'userid', 'datein')
             ->whereIn('userid', $employees)

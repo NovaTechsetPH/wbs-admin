@@ -26,16 +26,19 @@ class ActiveStatus extends Command
      */
     public function handle()
     {
+        $this->info('Starting active status check...');
+        \Log::info('Active status check started...');
         $ref = Employee::select('id','incremented')
             ->where('active_status', 'Active')
             ->where('incremented', '>', 60)
             ->get();
 
-        sleep(60);
+        sleep(10);
         foreach ($ref as $key) {
-            $current = Employee::find($ref->id);
+            $current = Employee::find($key->id);
 
-            if($ref->incremented != $current->incremented) {
+            if($key->incremented == $current->incremented) {
+                \Log::info("OFFLINE: " . $current->first_name);
                 $current->active_status = 'Offline';
                 $current->incremented = 0;
                 $current->save();
