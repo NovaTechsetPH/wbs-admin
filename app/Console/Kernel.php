@@ -17,6 +17,7 @@ class Kernel extends ConsoleKernel
     {
         // $schedule->command('inspire')->hourly();
         $schedule->command('app:dupe-login')->hourly();
+        $schedule->command('app:version-update')->everyThirtyMinutes();
         // $schedule->command('check:active-status')->everyTenSeconds();
     }
 

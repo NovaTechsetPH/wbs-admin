@@ -7,8 +7,11 @@ use App\Http\Controllers\Api\AppCategoriesController;
 use App\Http\Controllers\Api\EmployeeController;
 use App\Http\Controllers\Api\RunningAppsController;
 use App\Http\Controllers\Api\TimeLogsController;
+use App\Http\Controllers\Api\ReportController;
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Redis;
 
 /*
 |--------------------------------------------------------------------------
@@ -60,6 +63,10 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/reports/attendance/{from}/{to?}', [EmployeeController::class, 'getAttendanceReport']);
     Route::get('/reports/tracking/{from}/{to?}', [EmployeeController::class, 'getTrackingReport']);
     Route::get('/reports/applications/{from}/{to?}', [EmployeeController::class, 'getApplicationReport']);
+    Route::get('/reports/bugs', [ReportController::class, 'getBugReports']);
+    Route::put('/reports/bugs', [ReportController::class, 'insertBugReports']);
+    // insertBugReports
+    //
 
     // UserApproval
     Route::get('/userapproval', [EmployeeController::class, 'getUserForApproval']);
@@ -76,8 +83,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/employee/status/{empid}', [ActivityTrackController::class, 'getActiveStatus']);
     Route::patch('/employee/status', [ActivityTrackController::class, 'updateActiveStatus']);
 
-    Route::get('/tracking/data/{empid}/{date}', [TimeLogsController::class, 'graphData']);
-
+    Route::get('/tracking/data/{empid}/{date?}', [TimeLogsController::class, 'graphData']);
+    Route::get('/redis/tracking/data/{empid}/{date}', [TimeLogsController::class, 'redisGraphData']);
 
 });
 
@@ -90,10 +97,19 @@ Route::get('/minimum/speed', [RunningAppsController::class, 'getMinSpeed']);
 
 
 Route::get('/latest', function () {
-    $latest = DB::table('tblappversion')->orderBy('id', 'desc')->first();
+    $latest = Redis::get('latest:version');
+    $redis = true;
+
+    if($latest == null) {
+        $latest = DB::table('tblappversion')->orderBy('id', 'desc')->first();
+        Redis::set('latest:version', json_encode($latest), 'EX', 86400);
+        $redis = false;
+    }
+
     return response()->json([
-        'data' => $latest,
-        'message' => 'Success'
+        'data' => json_decode($latest),
+        'message' => 'Success',
+        'redis' => $redis,
     ], 200);
 });
 

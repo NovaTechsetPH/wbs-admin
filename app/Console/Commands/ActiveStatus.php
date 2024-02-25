@@ -29,8 +29,8 @@ class ActiveStatus extends Command
         $this->info('Starting active status check...');
         \Log::info('Active status check started...');
         $ref = Employee::select('id','incremented')
-            ->where('active_status', 'Active')
-            ->where('incremented', '>', 60)
+            ->whereNot('active_status', 'Offline')
+            // ->where('incremented', '>', 60)
             ->get();
 
         sleep(10);
