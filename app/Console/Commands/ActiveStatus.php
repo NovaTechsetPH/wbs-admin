@@ -21,6 +21,25 @@ class ActiveStatus extends Command
      */
     protected $description = 'Command description';
 
+    private function getActiveStatus($increment)
+    {
+        if ($increment == 0)
+            return 'Offline';
+
+        if ($increment <= 240)
+            return 'Active';
+
+        // waiting = inactive for 4 minutes            
+        if ($increment <= 480)
+            return 'Waiting';
+
+        // away = inactive for 10 minutes
+        if ($increment <= 600)
+            return 'Away';
+
+        return 'Offline';
+    }
+
     /**
      * Execute the console command.
      */
@@ -28,19 +47,27 @@ class ActiveStatus extends Command
     {
         $this->info('Starting active status check...');
         \Log::info('Active status check started...');
-        $ref = Employee::select('id','incremented')
+        $ref = Employee::select('id', 'incremented', 'employee_id')
             ->whereNot('active_status', 'Offline')
-            // ->where('incremented', '>', 60)
+            ->where('incremented', '>', 60)
             ->get();
 
         sleep(10);
         foreach ($ref as $key) {
-            $current = Employee::find($key->id);
+            if ($key->id == 20 && $key->employee_id == 'Kenneth') {
+                $key->employee_id = 'PH0067';
+                $key->save();
+                continue;
+            }
 
-            if($key->incremented == $current->incremented) {
-                \Log::info("OFFLINE: " . $current->first_name);
-                $current->active_status = 'Offline';
-                $current->incremented = 0;
+            $current = Employee::find($key->id);
+            $increment = $current->incremented - $key->incremented;
+            $status = $this->getActiveStatus($increment);
+
+            if ($key->incremented == $current->incremented) {
+                \Log::info("$status: " . $current->first_name . ' ' . $current->last_name . ', ' . 'increment: ' . $increment);
+                $current->active_status = $status;
+                $current->incremented = $increment != 0 ? $current->incremented : 0;
                 $current->save();
             }
         }

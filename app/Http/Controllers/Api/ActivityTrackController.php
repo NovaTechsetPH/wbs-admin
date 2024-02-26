@@ -61,16 +61,17 @@ class ActivityTrackController extends Controller
 
     public function updateActiveStatus(Request $request)
     {
-        try {
-            $employee = Employee::findOrFail($request->userid);
-            $employee->status = $request->status;
-            $employee->save();
-        } catch (\Exception $e) {
-            return response()->json([
-                'error' => $e->getMessage(),
-                'message' => 'Internal Server Error!',
-            ], 500);
-        }
+        $request->validate([
+            'userid' => 'required|exists:accounts,id',
+            'status' => 'in:Active,Offline,Away,Waiting',
+        ]);
+
+        $employee = Employee::findOrFail($request->userid);
+        $incremented = $request->status == 'Offline' ? 0 : $employee->incremented;
+
+        $employee->active_status = $request->status;
+        $employee->incremented = $incremented;
+        $employee->save();
 
         return response()->json([
             'data' => $employee,

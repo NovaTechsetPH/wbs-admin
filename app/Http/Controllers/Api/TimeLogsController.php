@@ -14,6 +14,7 @@ use App\Models\TrackRecords;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redis;
+use Illuminate\Http\Request;
 
 class TimeLogsController extends Controller
 {
@@ -87,27 +88,27 @@ class TimeLogsController extends Controller
     public function redisGraphData($empid, $date = null)
     {
         $date = Carbon::parse($date) ?? Carbon::now();
-        $redis_apps = Redis::hget('graph:'.$empid, $date->toDateString());
+        $redis_apps = Redis::hget('graph:' . $empid, $date->toDateString());
 
-        if($redis_apps != null) {
+        if ($redis_apps != null) {
             return response()->json([
                 'redis' => 'hit',
                 'data' => json_decode($redis_apps)
             ]);
         } else {
-        $apps = RunningApps::with('category')
-            ->where('date', $date->toDateString())
-            ->where('userid', $empid)
-            ->where('status', 'Closed')
-            ->whereNot('end_time', null)
-            ->select([
-                '*',
-                DB::raw("TIMESTAMPDIFF(SECOND, time, end_time) as duration"),
-                DB::raw("hour(time) as hour")
-            ])
-            ->get();
+            $apps = RunningApps::with('category')
+                ->where('date', $date->toDateString())
+                ->where('userid', $empid)
+                ->where('status', 'Closed')
+                ->whereNot('end_time', null)
+                ->select([
+                    '*',
+                    DB::raw("TIMESTAMPDIFF(SECOND, time, end_time) as duration"),
+                    DB::raw("hour(time) as hour")
+                ])
+                ->get();
 
-            Redis::hset('graph:'.$empid, $date->toDateString(), $apps);
+            Redis::hset('graph:' . $empid, $date->toDateString(), $apps);
         }
 
         return response()->json([
@@ -124,12 +125,12 @@ class TimeLogsController extends Controller
         $is_past = Carbon::now()->startOfDay()->gt($date);
 
         // string
-        $redis_apps = Redis::get('graph:'.$empid.':'.$date->toDateString());
+        $redis_apps = Redis::get('graph:' . $empid . ':' . $date->toDateString());
 
         // hash
         // $redis_apps = Redis::hget('graph:'.$empid, $date->toDateString());
 
-        if($redis_apps != "[]" && $redis_apps != null) {
+        if ($redis_apps != "[]" && $redis_apps != null) {
             return response()->json([
                 'redis' => 'hit',
                 'data' => json_decode($redis_apps),
@@ -149,7 +150,8 @@ class TimeLogsController extends Controller
             ->get();
 
         $data_tmp = $apps->groupBy('category.is_productive');
-        $type_keys = $data_tmp->keys();
+        // $type_keys = $data_tmp->keys();
+        $type_keys = [0, 1, 2];
 
         $types_ = [
             '0' => 'unproductive',
@@ -157,9 +159,12 @@ class TimeLogsController extends Controller
             '2' => 'neutral',
         ];
 
-        $types = [];
+        $types = ['unproductive', 'productive', 'neutral'];
         foreach ($type_keys as $t) {
             $types[$t] = $types_[$t];
+            if (!array_key_exists($t, $data_tmp->toArray())) {
+                $data_tmp[(string)$t] = [];
+            }
         }
 
         foreach ($types as $int => $type) {
@@ -181,16 +186,18 @@ class TimeLogsController extends Controller
         }
 
         // $exp = $is_past ? -1 : 600;
+        $redis_instance = Redis::connection();
+        $redis_instance->set('graph:' . $empid . ':' . $date->toDateString(), json_encode($needles));
 
-        // String
-        // Redis::set('graph:'.$empid.':'.$date->toDateString(), json_encode($needles), 'EX', 600);
-        if($is_past) {
-            // Hash
-            // Redis::hset('graph:'.$empid, $date->toDateString(), json_encode($needles));
+        if (!$is_past) {
+            $redis_instance->expire('graph:' . $empid . ':' . $date->toDateString(), 600);
         }
-        else {
-            Redis::set('graph:'.$empid.':'.$date->toDateString(), json_encode($needles), 'EX', 600);
-        }
+        // if($is_past) {
+        //     // Redis::hset('graph:'.$empid, $date->toDateString(), json_encode($needles)); // Hash
+        //     Redis::set('graph:'.$empid.':'.$date->toDateString(), json_encode($needles)); // String
+        // } else {
+        //     Redis::set('graph:'.$empid.':'.$date->toDateString(), json_encode($needles), 'EX', 600);
+        // }
 
         return response()->json([
             'redis' => 'miss',
@@ -209,5 +216,83 @@ class TimeLogsController extends Controller
                 ],
             ],
         ]);
+    }
+
+    public function getAppData(Request $request)
+    {
+        $request->validate([
+            'userid' => 'required|exists:accounts,id',
+        ]);
+
+        $userid = $request->userid;
+        $date = Carbon::parse($request->date) ?? Carbon::now();
+
+        $redis_apps = Redis::get('appdata:' . $userid . ':' . $date->toDateString());
+        if ($redis_apps != "[]" && $redis_apps != null) {
+            return response()->json([
+                'data' => json_decode($redis_apps),
+                'message' => 'Success',
+                'redis' => true,
+            ], 200);
+        }
+
+        $apps = RunningApps::with('category')
+            ->where('date', $date->toDateString())
+            ->where('userid', $userid)
+            ->where('status', 'Closed')
+            ->whereNot('end_time', null)
+            ->get();
+
+        $data_tmp = $apps->groupBy('category.is_productive');
+        // $keys = $data_tmp->keys();
+
+        $type_keys = [0, 1, 2];
+
+        $types_ = [
+            '0' => 'unproductive',
+            '1' => 'productive',
+            '2' => 'neutral',
+        ];
+
+        $types = ['unproductive', 'productive', 'neutral'];
+
+        $apps = [];
+        foreach ($type_keys as $t) {
+            if (!array_key_exists($t, $data_tmp->toArray())) {
+                $apps[$types[$t]] = [];
+                continue;
+            }
+            $apps[$types[$t]] = $data_tmp[(string)$t];
+        }
+
+
+        // foreach ($types as $type) {
+        //     $apps[$type] = $data_tmp[(string)$type];
+        // }
+
+        // $apps = [];
+
+        // $keys = [
+        //     'unproductive',
+        //     'productive',
+        //     'neutral',
+        // ];
+        // foreach ($keys as $key => $value) {
+        //     if ($data_tmp[(string)$key] == null)
+        //         $data_tmp[$key] = [];
+
+        //     $apps[$value] = $data_tmp[(string)$key];
+        // }
+
+        if ($date->isToday())
+            Redis::set('appdata:' . $userid . ':' . $date->toDateString(), json_encode($apps), 'EX', 600);
+        else
+            Redis::set('appdata:' . $userid . ':' . $date->toDateString(), json_encode($apps));
+
+        return response()->json([
+            'data' => $apps,
+            'message' => 'Success',
+            'redis' => false,
+        ], 200);
     }
 }

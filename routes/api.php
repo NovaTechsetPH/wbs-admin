@@ -65,7 +65,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/reports/applications/{from}/{to?}', [EmployeeController::class, 'getApplicationReport']);
     Route::get('/reports/bugs', [ReportController::class, 'getBugReports']);
     Route::put('/reports/bugs', [ReportController::class, 'insertBugReports']);
-    // insertBugReports
+    Route::get('/reports/anomalies', [ReportController::class, 'getAnomalyReport']);
     //
 
     // UserApproval
@@ -85,7 +85,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::get('/tracking/data/{empid}/{date?}', [TimeLogsController::class, 'graphData']);
     Route::get('/redis/tracking/data/{empid}/{date}', [TimeLogsController::class, 'redisGraphData']);
-
+    Route::get('/tracking/apps/data', [TimeLogsController::class, 'getAppData']);
 });
 
 Route::post('/signup', [AuthController::class, 'signup']);
@@ -97,19 +97,25 @@ Route::get('/minimum/speed', [RunningAppsController::class, 'getMinSpeed']);
 
 
 Route::get('/latest', function () {
-    $latest = Redis::get('latest:version');
-    $redis = true;
+    // $latest = Redis::get('latest:version');
+    // $redis = true;
 
-    if($latest == null) {
-        $latest = DB::table('tblappversion')->orderBy('id', 'desc')->first();
-        Redis::set('latest:version', json_encode($latest), 'EX', 86400);
-        $redis = false;
-    }
+    // if($latest == null) {
+    //     $latest = DB::table('tblappversion')->orderBy('id', 'desc')->first();
+    //     Redis::set('latest:version', json_encode($latest), 'EX', 86400);
+    //     $redis = false;
+    // }
+
+    $latest = [
+        'id' => 49,
+        'version_name' => '0.0.3.3',
+        'description' => '1. Disabling graph',
+        'type' => 'Important',
+    ];
 
     return response()->json([
-        'data' => json_decode($latest),
+        'data' => $latest,
         'message' => 'Success',
-        'redis' => $redis,
     ], 200);
 });
 

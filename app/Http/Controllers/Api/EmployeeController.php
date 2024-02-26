@@ -655,8 +655,14 @@ class EmployeeController extends Controller
     {
         try {
             $employee = Employee::where('employee_id', $empid)->first();
-            if ($employee->id === 0)
+            if (!$employee)
+                return response()->json([
+                    'message' => 'Employee not found',
+                ], 404);
+
+            if($employee->id === 0 )
                 throw new \Exception('Employee not found');
+
         } catch (\Exception $e) {
             return response()->json([
                 'error' => $e->getMessage(),
