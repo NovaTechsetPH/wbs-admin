@@ -24,6 +24,10 @@ class AppCategories extends Model
         'updated_at',
     ];
 
+    protected $hidden = [
+        'update_status',
+    ];
+
     // Define your relationships
     public function runningapps()
     {

@@ -31,7 +31,7 @@ Route::middleware('auth:sanctum')->group(function () {
     });
 
     Route::apiResource('/users', UserController::class);
-    Route::apiResource('/appcategories', AppCategoriesController::class);
+    Route::apiResource('/categories', AppCategoriesController::class);
     Route::apiResource('/runningapps', RunningAppsController::class);
     Route::apiResource('/employees', EmployeeController::class);
     Route::apiResource('/timelogs', TimeLogsController::class);

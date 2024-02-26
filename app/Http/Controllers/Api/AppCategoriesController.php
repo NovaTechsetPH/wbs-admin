@@ -16,7 +16,14 @@ class AppCategoriesController extends Controller
      */
     public function index()
     {
-        return AppCategoriesResource::collection(AppCategories::query()->orderBy('id', 'desc')->paginate(10));
+        $categories = AppCategories::orderBy('priority_id', 'ASC')
+            ->orderBy('id', 'ASC')
+            ->get();
+
+        return response()->json([
+            'data' => $categories,
+            'message' => 'Successfully retrieved all categories',
+        ]);
     }
 
     /**
