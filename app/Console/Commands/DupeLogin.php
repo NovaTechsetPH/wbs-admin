@@ -33,7 +33,7 @@ class DupeLogin extends Command
         $employees = Employee::select('id')
             ->where('status', 'Approved')->get();
 
-        \Log::info("STARTED SCRIPT AT: " . Carbon::now()->toDateTimeString());
+        // \Log::info("STARTED SCRIPT AT: " . Carbon::now()->toDateTimeString());
         $date_to_del = TrackRecords::orderBy('id', 'DESC')->first()->datein;
         // $date_to_del = '2024-02-22';
 
@@ -71,6 +71,6 @@ class DupeLogin extends Command
         }
 
         // End of script
-        \Log::info("ENDED SCRIPT AT: " . Carbon::now()->toDateTimeString());
+        // \Log::info("ENDED SCRIPT AT: " . Carbon::now()->toDateTimeString());
     }
 }
