@@ -12,14 +12,19 @@ use App\Models\Position;
 use App\Models\RunningApps;
 use App\Models\Team;
 use App\Models\TrackRecords;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 
+use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Redis;
+use Illuminate\Http\Request;
 
 class EmployeeController extends Controller
 {
+    private $seconds_ten_min_ttl = 600; // 10min
+
+    private $seconds_month_ttl = 2592000; // 30d
     /**
      * Display a listing of the resource.
      */
@@ -403,27 +408,42 @@ class EmployeeController extends Controller
 
     public function getAllDailyOpenedApps(Request $request)
     {
-        $date = $request->date ?? Carbon::now()->toDateString();
-        // $emps_under = Auth::user()->positions()->with('employees')->get()
-        //     ->pluck('employees')->flatten()->pluck('id')->toArray();
+        $request->validate([
+            'teamId' => 'required|exists:teams,id',
+            'date' => 'date',
+        ]);
+
+        $date = Carbon::parse($request->date) ?? Carbon::now();
+        $is_past = Carbon::now()->startOfDay()->gt($date);
+
+        $redis_apps = Redis::get('admin_apps:' . $request->teamId . ':' . $date->toDateString());
+
+        if ($redis_apps != "[]" && $redis_apps != null)
+            return response()->json([
+                'redis' => 'hit',
+                'data' => json_decode($redis_apps),
+                'date' => $date->toDateString(),
+            ]);
 
         $positions = Position::where('team_id', $request->teamId)->get();
         $emps_under = [];
-        foreach ($positions as $position) {
-            foreach ($position->employees as $emps) {
+        foreach ($positions as $position)
+            foreach ($position->employees as $emps)
                 array_push($emps_under, $emps->id);
-            }
-        }
 
         $apps = RunningApps::with('employee', 'category')
-            ->where('date', Carbon::parse($date)->toDateString())
+            ->where('date', $date->toDateString())
             ->whereColumn('time', '<', 'end_time')
             ->whereIn('userid', $emps_under)
             ->orderBy('id', 'asc')
             ->get();
 
+        $ttl = $is_past ? $this->seconds_month_ttl : $this->seconds_ten_min_ttl;
+        Redis::set('admin_apps:' . $request->teamId . ':' . $date->toDateString(), json_encode($apps), 'EX', $ttl);
+
         return response()->json([
-            'date' => $date,
+            'redis' => 'miss',
+            'date' => $date->toDateString(),
             'data' => $apps ?? [],
             'message' => 'Success'
         ], 200);
@@ -660,9 +680,8 @@ class EmployeeController extends Controller
                     'message' => 'Employee not found',
                 ], 404);
 
-            if($employee->id === 0 )
+            if ($employee->id === 0)
                 throw new \Exception('Employee not found');
-
         } catch (\Exception $e) {
             return response()->json([
                 'error' => $e->getMessage(),

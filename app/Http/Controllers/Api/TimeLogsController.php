@@ -18,11 +18,13 @@ use Illuminate\Http\Request;
 
 class TimeLogsController extends Controller
 {
-    private $seconds_interval = 3600; // 1hr
-
     private $start = 0;
 
     private $end = 0;
+
+    private $seconds_ten_min_ttl = 600; // 10min
+
+    private $seconds_month_ttl = 2592000; // 30d
 
     public function __construct()
     {
@@ -185,19 +187,8 @@ class TimeLogsController extends Controller
             ];
         }
 
-        // $exp = $is_past ? -1 : 600;
-        $redis_instance = Redis::connection();
-        $redis_instance->set('graph:' . $empid . ':' . $date->toDateString(), json_encode($needles));
-
-        if (!$is_past) {
-            $redis_instance->expire('graph:' . $empid . ':' . $date->toDateString(), 600);
-        }
-        // if($is_past) {
-        //     // Redis::hset('graph:'.$empid, $date->toDateString(), json_encode($needles)); // Hash
-        //     Redis::set('graph:'.$empid.':'.$date->toDateString(), json_encode($needles)); // String
-        // } else {
-        //     Redis::set('graph:'.$empid.':'.$date->toDateString(), json_encode($needles), 'EX', 600);
-        // }
+        $ttl = $is_past ? $this->seconds_month_ttl : $this->seconds_ten_min_ttl;
+        Redis::set('graph:' . $empid . ':' . $date->toDateString(), json_encode($needles), 'EX', $ttl);
 
         return response()->json([
             'redis' => 'miss',

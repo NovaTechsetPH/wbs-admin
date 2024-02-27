@@ -7,9 +7,15 @@ use App\Models\RunningApps;
 use App\Models\Employee;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Redis;
 
 class ActivityTrackController extends Controller
 {
+    private $seconds_ten_min_ttl = 600; // 10min
+
+    private $seconds_month_ttl = 2592000; // 30d
+
     public function getEmployeesByTeam($team_id)
     {
         return response()->json([
@@ -21,14 +27,35 @@ class ActivityTrackController extends Controller
     public function getEmployeeActivity($userid, $date = null)
     {
         try {
-            $date = $date ?? Carbon::now()->toDateString();
+            Validator::make([
+                'userid' => $userid,
+                'date' => $date,
+            ], [
+                'userid' => 'required|integer|exists:accounts,id',
+                'date' => 'nullable|date',
+            ]);
+
+            $date = Carbon::parse($date) ?? Carbon::now();
+            $is_past = Carbon::now()->startOfDay()->gt($date);
+
+            $redis_data = Redis::get('emp_logs:' . $userid . ':' . $date->toDateString());
+
+            if ($redis_data != "[]" && $redis_data != null)
+                return response()->json([
+                    'data' => json_decode($redis_data),
+                    'message' => 'Success',
+                    'redis' => true,
+                ], 200);
+
             $apps = RunningApps::with('employee', 'category')
                 ->where('date', Carbon::parse($date)->toDateString())
                 ->where('userid', $userid)
                 ->whereNot('end_time', NULL)
-                // ->whereColumn('end_time', '>', 'time')
                 ->orderBy('id', 'asc')
                 ->get();
+
+            $ttl = $is_past ? $this->seconds_month_ttl : $this->seconds_ten_min_ttl;
+            Redis::set('emp_logs:' . $userid . ':' . $date->toDateString(), json_encode($apps), 'EX', $ttl);
         } catch (\Exception $e) {
             return response()->json([
                 'error' => $e->getMessage(),
@@ -39,6 +66,7 @@ class ActivityTrackController extends Controller
         return response()->json([
             'data' => $apps ?? [],
             'message' => count($apps) > 0 ? 'Success' : 'Employee not found',
+            'redis' => false,
         ], 200);
     }
 

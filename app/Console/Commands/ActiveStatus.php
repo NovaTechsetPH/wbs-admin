@@ -55,8 +55,8 @@ class ActiveStatus extends Command
         sleep(10);
         foreach ($ref as $key) {
             if ($key->id == 20 && $key->employee_id == 'Kenneth') {
-                $key->employee_id = 'PH0067';
-                $key->save();
+                // $key->employee_id = 'PH0067';
+                // $key->save();
                 continue;
             }
 
