@@ -16,8 +16,9 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         // $schedule->command('inspire')->hourly();
-        $schedule->command('app:dupe-login')->hourly();
-        $schedule->command('app:version-update')->everyThirtyMinutes();
+        $schedule->command('app:logout')->dailyAt('23:55')->days([1, 2, 3, 4, 5, 6]);
+        $schedule->command('app:dupe-login')->hourly()->days([1, 2, 3, 4, 5, 6]);
+        $schedule->command('app:version-update')->everyThirtyMinutes()->days([1, 2, 3, 4, 5, 6]);
         // $schedule->command('check:active-status')->everyTenSeconds();
     }
 
@@ -28,7 +29,7 @@ class Kernel extends ConsoleKernel
      */
     protected function commands()
     {
-        $this->load(__DIR__.'/Commands');
+        $this->load(__DIR__ . '/Commands');
 
         require base_path('routes/console.php');
     }

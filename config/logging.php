@@ -123,6 +123,12 @@ return [
             'path' => storage_path('logs/access-' . date('Y-m-d') . '.log'),
             'level' => 'info',
         ],
+
+        'cronlog' => [
+            'driver' => 'single',
+            'path' => storage_path('logs/cron/' . date('Y-m-d') . '.log'),
+            'level' => 'info',
+        ],
     ],
 
 ];
