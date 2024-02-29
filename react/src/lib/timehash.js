@@ -107,6 +107,8 @@ export const handleAllocateTime = (data, sticks) => {
     var remainderToFill = remainderAddedTime % 600;
     var k = parseInt(d.category.is_productive);
 
+    if (!clonedSticks[item.index]) return;
+
     clonedSticks[item.index].value += initStickAddedTime;
     clonedSticks[item.index].category[CATEGORY[d.category.is_productive]] += initStickAddedTime;
 
