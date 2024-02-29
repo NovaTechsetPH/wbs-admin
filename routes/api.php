@@ -91,7 +91,8 @@ Route::middleware('auth:sanctum')->group(function () {
 Route::post('/signup', [AuthController::class, 'signup']);
 Route::post('/login', [AuthController::class, 'login']);
 
-Route::post('/intrac/signup', [AuthController::class, 'employeeSignup']);
+// employee registration
+Route::post('/register', [AuthController::class, 'register']);
 
 Route::get('/employees/image/{id}', [EmployeeController::class, 'getImageById']);
 Route::get('/forcelogout/{id}', [AuthController::class, 'forceLogout']);

@@ -7,7 +7,7 @@ use App\Http\Requests\LoginRequest;
 use App\Http\Requests\SignupRequest;
 use App\Models\Employee;
 use App\Models\User;
-use http\Env\Response;
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -42,33 +42,23 @@ class AuthController extends Controller
         return response(compact('user', 'token'));
     }
 
-    public function employeeLogin(LoginRequest $request)
+    public function register(Request $request)
     {
-        $credentials = $request->validated();
-        if (!Auth::guard('employee')->attempt($credentials)) {
-            return response([
-                'message' => 'Provided email or password is incorrect'
-            ], 422);
-        }
-
-        /** @var \App\Models\Employee $user */
-        $employee = Auth::employee();
-        $token = $user->createToken('ntrac')->plainTextToken;
-        return response(compact('employee', 'token'));
-    }
-
-    public function employeeSignup(SignupRequest $request)
-    {
-        $data = $request->validated();
-        /** @var \App\Models\Employee $user */
-        $employee = Employee::create([
-            'name' => $data['name'],
+        // firstname,lastname,position,department,employee_id,username,email,position_id
+        $request->validate([
+            'first_name' => 'required|string',
+            'last_name' => 'required|string',
+            'employee_id' => 'required|string',
+            'position_id' => 'required|integer|exists:tblemp_positions,id,',
+            'email' => 'required|email|string|unique:accounts,email',
+        ]);
+        $user = Employee::create([
+            'first_name' => $data['name'],
             'email' => $data['email'],
             'password' => bcrypt($data['password']),
         ]);
-
-        $token = $user->createToken('ntrac')->plainTextToken;
-        return response(compact('employee', 'token'));
+        $token = $user->createToken('main')->plainTextToken;
+        return response(compact('user', 'token'));
     }
 
     public function logout(Request $request)
