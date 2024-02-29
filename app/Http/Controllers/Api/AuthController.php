@@ -7,7 +7,7 @@ use App\Http\Requests\LoginRequest;
 use App\Http\Requests\SignupRequest;
 use App\Models\Employee;
 use App\Models\User;
-use http\Env\Response;
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -38,6 +38,25 @@ class AuthController extends Controller
 
         /** @var \App\Models\User $user */
         $user = Auth::user();
+        $token = $user->createToken('main')->plainTextToken;
+        return response(compact('user', 'token'));
+    }
+
+    public function register(Request $request)
+    {
+        // firstname,lastname,position,department,employee_id,username,email,position_id
+        $request->validate([
+            'first_name' => 'required|string',
+            'last_name' => 'required|string',
+            'employee_id' => 'required|string',
+            'position_id' => 'required|integer|exists:tblemp_positions,id,',
+            'email' => 'required|email|string|unique:accounts,email',
+        ]);
+        $user = Employee::create([
+            'first_name' => $data['name'],
+            'email' => $data['email'],
+            'password' => bcrypt($data['password']),
+        ]);
         $token = $user->createToken('main')->plainTextToken;
         return response(compact('user', 'token'));
     }

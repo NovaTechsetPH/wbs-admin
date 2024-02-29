@@ -73,10 +73,10 @@ class ReportController extends Controller
             ->whereBetween('date', [$start, $end])
             ->get();
 
-        if (Carbon::parse($start)->isToday())
-            $expiry = 60 * 60 * 24 * 30;
-        else
-            $expiry = 60 * 60;
+        # if (Carbon::parse($start)->isToday())
+        #     $expiry = 60 * 60 * 24 * 30;
+        # else
+        $expiry = 60 * 60;
 
         Redis::set('anomaly:' . $userid . ':' . $start . '-' . $end, json_encode($anomalies), 'EX', $expiry);
         return response()->json([

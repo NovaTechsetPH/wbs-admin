@@ -91,6 +91,9 @@ Route::middleware('auth:sanctum')->group(function () {
 Route::post('/signup', [AuthController::class, 'signup']);
 Route::post('/login', [AuthController::class, 'login']);
 
+// employee registration
+Route::post('/register', [AuthController::class, 'register']);
+
 Route::get('/employees/image/{id}', [EmployeeController::class, 'getImageById']);
 Route::get('/forcelogout/{id}', [AuthController::class, 'forceLogout']);
 Route::get('/minimum/speed', [RunningAppsController::class, 'getMinSpeed']);
@@ -106,12 +109,7 @@ Route::get('/latest', function () {
     //     $redis = false;
     // }
 
-    $latest = [
-        'id' => 49,
-        'version_name' => '0.0.3.3',
-        'description' => '1. Disabling graph',
-        'type' => 'Important',
-    ];
+    $latest = DB::table('tblappversion')->orderBy('id', 'desc')->first();
 
     return response()->json([
         'data' => $latest,

@@ -30,8 +30,8 @@ class Logout extends Command
      */
     public function handle()
     {
-        // $date = Carbon::parse('2024-02-26');
-        $date = Carbon::now();
+        $date = Carbon::parse('2024-02-27');
+        // $date = Carbon::now();
         $sessions = TrackRecords::where('datein', $date->toDateString())
             ->where('timeout', null)
             ->where('dateout', null)

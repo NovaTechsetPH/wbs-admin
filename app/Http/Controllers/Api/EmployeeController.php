@@ -24,7 +24,7 @@ class EmployeeController extends Controller
 {
     private $seconds_ten_min_ttl = 600; // 10min
 
-    private $seconds_month_ttl = 2592000; // 30d
+    private $seconds_month_ttl = 86400; // 1d
     /**
      * Display a listing of the resource.
      */
