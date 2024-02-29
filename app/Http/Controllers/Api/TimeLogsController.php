@@ -124,20 +124,20 @@ class TimeLogsController extends Controller
         $needles = [];
 
         $date = Carbon::parse($date) ?? Carbon::now();
-        $is_past = Carbon::now()->startOfDay()->gt($date);
+        // $is_past = Carbon::now()->startOfDay()->gt($date);
 
         // string
-        $redis_apps = Redis::get('graph:' . $empid . ':' . $date->toDateString());
+        // $redis_apps = Redis::get('graph:' . $empid . ':' . $date->toDateString());
 
         // hash
         // $redis_apps = Redis::hget('graph:'.$empid, $date->toDateString());
 
-        if ($redis_apps != "[]" && $redis_apps != null) {
-            return response()->json([
-                'redis' => 'hit',
-                'data' => json_decode($redis_apps),
-            ]);
-        }
+        // if ($redis_apps != "[]" && $redis_apps != null) {
+        //     return response()->json([
+        //         'redis' => 'hit',
+        //         'data' => json_decode($redis_apps),
+        //     ]);
+        // }
 
         $apps = RunningApps::with('category')
             ->where('date', $date->toDateString())
@@ -187,11 +187,11 @@ class TimeLogsController extends Controller
             ];
         }
 
-        $ttl = $is_past ? $this->seconds_month_ttl : $this->seconds_ten_min_ttl;
-        Redis::set('graph:' . $empid . ':' . $date->toDateString(), json_encode($needles), 'EX', $ttl);
+        // $ttl = $is_past ? $this->seconds_month_ttl : $this->seconds_ten_min_ttl;
+        // Redis::set('graph:' . $empid . ':' . $date->toDateString(), json_encode($needles), 'EX', $ttl);
 
         return response()->json([
-            'redis' => 'miss',
+            // 'redis' => 'miss',
             'data' => count($needles) ? $needles : [
                 'productive' => [
                     'label' => [],

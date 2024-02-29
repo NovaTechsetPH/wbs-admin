@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 use App\Models\RunningApps;
+use App\Models\TrackRecords;
 use App\Models\Employee;
 
 use Carbon\Carbon;
@@ -29,15 +30,39 @@ class TimeLog extends Command
      */
     public function handle()
     {
-        $apps = RunningApps::where('userid', 20)
-            ->where('date', '2024-02-22')
-            ->whereNot('updated_at', null)
+        $ref_date = '2024-02-28';
+        $tracks = TrackRecords::whereDate('datein', '=', $ref_date)
             ->get();
 
-        foreach ($apps as $app) {
-            // $log = RunningApps::find($app->id);
-            $app->end_time =  Carbon::parse($app->end_time)->addHours(22);
-            $app->save();
+        $new_ids = [];
+        foreach ($tracks as $track) {
+            $item = RunningApps::where('date', $track->datein)
+                ->where('userid', $track->userid)
+                ->first();
+
+            if (!$item) continue;
+
+            $new_ids[] = [
+                'old' => $item->taskid,
+                'new' => $track->id
+            ];
         }
+
+        foreach ($new_ids as $taskid) {
+            $updated = RunningApps::where('taskid', $taskid['old'])
+                ->update([
+                    'taskid' => $taskid['new']
+                ]);
+
+            $this->info('Updated: ' . $updated . 'TaskId: ' . $taskid['new']);
+        }
+
+
+
+        // foreach ($apps as $app) {
+        //     // $log = RunningApps::find($app->id);
+        //     $app->end_time =  Carbon::parse($app->end_time)->addHours(22);
+        //     $app->save();
+        // }
     }
 }

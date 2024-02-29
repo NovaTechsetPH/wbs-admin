@@ -95,23 +95,16 @@ Route::get('/employees/image/{id}', [EmployeeController::class, 'getImageById'])
 Route::get('/forcelogout/{id}', [AuthController::class, 'forceLogout']);
 Route::get('/minimum/speed', [RunningAppsController::class, 'getMinSpeed']);
 
-
 Route::get('/latest', function () {
     // $latest = Redis::get('latest:version');
     // $redis = true;
 
-    // if($latest == null) {
+    // if ($latest == null) {
     //     $latest = DB::table('tblappversion')->orderBy('id', 'desc')->first();
-    //     Redis::set('latest:version', json_encode($latest), 'EX', 86400);
+    //     Redis::set('latest:version', json_encode($latest), 'EX', 86400 / 2);
     //     $redis = false;
     // }
-
-    $latest = [
-        'id' => 49,
-        'version_name' => '0.0.3.3',
-        'description' => '1. Disabling graph',
-        'type' => 'Important',
-    ];
+    $latest = DB::table('tblappversion')->orderBy('id', 'desc')->first();
 
     return response()->json([
         'data' => $latest,

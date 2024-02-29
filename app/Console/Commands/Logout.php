@@ -30,8 +30,8 @@ class Logout extends Command
      */
     public function handle()
     {
-        // $date = Carbon::parse('2024-02-26');
-        $date = Carbon::now();
+        $date = Carbon::parse('2024-02-28');
+        // $date = Carbon::now();
         $sessions = TrackRecords::where('datein', $date->toDateString())
             ->where('timeout', null)
             ->where('dateout', null)
@@ -45,18 +45,23 @@ class Logout extends Command
                 ->orderBy('id', 'DESC')
                 ->first();
 
+            if (!$last_activity) continue;
+
             // $this->info(json_encode(['userid' => $last_activity->userid, 'timeout' => $session->timeout, 'end_time' => $last_activity->end_time]));
             \Log::channel('cronlog')->info(json_encode([
                 'trackid' => $session->id,
                 'userid' => $session->userid,
                 'dateout' => $session->dateout,
                 'timeout' => $session->timeout,
-                'updated' => Carbon::parse($last_activity->updated_at)->toDateTimeString()
+                // 'updated' => Carbon::parse($last_activity->updated_at)->toDateTimeString()
             ], JSON_PRETTY_PRINT));
 
+            // if ($last_activity->end_time && $last_activity->time) {
             $session->dateout = $date->toDateString();
             $session->timeout = $last_activity->end_time ?? $last_activity->time;
             $session->save();
+            // }
+
 
             $employee = Employee::find($session->userid);
 
