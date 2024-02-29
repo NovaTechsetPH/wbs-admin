@@ -45,6 +45,11 @@ return [
             'provider' => 'users',
             'hash' => false,
         ],
+        'apiv2' => [
+            'driver' => 'token',
+            'provider' => 'employees',
+            'hash' => false,
+        ],
         'admin' => [
             'driver' => 'session',
             'provider' => 'users',
@@ -103,6 +108,12 @@ return [
     'passwords' => [
         'users' => [
             'provider' => 'users',
+            'table' => 'password_resets',
+            'expire' => 60,
+            'throttle' => 60,
+        ],
+        'employees' => [
+            'provider' => 'employees',
             'table' => 'password_resets',
             'expire' => 60,
             'throttle' => 60,
