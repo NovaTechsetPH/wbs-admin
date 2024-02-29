@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\RunningApps;
 use App\Models\Employee;
+use App\Models\TrackRecords;
+
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -47,10 +49,21 @@ class ActivityTrackController extends Controller
                     'redis' => true,
                 ], 200);
 
+            $track = TrackRecords::where('userid', $userid)
+                ->where('datein', $date->toDateString())
+                ->first();
+
+            if (!$track)
+                return response()->json([
+                    'data' => [],
+                    'message' => 'No data found',
+                    'redis' => false,
+                ], 200);
+
             $apps = RunningApps::with('employee', 'category')
-                ->where('date', Carbon::parse($date)->toDateString())
-                ->where('userid', $userid)
+                ->where('taskid', $track->id)
                 ->whereNot('end_time', NULL)
+                ->where('time', '>=', Carbon::parse($track->timein)->toTimeString())
                 ->orderBy('id', 'asc')
                 ->get();
 
