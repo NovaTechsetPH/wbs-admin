@@ -21,7 +21,7 @@ export const ContextProvider = ({ children }) => {
   const [filterString, _setFilterString] = useState("");
   const [employees, setEmployees] = useState({});
   const [teams, setTeams] = useState([]);
-  const [currentTeam, setCurrentTeam] = useState(1);
+  const [currentTeam, setCurrentTeam] = useState(null);
 
   const setToken = (token) => {
     _setToken(token);

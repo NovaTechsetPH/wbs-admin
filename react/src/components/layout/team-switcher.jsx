@@ -124,8 +124,10 @@ export function TeamSwitcher({ isCollapsed }) {
         setCurrentTeam(team.id);
       }
     });
+
+    console.log(currentTeam);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [setCurrentTeam, setTeams]);
+  }, []);
 
   return (
     <>
