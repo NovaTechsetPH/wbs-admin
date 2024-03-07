@@ -420,6 +420,7 @@ class EmployeeController extends Controller
 
         if ($redis_apps != "[]" && $redis_apps != null)
             return response()->json([
+                'count' => count(json_decode($redis_apps)),
                 'redis' => 'hit',
                 'data' => json_decode($redis_apps),
                 'date' => $date->toDateString(),
@@ -431,57 +432,36 @@ class EmployeeController extends Controller
             foreach ($position->employees as $emps)
                 array_push($emps_under, $emps->id);
 
-        // $apps = RunningApps::with('employee', 'category')
-        //     ->where('date', $date->toDateString())
-        //     ->whereColumn('time', '<', 'end_time')
-        //     ->whereIn('userid', $emps_under)
-        //     ->orderBy('time', 'asc')
-        //     ->limit(10000)
-        //     ->get();
-
-        // if (count($apps) === 10000) {
-        //     $extra = RunningApps::with('employee', 'category')
-        //         ->where('date', $date->toDateString())
-        //         ->whereColumn('time', '<', 'end_time')
-        //         ->whereIn('userid', $emps_under)
-        //         ->orderBy('id', 'asc')
-        //         ->offset(10000)
-        //         ->limit(10000)
-        //         ->get();
-
-        //     return $extra;
-        // }
-
-        $apps = RunningApps::with('employee', 'category')
+        $apps = [];
+        RunningApps::with('employee', 'category')
             ->where('date', $date->toDateString())
             ->whereColumn('time', '<', 'end_time')
             ->whereIn('userid', $emps_under)
-            ->cursor()
-            ->map(function ($running) {
-                $employee = $running->employee;
-                $category = $running->category;
-                return [
-                    'userid' => $running->id,
-                    'description' => $running->description,
-                    'date' => $running->date,
-                    'time' => $running->time,
-                    'end_time' => $running->end_time,
-                    'status' => $running->status,
-                    'employee' => [
-                        'id' => $employee->id,
-                    ],
-                    'category' => [
-                        'id' => $category->id,
-                        'name' => $category->name,
-                        'is_productive' => $category->is_productive,
-                        'header_name' => $category->header_name,
-                    ]
-                ];
+            ->chunk(1000, function ($runningapps) use (&$apps) {
+                foreach ($runningapps as $running) {
+                    $employee = $running->employee;
+                    $category = $running->category;
+                    $apps[] = [
+                        'userid' => $running->id,
+                        'description' => $running->description,
+                        'date' => $running->date,
+                        'time' => $running->time,
+                        'end_time' => $running->end_time,
+                        'status' => $running->status,
+                        'employee' => [
+                            'id' => $employee->id,
+                        ],
+                        'category' => [
+                            'id' => $category->id,
+                            'name' => $category->name,
+                            'is_productive' => $category->is_productive,
+                            'header_name' => $category->header_name,
+                        ]
+                    ];
+                }
             });
 
         $ttl = $is_past ? 3600 : $this->seconds_ten_min_ttl;
-        // $ttl = $this->seconds_ten_min_ttl;
-        // if ($request->teamId != 2)
         Redis::set('admin_apps:' . $request->teamId . ':' . $date->toDateString(), json_encode($apps), 'EX', $ttl);
 
         return response()->json([

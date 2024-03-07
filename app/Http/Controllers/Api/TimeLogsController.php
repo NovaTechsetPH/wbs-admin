@@ -276,9 +276,87 @@ class TimeLogsController extends Controller
         // }
 
         if ($date->isToday())
-            Redis::set('appdata:' . $userid . ':' . $date->toDateString(), json_encode($apps), 'EX', 600);
+            Redis::set('appdata:' . $userid . ':' . $date->toDateString(), json_encode($apps), 'EX', 60);
         else
-            Redis::set('appdata:' . $userid . ':' . $date->toDateString(), json_encode($apps));
+            Redis::set('appdata:' . $userid . ':' . $date->toDateString(), json_encode($apps), 'EX', 600);
+
+        return response()->json([
+            'data' => $apps,
+            'message' => 'Success',
+            'redis' => false,
+        ], 200);
+    }
+
+    public function getAppDataTest(Request $request)
+    {
+        $request->validate([
+            'userid' => 'required|exists:accounts,id',
+        ]);
+
+        $userid = $request->userid;
+        $date = Carbon::parse($request->date) ?? Carbon::now();
+
+        $redis_apps = Redis::get('test:' . $userid . ':' . $date->toDateString());
+        if ($redis_apps != "[]" && $redis_apps != null) {
+            return response()->json([
+                'data' => json_decode($redis_apps),
+                'message' => 'Success',
+                'redis' => true,
+            ], 200);
+        }
+
+        $apps = RunningApps::with('category')
+            ->where('date', $date->toDateString())
+            ->where('userid', $userid)
+            ->where('status', 'Closed')
+            ->whereNot('end_time', null)
+            ->get();
+
+        $data_tmp = $apps->groupBy('category.is_productive');
+        // $keys = $data_tmp->keys();
+
+        $type_keys = [0, 1, 2];
+
+        $types_ = [
+            '0' => 'unproductive',
+            '1' => 'productive',
+            '2' => 'neutral',
+        ];
+
+        $types = ['unproductive', 'productive', 'neutral'];
+
+        $apps = [];
+        foreach ($type_keys as $t) {
+            if (!array_key_exists($t, $data_tmp->toArray())) {
+                $apps[$types[$t]] = [];
+                continue;
+            }
+            $apps[$types[$t]] = $data_tmp[(string)$t];
+        }
+
+
+        // foreach ($types as $type) {
+        //     $apps[$type] = $data_tmp[(string)$type];
+        // }
+
+        // $apps = [];
+
+        // $keys = [
+        //     'unproductive',
+        //     'productive',
+        //     'neutral',
+        // ];
+        // foreach ($keys as $key => $value) {
+        //     if ($data_tmp[(string)$key] == null)
+        //         $data_tmp[$key] = [];
+
+        //     $apps[$value] = $data_tmp[(string)$key];
+        // }
+
+        if ($date->isToday())
+            Redis::set('test:' . $userid . ':' . $date->toDateString(), json_encode($apps), 'EX', 600);
+        else
+            Redis::set('test:' . $userid . ':' . $date->toDateString(), json_encode($apps), 'EX', 60);
 
         return response()->json([
             'data' => $apps,
