@@ -437,16 +437,16 @@ class EmployeeController extends Controller
             foreach ($position->employees as $emps)
                 array_push($emps_under, $emps->id);
 
-        $apps = [];
+        $data = [];
         RunningApps::with('employee', 'category')
             ->where('date', $date->toDateString())
             ->whereColumn('time', '<', 'end_time')
             ->whereIn('userid', $emps_under)
-            ->chunk(1000, function ($runningapps) use (&$apps) {
+            ->chunk(1000, function ($runningapps) use (&$data) {
                 foreach ($runningapps as $running) {
                     $employee = $running->employee;
                     $category = $running->category;
-                    $apps[] = [
+                    $data[] = [
                         'userid' => $running->id,
                         'description' => $running->description,
                         'date' => $running->date,
@@ -472,10 +472,10 @@ class EmployeeController extends Controller
         Redis::set('admin_apps:' . $request->teamId . ':' . $date->toDateString(), json_encode($apps), 'EX', $ttl);
 
         return response()->json([
-            'count' => count($apps),
+            'count' => count($data),
             'redis' => 'miss',
             'date' => $date->toDateString(),
-            'data' => $apps ?? [],
+            'data' => $data ?? [],
             'message' => 'Success'
         ], 200);
     }
