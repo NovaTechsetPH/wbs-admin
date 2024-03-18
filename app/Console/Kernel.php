@@ -17,9 +17,9 @@ class Kernel extends ConsoleKernel
     {
         // $schedule->command('inspire')->hourly();
         $schedule->command('app:logout')->daily();
-        $schedule->command('app:dupe-login')->hourly()->days([1, 2, 3, 4, 5, 6]);
+        $schedule->command('app:dupe-login')->dailyAt('11:00');
         $schedule->command('app:version-update')->everyThirtyMinutes()->days([1, 2, 3, 4, 5, 6]);
-        // $schedule->command('check:active-status')->everyTenSeconds();
+        $schedule->command('check:active-status')->everyMinute();
     }
 
     /**

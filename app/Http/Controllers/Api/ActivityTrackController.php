@@ -114,13 +114,13 @@ class ActivityTrackController extends Controller
         ]);
 
         $employee = Employee::findOrFail($request->userid);
-        $incremented = $request->status == 'Offline'
-            ? 0
-            : $request->incremented ?? $employee->incremented;
+        // $incremented = $request->status == 'Offline'
+        //     ? 0
+        //     : $request->incremented ?? $employee->incremented;
 
-        $employee->active_status = $request->status;
-        $employee->incremented = $incremented;
-        $employee->save();
+        // $employee->active_status = $request->status;
+        // $employee->incremented = $incremented;
+        // $employee->save();
 
         return response()->json([
             'data' => $employee,

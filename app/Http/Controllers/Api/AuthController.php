@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\LoginRequest;
 use App\Http\Requests\SignupRequest;
 use App\Models\Employee;
+use App\Models\Position;
 use App\Models\User;
 
 use Illuminate\Http\Request;
@@ -45,19 +46,33 @@ class AuthController extends Controller
     public function register(Request $request)
     {
         // firstname,lastname,position,department,employee_id,username,email,position_id
-        $request->validate([
-            'first_name' => 'required|string',
-            'last_name' => 'required|string',
-            'employee_id' => 'required|string',
-            'position_id' => 'required|integer|exists:tblemp_positions,id,',
-            'email' => 'required|email|string|unique:accounts,email',
-        ]);
+        // $request->validate([
+        //     'first_name' => 'required|string',
+        //     'last_name' => 'required|string',
+        //     'employee_id' => 'required|string',
+        //     'position_id' => 'required|integer|exists:tblemp_positions,id,',
+        //     'email' => 'required|email|string|unique:accounts,email',
+        // ]);
+
+        $position = Position::find($request->position_id);
+
         $user = Employee::create([
-            'first_name' => $data['name'],
-            'email' => $data['email'],
-            'password' => bcrypt($data['password']),
+            'employee_id' => $request->employee_id,
+            'first_name' => $request->first_name,
+            'last_name' => $request->last_name,
+            'email' => $request->email,
+            'position_id' => $request->position_id,
+            'position' => json_encode([$position->position, $position->id]),
+            'username' => $request->username ?? $request->employee_id,
+            'type' => 'User',
+            'status' => 'Pending',
+            'department' => $position->department,
+            'phone_no' => $request->phone_no,
+            'incremented' => 0,
+            'active_status' => 'Offline',
         ]);
-        $token = $user->createToken('main')->plainTextToken;
+
+        $token = $user->createToken('employee')->plainTextToken;
         return response(compact('user', 'token'));
     }
 

@@ -78,6 +78,12 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('/record', [RunningAppsController::class, 'recordLog'])->name('record');
     Route::patch('/record', [RunningAppsController::class, 'updateLog'])->name('record-update');
 
+    Route::put('/record/vdi', [RunningAppsController::class, 'recordVDILog']);
+
+    // TEST API
+    Route::put('/record-test', [RunningAppsController::class, 'recordLogTest']);
+    Route::get('/testtracking/data/{empid}/{date?}', [TimeLogsController::class, 'testGraphData']);
+
     Route::get('/employee/info/{empid}', [EmployeeController::class, 'getInfoByEmployeeId']);
     Route::get('/employee/log/{empid}/{date}', [EmployeeController::class, 'getEmployeeActivity']);
     Route::get('/employee/status/{empid}', [ActivityTrackController::class, 'getActiveStatus']);

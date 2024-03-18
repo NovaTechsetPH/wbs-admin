@@ -22,6 +22,8 @@ class RunningApps extends Model
         'status',
         'category_id',
         'end_time',
+        'platform',
+        'type',
         'created_at',
         'updated_at',
     ];

@@ -209,6 +209,81 @@ class TimeLogsController extends Controller
         ]);
     }
 
+    public function testGraphData($empid, $date = null)
+    {
+        $needles = [];
+        $date = Carbon::parse($date) ?? Carbon::now();
+
+        $apps = RunningApps::with('category')
+            ->where('date', $date->toDateString())
+            ->where('userid', $empid)
+            ->where('status', 'Closed')
+            ->whereNot('end_time', null)
+            ->select([
+                '*',
+                DB::raw("TIMESTAMPDIFF(SECOND, time, end_time) as duration"),
+                DB::raw("hour(time) as hour")
+            ])
+            ->get();
+
+        $data_tmp = $apps->groupBy('category.is_productive');
+        // $type_keys = $data_tmp->keys();
+        $type_keys = [0, 1, 2];
+
+        $types_ = [
+            '0' => 'unproductive',
+            '1' => 'productive',
+            '2' => 'neutral',
+        ];
+
+        $types = ['unproductive', 'productive', 'neutral'];
+        foreach ($type_keys as $t) {
+            $types[$t] = $types_[$t];
+            if (!array_key_exists($t, $data_tmp->toArray())) {
+                $data_tmp[(string)$t] = [];
+            }
+        }
+
+        foreach ($types as $int => $type) {
+            $hours = [];
+            $seconds = [];
+            foreach ($data_tmp[(string)$int] as $item) {
+                $hour_ = Carbon::parse("{$item->hour}:00:00")->format('H:i');
+                if (in_array($hour_, $hours)) {
+                    $seconds[$hour_] += $item->duration;
+                } else {
+                    $hours[] = $hour_;
+                    $seconds[$hour_] = $item->duration;
+                }
+            }
+            $needles[$type] = [
+                'label' => $hours,
+                'value' => array_values($seconds),
+            ];
+        }
+
+        // $ttl = $is_past ? $this->seconds_month_ttl : $this->seconds_ten_min_ttl;
+        // Redis::set('graph:' . $empid . ':' . $date->toDateString(), json_encode($needles), 'EX', $ttl);
+
+        return response()->json([
+            // 'redis' => 'miss',
+            'data' => count($needles) ? $needles : [
+                'productive' => [
+                    'label' => [],
+                    'value' => []
+                ],
+                'neutral' => [
+                    'label' => [],
+                    'value' => []
+                ],
+                'unproductive' => [
+                    'label' => [],
+                    'value' => []
+                ],
+            ],
+        ]);
+    }
+
     public function getAppData(Request $request)
     {
         $request->validate([

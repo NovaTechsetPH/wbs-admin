@@ -63,7 +63,9 @@ class EmployeeController extends Controller
         $data = [];
         foreach ($positions as $position) {
             for ($i = 0; $i < count($position->employees); $i++) {
-                array_push($data, $position->employees[$i]);
+                if ($position->employees[$i]->location == 'PH') {
+                    array_push($data, $position->employees[$i]);
+                }
             }
         }
 
@@ -110,6 +112,8 @@ class EmployeeController extends Controller
         $employees = [];
         foreach ($positions as $postion) {
             foreach ($postion->employees as $emps) {
+                if ($emps->location != 'PH') continue;
+
                 $last_activity = RunningApps::where('userid', $emps->id)
                     ->orderBy('id', 'desc')
                     ->first();
@@ -118,6 +122,7 @@ class EmployeeController extends Controller
                 array_push($employees, $emps);
             }
         }
+
         return response()->json([
             'data' => $employees,
             'message' => 'Success'
@@ -456,6 +461,8 @@ class EmployeeController extends Controller
                             'name' => $category->name,
                             'is_productive' => $category->is_productive,
                             'header_name' => $category->header_name,
+                            'icon' => $category->icon,
+                            'abbreviation' => $category->abbreviation,
                         ]
                     ];
                 }
@@ -502,6 +509,7 @@ class EmployeeController extends Controller
             $emps_under = [];
             foreach ($positions as $position) {
                 foreach ($position->employees as $emps) {
+                    if ($emps->location != 'PH') continue;
                     array_push($emps_under, $emps->id);
                 }
             }
@@ -594,18 +602,53 @@ class EmployeeController extends Controller
         try {
             $from = Carbon::parse($from)->toDateString();
             $to = $to ?? Carbon::now()->toDateString();
-            $track_data = TrackRecords::with([
-                'employee',
-                'tasks' => function ($query) {
-                    $query->select([
-                        '*', DB::raw("TIMESTAMPDIFF(SECOND, time, end_time) as duration"),
-                    ]);
-                },
-                'tasks.category',
-            ])
+
+            // RunningApps::with('employee', 'category')
+            // ->where('date', $date->toDateString())
+            // ->whereColumn('time', '<', 'end_time')
+            // ->whereIn('userid', $emps_under)
+            // ->chunk(1000, function ($runningapps) use (&$apps) {
+            //     foreach ($runningapps as $running) {
+
+            $data = TrackRecords::with('employee', 'tasks')
                 ->whereIn('userid', request('employees'))
                 ->whereBetween('datein', [$from, $to])
-                ->get();
+                ->cursor()->map(function ($track) {
+                    $tasks = [];
+                    foreach ($track->tasks as $task) {
+                        $tasks[] = [
+                            'duration' => Carbon::parse($task->end_time)->diffInSeconds($task->time),
+                            'category' => $task->category->only(['is_productive']),
+                        ];
+                    }
+
+                    return [
+                        'id' => $track->id,
+                        'userid' => $track->userid,
+                        'datein' => $track->datein,
+                        'timeout' => $track->timeout,
+                        'timein' => $track->timein,
+                        'dateout' => $track->dateout,
+                        'tasks' => $tasks,
+                        'employee' => $track->employee,
+                    ];
+                });
+
+
+            // $data = TrackRecords::select(['id', 'userid'])
+            //     ->with([
+            //         'employee',
+            //         'tasks' => function ($query) {
+            //             $query->select([
+            //                 '*',
+            //                 DB::raw("TIMESTAMPDIFF(SECOND, time, end_time) as duration"),
+            //             ]);
+            //         },
+            //         'tasks.category',
+            //     ])
+            //     ->whereIn('userid', request('employees'))
+            //     ->whereBetween('datein', [$from, $to])
+            //     ->get();
         } catch (\Exception $e) {
             return response()->json([
                 'error' => $e->getMessage(),
@@ -613,10 +656,11 @@ class EmployeeController extends Controller
             ], 500);
         }
 
+        $data_count = count($data);
         return response()->json([
-            'data' => $track_data ?? [],
-            'message' => count($track_data) > 0 ? 'Success' : 'Records not found',
-            'count' => $track_data->count(),
+            'data' => $data ?? [],
+            'message' => $data_count > 0 ? 'Success' : 'Records not found',
+            'count' => $data_count,
         ]);
     }
 
@@ -725,6 +769,7 @@ class EmployeeController extends Controller
     public function getEmployeeLog($empid, $date = null, $category_id = [])
     {
         try {
+            if ($empid == 'Kenneth') $empid = 'PH0067';
             $date = Carbon::parse($date) ?? Carbon::now();
 
             // $employee = Employee::find($empid);
