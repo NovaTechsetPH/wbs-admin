@@ -3,8 +3,8 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 
 use Carbon\Carbon;
@@ -28,6 +28,7 @@ class Employee extends Authenticatable
         'status',
         'active_status',
         'location',
+        'password',
     ];
 
     protected $hidden = [

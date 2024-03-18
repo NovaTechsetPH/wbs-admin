@@ -45,10 +45,10 @@ return [
             'provider' => 'users',
             'hash' => false,
         ],
-        'apiv2' => [
-            'driver' => 'token',
+        'ntrac' => [
+            'driver' => 'session',
             'provider' => 'employees',
-            'hash' => false,
+            // 'hash' => false,
         ],
         'admin' => [
             'driver' => 'session',
