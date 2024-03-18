@@ -21,11 +21,11 @@ class ResetPassword extends Command
      */
     protected $description = 'Command description';
 
-    public function resetPassword($email)
+    public function resetPassword($id)
     {
         try {
             $crypt = bcrypt('123456');
-            $user = User::where('email', $email)->first();
+            $user = Employee::find($id);
             $user->password = bcrypt($crypt);
             $user->save();
         } catch (\Exception $e) {
@@ -44,13 +44,13 @@ class ResetPassword extends Command
      */
     public function handle()
     {
-        $employees = Employee::select('email', 'password')
+        $employees = Employee::select('id', 'password')
             ->where('type', 'User')
             ->where('status', 'Approved')
             ->get();
 
         foreach ($employees as $employee) {
-            $this->resetPassword($employee->email);
+            $this->resetPassword($employee->id);
         }
 
         $this->info('Password reset successfully');
