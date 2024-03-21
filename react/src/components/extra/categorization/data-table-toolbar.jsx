@@ -21,7 +21,7 @@ export function DataTableToolbar({ table }) {
           className="h-8 w-[150px] lg:w-[250px]"
         />*/}
         <Input
-          placeholder="Search Employee..."
+          placeholder="Search Categories..."
           value={table.getColumn("name")?.getFilterValue() ?? ""}
           onChange={(event) =>
             table.getColumn("name")?.setFilterValue(event.target.value)

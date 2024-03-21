@@ -1,7 +1,7 @@
 import { DashboardContextProvider } from "@/context/DashboardContextProvider";
 import { Separator } from "@ui/separator";
-import { columns } from "@/components/extra/user-approval/columns";
-import { DataTable } from "@/components/extra/user-approval/data-table";
+import { columns } from "@/components/extra/categorization/columns";
+import { DataTable } from "@/components/extra/categorization/data-table";
 import { useEffect, useState } from "react";
 import axiosClient from "./axios-client";
 import moment from "moment";
@@ -11,7 +11,7 @@ const Categorization = () => {
 
   useEffect(() => {
     axiosClient
-      .get("/userapproval")
+      .get("/categorization")
       .then(async ({ data }) => {
         let tmpData = [];
         await data.data.forEach((item) => {
@@ -33,7 +33,7 @@ const Categorization = () => {
         <div className="flex items-center justify-between">
           <div className="space-y-1">
             <h2 className="text-2xl font-semibold tracking-tight">
-              User Registration Approval
+              User Application Categories
             </h2>
           </div>
         </div>
