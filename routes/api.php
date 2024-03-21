@@ -100,6 +100,8 @@ Route::post('/login', [AuthController::class, 'login']);
 
 // employee registration
 Route::post('/register', [AuthController::class, 'register']);
+Route::post('/login/employee', [AuthController::class, 'appLogin']);
+
 
 Route::get('/employees/image/{id}', [EmployeeController::class, 'getImageById']);
 Route::get('/forcelogout/{id}', [AuthController::class, 'forceLogout']);
