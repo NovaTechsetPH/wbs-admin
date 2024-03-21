@@ -11,7 +11,7 @@ const Categorization = () => {
 
   useEffect(() => {
     axiosClient
-      .get("/userapproval")
+      .get("/categorization")
       .then(async ({ data }) => {
         let tmpData = [];
         await data.data.forEach((item) => {
@@ -33,7 +33,7 @@ const Categorization = () => {
         <div className="flex items-center justify-between">
           <div className="space-y-1">
             <h2 className="text-2xl font-semibold tracking-tight">
-              User Registration Approval
+              Categorization
             </h2>
           </div>
         </div>
