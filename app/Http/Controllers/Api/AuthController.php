@@ -5,10 +5,14 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\LoginRequest;
 use App\Http\Requests\SignupRequest;
+
+use App\Http\Requests\EmployeeLoginRequest;
+
 use App\Models\Employee;
 use App\Models\Position;
 use App\Models\User;
-
+use Illuminate\Contracts\Routing\ResponseFactory;
+use Illuminate\Database\Eloquent\Casts\Json;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -43,19 +47,24 @@ class AuthController extends Controller
         return response(compact('user', 'token'));
     }
 
+    public function appLogin(EmployeeLoginRequest $request)
+    {
+        $credentials = $request->validated();
+        if (!Auth::guard('ntrac')->attempt($credentials)) {
+            return response([
+                'message' => 'Provided email or password is incorrect'
+            ], 422);
+        }
+
+        /** @var \App\Models\Employee $user */
+        $user = Auth::guard('ntrac')->user();
+        $token = $user->createToken('employee')->plainTextToken;
+        return response(compact('user', 'token'));
+    }
+
     public function register(Request $request)
     {
-        // firstname,lastname,position,department,employee_id,username,email,position_id
-        // $request->validate([
-        //     'first_name' => 'required|string',
-        //     'last_name' => 'required|string',
-        //     'employee_id' => 'required|string',
-        //     'position_id' => 'required|integer|exists:tblemp_positions,id,',
-        //     'email' => 'required|email|string|unique:accounts,email',
-        // ]);
-
         $position = Position::find($request->position_id);
-
         $user = Employee::create([
             'employee_id' => $request->employee_id,
             'first_name' => $request->first_name,
