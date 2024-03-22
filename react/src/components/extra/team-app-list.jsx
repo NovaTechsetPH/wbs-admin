@@ -25,6 +25,8 @@ export function TeamAppList({ title, apps, className }) {
     return secondString;
   };
 
+  const sortedApps = apps.sort((a, b) => b.totalTime - a.totalTime);
+
   return (
     <Card>
       <CardHeader className={cn("mb-3 p-3", className)}>
@@ -42,7 +44,7 @@ export function TeamAppList({ title, apps, className }) {
           }}
         >
           {apps.length > 0 ? (
-            apps.map((app) => (
+            sortedApps.map((app) => (
               <div
                 key={app.id}
                 className="flex items-center justify-between space-x-1 py-1.5"

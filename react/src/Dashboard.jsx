@@ -53,6 +53,7 @@ function Dashboard() {
   // App Listing
   useEffect(() => {
     setIsLoading(true);
+    if (!currentTeam) return;
     axiosClient
       .post("/dashboard/apps", {
         date: date,

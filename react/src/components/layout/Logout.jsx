@@ -23,7 +23,8 @@ import { useState } from "react";
 import { Badge } from "../ui/badge";
 
 const Logout = () => {
-  const { setUser, setToken, user } = useStateContext();
+  const { setUser, setCurrentTeam, setTeams, setToken, user } =
+    useStateContext();
   const [dialogOpen, setDialogOpen] = useState(false);
 
   const onLogout = (ev) => {
@@ -31,6 +32,9 @@ const Logout = () => {
     axiosClient.post("/logout").then(() => {
       setUser({});
       setToken(null);
+      setCurrentTeam(null);
+      setTeams([]);
+      localStorage.removeItem("currentTeam");
       localStorage.removeItem("SESSION_EMAIL");
     });
   };
