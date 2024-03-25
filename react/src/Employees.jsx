@@ -13,6 +13,14 @@ export const getLastActivity = (act) => {
   return "No Activity";
 };
 
+const getLastActivityUnix = (act) => {
+  if (act) {
+    let time = act.end_time ?? act.time;
+    return moment(`${act.date} ${time}`).unix();
+  }
+  return 0;
+};
+
 const getEmployeeId = (emp) => {
   if (emp.employee_id) {
     return emp.employee_id;
@@ -42,10 +50,12 @@ const Employees = () => {
               item.active_status === "Active"
                 ? "Now"
                 : getLastActivity(item.last_activity),
+            incremented: getLastActivityUnix(item.last_activity),
           });
         });
 
-        setData(formatData.sort((a, b) => (a.status > b.status ? 1 : -1)));
+        formatData.sort((a, b) => b.incremented - a.incremented);
+        setData(formatData);
       })
       .catch((err) => console.log(err));
   }, [currentTeam]);

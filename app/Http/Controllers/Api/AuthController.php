@@ -11,11 +11,12 @@ use App\Http\Requests\RegisterRequest;
 
 use App\Models\Employee;
 use App\Models\Position;
+use App\Models\Team;
 use App\Models\User;
-use Illuminate\Contracts\Routing\ResponseFactory;
-use Illuminate\Database\Eloquent\Casts\Json;
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class AuthController extends Controller
 {
@@ -44,8 +45,13 @@ class AuthController extends Controller
 
         /** @var \App\Models\User $user */
         $user = Auth::user();
+        $access = DB::table('manager_team_access')->where('manager_id', $user->id)->get();
+        $teams = $access->map(function ($item) {
+            return Team::find($item->team_id);
+        });
+
         $token = $user->createToken('main')->plainTextToken;
-        return response(compact('user', 'token'));
+        return response(compact('user', 'token', 'teams'));
     }
 
     public function appLogin(EmployeeLoginRequest $request)
