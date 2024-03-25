@@ -4,7 +4,7 @@ namespace App\Console\Commands;
 
 use App\Models\AppCategories;
 use App\Models\RunningApps;
-
+use Carbon\Carbon;
 use Illuminate\Console\Command;
 
 class FixCategory extends Command
@@ -38,6 +38,7 @@ class FixCategory extends Command
 
         foreach ($categories as $category) {
             $updated = RunningApps::whereIn('category_id', [6])
+                ->whereDate('created_at', '>=', Carbon::now()->startOfMonth())
                 ->where('description', 'LIKE', "%{$category->name}%")
                 ->update([
                     'category_id' => $category->id,

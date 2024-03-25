@@ -218,16 +218,20 @@ class RunningAppsController extends Controller
             $prev_desc = Redis::get('prev:description:' . $request->userid);
             $prev_id = Redis::get('prev:id:' . $request->userid);
 
+            // \Log::info('prev_desc: ' . $prev_id);
+
             if ($timein->gt($req_time)) {
                 $task->timein = $request->time;
                 $task->save();
             }
 
-            if ($prev_desc == $request->description) {
+            if ($prev_desc == $request->description && $request->end_time != null) {
                 // \Log::info('duplicated desc found: ' .  $request->description . ', prev_id: ' . $prev_id);
                 $prev = RunningApps::find($prev_id);
-                $prev->end_time = $request->end_time;
-                $prev->save();
+                if ($prev) {
+                    $prev->end_time = $request->end_time;
+                    $prev->save();
+                }
 
                 return response()->json([
                     'message' => 'end_time updated.',
