@@ -1,7 +1,7 @@
 import { DashboardContextProvider } from "@/context/DashboardContextProvider";
 import { Separator } from "@ui/separator";
-import { columns } from "@/components/extra/user-approval/columns";
-import { DataTable } from "@/components/extra/user-approval/data-table";
+import { columns } from "@/components/extra/categories/columns";
+import { DataTable } from "@/components/extra/categories/data-table";
 import { useEffect, useState } from "react";
 import axiosClient from "./axios-client";
 import moment from "moment";
@@ -11,15 +11,21 @@ const Categorization = () => {
 
   useEffect(() => {
     axiosClient
-      .get("/categorization")
+      .get("/categories")
       .then(async ({ data }) => {
         let tmpData = [];
         await data.data.forEach((item) => {
           tmpData.push({
-            employeeId: item.employee_id,
-            name: `${item.first_name} ${item.last_name}`,
-            status: item.status,
-            requestedOn: moment(item.created_at).format("YYYY-MM-DD"),
+            id: item.id,
+            name: item.name,
+            description: item.description,
+            is_productive: item.is_productive,
+            header_name: item.header_name,
+            icon: item.icon,
+            abbreviation: item.abbreviation,
+            priority_id: item.priority_id,
+            updated_at: item.updated_at,
+            created_at: item.created_at,
           });
         });
         setData(tmpData);
