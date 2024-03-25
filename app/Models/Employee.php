@@ -3,30 +3,35 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
-
-use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
+use Laravel\Sanctum\HasApiTokens;
 
 use Carbon\Carbon;
 
 class Employee extends Authenticatable
 {
-    use HasFactory;
+    use HasApiTokens, HasFactory, Notifiable;
 
     protected $table = 'accounts';
 
     protected $fillable = [
         'id',
+        'employee_id',
         'user_image',
         'first_name',
         'last_name',
         'position',
+        'team_id',
         'department',
         'username',
         'email',
         'type',
         'status',
+        'active_status',
+        'site',
+        'password',
+        'position_id',
     ];
 
     protected $hidden = [

@@ -31,13 +31,21 @@ Route::middleware('auth:sanctum')->group(function () {
     });
 
     Route::apiResource('/users', UserController::class);
-    Route::apiResource('/categories', AppCategoriesController::class);
+    // Route::apiResource('/categories', AppCategoriesController::class);
     Route::apiResource('/runningapps', RunningAppsController::class);
     Route::apiResource('/employees', EmployeeController::class);
     Route::apiResource('/timelogs', TimeLogsController::class);
 
     Route::get('/employee/{id}', [EmployeeController::class, 'getEmployeeById']);
     Route::get('/teams', [EmployeeController::class, 'getTeams']);
+    Route::get('/accounts', [EmployeeController::class, 'getAccounts']);
+
+    // Categories
+    Route::get('/categories', [AppCategoriesController::class, 'index']);
+    Route::get('/categories/{id}', [AppCategoriesController::class, 'show']);
+    Route::post('/categories', [AppCategoriesController::class, 'store']);
+    Route::put('/categories/{id}', [AppCategoriesController::class, 'update']);
+    Route::delete('/categories/{id}', [AppCategoriesController::class, 'destroy']);
 
     // Settings
     Route::post('/reset-password', [UserController::class, 'resetPassword']);
@@ -78,6 +86,12 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('/record', [RunningAppsController::class, 'recordLog'])->name('record');
     Route::patch('/record', [RunningAppsController::class, 'updateLog'])->name('record-update');
 
+    Route::put('/record/vdi', [RunningAppsController::class, 'recordVDILog']);
+
+    // TEST API
+    Route::put('/record-test', [RunningAppsController::class, 'recordLogTest']);
+    Route::get('/testtracking/data/{empid}/{date?}', [TimeLogsController::class, 'testGraphData']);
+
     Route::get('/employee/info/{empid}', [EmployeeController::class, 'getInfoByEmployeeId']);
     Route::get('/employee/log/{empid}/{date}', [EmployeeController::class, 'getEmployeeActivity']);
     Route::get('/employee/status/{empid}', [ActivityTrackController::class, 'getActiveStatus']);
@@ -86,6 +100,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/tracking/data/{empid}/{date?}', [TimeLogsController::class, 'graphData']);
     Route::get('/redis/tracking/data/{empid}/{date}', [TimeLogsController::class, 'redisGraphData']);
     Route::get('/tracking/apps/data', [TimeLogsController::class, 'getAppData']);
+    Route::get('/test-tracking/apps/data', [TimeLogsController::class, 'getAppDataTest']);
 });
 
 Route::post('/signup', [AuthController::class, 'signup']);
@@ -93,12 +108,17 @@ Route::post('/login', [AuthController::class, 'login']);
 
 // employee registration
 Route::post('/register', [AuthController::class, 'register']);
+Route::post('/app-login', [AuthController::class, 'appLogin']);
+
+Route::get('/positions', [EmployeeController::class, 'getPositions']);
+
 
 Route::get('/employees/image/{id}', [EmployeeController::class, 'getImageById']);
 Route::get('/forcelogout/{id}', [AuthController::class, 'forceLogout']);
 Route::get('/minimum/speed', [RunningAppsController::class, 'getMinSpeed']);
 
 Route::get('/latest', function () {
+    $type  = request('type') ?? 'application';
     // $latest = Redis::get('latest:version');
     // $redis = true;
 
@@ -107,11 +127,14 @@ Route::get('/latest', function () {
     //     Redis::set('latest:version', json_encode($latest), 'EX', 86400 / 2);
     //     $redis = false;
     // }
-    $latest = DB::table('tblappversion')->orderBy('id', 'desc')->first();
+
+    $table = $type == 'updator' ? 'tblAppUpdatorVersion' : 'tblappversion';
+    $latest = DB::table($table)->orderBy('id', 'desc')->first();
 
     return response()->json([
         'data' => $latest,
         'message' => 'Success',
+        'type' => $type,
     ], 200);
 });
 

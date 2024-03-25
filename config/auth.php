@@ -45,8 +45,8 @@ return [
             'provider' => 'users',
             'hash' => false,
         ],
-        'apiv2' => [
-            'driver' => 'token',
+        'ntrac' => [
+            'driver' => 'session',
             'provider' => 'employees',
             'hash' => false,
         ],
@@ -82,6 +82,7 @@ return [
         'employees' => [
             'driver' => 'eloquent',
             'model' => App\Models\Employee::class,
+            'table' => 'accounts',
         ],
 
         // 'users' => [

@@ -57,15 +57,40 @@ class EmployeeController extends Controller
         ], 200);
     }
 
+    public function getAccounts()
+    {
+        $accounts = Employee::where('status', 'Approved')->paginate(10);
+        return $accounts;
+    }
+
+    public function getPositions()
+    {
+        try {
+            $positions = Position::where('active', true)->get();
+        } catch (\Exception $e) {
+            throw $e->getMessage();
+        }
+
+        return response()->json([
+            'data' => $positions,
+            'message' => 'Successfully retrieved all positions'
+        ]);
+    }
+
     public function getEmployeesStatus($teamid = null)
     {
-        $positions = Position::where('team_id', $teamid)->get();
-        $data = [];
-        foreach ($positions as $position) {
-            for ($i = 0; $i < count($position->employees); $i++) {
-                array_push($data, $position->employees[$i]);
-            }
-        }
+        // $positions = Position::where('team_id', $teamid)->get();
+        // $data = [];
+        // foreach ($positions as $position) {
+        //     for ($i = 0; $i < count($position->employees); $i++) {
+        //         if ($position->employees[$i]->site == 'Dumaguete') {
+        //             array_push($data, $position->employees[$i]);
+        //         }
+        //     }
+        // }
+
+        $teamid = $teamid ?? DB::table('manager_team_access')->first()->team_id;
+        $data = Employee::where('team_id', $teamid)->get();
 
         return response()->json([
             'data' => $data,
@@ -106,18 +131,30 @@ class EmployeeController extends Controller
 
     public function getEmployeesByTeam($id)
     {
-        $positions = Position::where('team_id', $id)->get();
-        $employees = [];
-        foreach ($positions as $postion) {
-            foreach ($postion->employees as $emps) {
-                $last_activity = RunningApps::where('userid', $emps->id)
-                    ->orderBy('id', 'desc')
-                    ->first();
+        // $positions = Position::where('team_id', $id)->get();
+        // $employees = [];
+        // foreach ($positions as $postion) {
+        //     foreach ($postion->employees as $emps) {
+        //         if ($emps->site != 'Dumaguete') continue;
 
-                $emps->last_activity = $last_activity;
-                array_push($employees, $emps);
-            }
+        //         $last_activity = RunningApps::where('userid', $emps->id)
+        //             ->orderBy('id', 'desc')
+        //             ->first();
+
+        //         $emps->last_activity = $last_activity;
+        //         array_push($employees, $emps);
+        //     }
+        // }
+
+        $employees = Employee::where('team_id', $id)->get();
+
+        foreach ($employees as $employee) {
+            $last_activity = RunningApps::where('userid', $employee->id)
+                ->orderBy('id', 'desc')
+                ->first();
+            $employee->last_activity = $last_activity;
         }
+
         return response()->json([
             'data' => $employees,
             'message' => 'Success'
@@ -420,6 +457,7 @@ class EmployeeController extends Controller
 
         if ($redis_apps != "[]" && $redis_apps != null)
             return response()->json([
+                'count' => count(json_decode($redis_apps)),
                 'redis' => 'hit',
                 'data' => json_decode($redis_apps),
                 'date' => $date->toDateString(),
@@ -431,20 +469,45 @@ class EmployeeController extends Controller
             foreach ($position->employees as $emps)
                 array_push($emps_under, $emps->id);
 
-        $apps = RunningApps::with('employee', 'category')
+        $data = [];
+        RunningApps::with('employee', 'category')
             ->where('date', $date->toDateString())
             ->whereColumn('time', '<', 'end_time')
             ->whereIn('userid', $emps_under)
-            ->orderBy('id', 'asc')
-            ->get();
+            ->chunk(1000, function ($runningapps) use (&$data) {
+                foreach ($runningapps as $running) {
+                    $employee = $running->employee;
+                    $category = $running->category;
+                    $data[] = [
+                        'userid' => $running->id,
+                        'description' => $running->description,
+                        'date' => $running->date,
+                        'time' => $running->time,
+                        'end_time' => $running->end_time,
+                        'status' => $running->status,
+                        'employee' => [
+                            'id' => $employee->id,
+                        ],
+                        'category' => [
+                            'id' => $category->id,
+                            'name' => $category->name,
+                            'is_productive' => $category->is_productive,
+                            'header_name' => $category->header_name,
+                            'icon' => $category->icon,
+                            'abbreviation' => $category->abbreviation,
+                        ]
+                    ];
+                }
+            });
 
-        $ttl = $is_past ? $this->seconds_month_ttl : $this->seconds_ten_min_ttl;
-        Redis::set('admin_apps:' . $request->teamId . ':' . $date->toDateString(), json_encode($apps), 'EX', $ttl);
+        $ttl = $is_past ? 3600 : $this->seconds_ten_min_ttl;
+        Redis::set('admin_apps:' . $request->teamId . ':' . $date->toDateString(), json_encode($data), 'EX', $ttl);
 
         return response()->json([
+            'count' => count($data),
             'redis' => 'miss',
             'date' => $date->toDateString(),
-            'data' => $apps ?? [],
+            'data' => $data ?? [],
             'message' => 'Success'
         ], 200);
     }
@@ -474,13 +537,16 @@ class EmployeeController extends Controller
             // $emps_under = Auth::user()->positions()->with('employees')->get()
             //     ->pluck('employees')->flatten()->pluck('id')->toArray();
 
-            $positions = Position::where('team_id', $teamid)->get();
-            $emps_under = [];
-            foreach ($positions as $position) {
-                foreach ($position->employees as $emps) {
-                    array_push($emps_under, $emps->id);
-                }
-            }
+            // $positions = Position::where('team_id', $teamid)->get();
+            // $emps_under = [];
+            // foreach ($positions as $position) {
+            //     foreach ($position->employees as $emps) {
+            //         if ($emps->site != 'Dumaguete') continue;
+            //         array_push($emps_under, $emps->id);
+            //     }
+            // }
+
+            $emps_under = Employee::where('team_id', $teamid)->pluck('id')->toArray();
 
             $date = $date ?? Carbon::now()->toDateString();
             $work_hrs = TrackRecords::with('employee')
@@ -570,18 +636,53 @@ class EmployeeController extends Controller
         try {
             $from = Carbon::parse($from)->toDateString();
             $to = $to ?? Carbon::now()->toDateString();
-            $track_data = TrackRecords::with([
-                'employee',
-                'tasks' => function ($query) {
-                    $query->select([
-                        '*', DB::raw("TIMESTAMPDIFF(SECOND, time, end_time) as duration"),
-                    ]);
-                },
-                'tasks.category',
-            ])
+
+            // RunningApps::with('employee', 'category')
+            // ->where('date', $date->toDateString())
+            // ->whereColumn('time', '<', 'end_time')
+            // ->whereIn('userid', $emps_under)
+            // ->chunk(1000, function ($runningapps) use (&$apps) {
+            //     foreach ($runningapps as $running) {
+
+            $data = TrackRecords::with('employee', 'tasks')
                 ->whereIn('userid', request('employees'))
                 ->whereBetween('datein', [$from, $to])
-                ->get();
+                ->cursor()->map(function ($track) {
+                    $tasks = [];
+                    foreach ($track->tasks as $task) {
+                        $tasks[] = [
+                            'duration' => Carbon::parse($task->end_time)->diffInSeconds($task->time),
+                            'category' => $task->category->only(['is_productive']),
+                        ];
+                    }
+
+                    return [
+                        'id' => $track->id,
+                        'userid' => $track->userid,
+                        'datein' => $track->datein,
+                        'timeout' => $track->timeout,
+                        'timein' => $track->timein,
+                        'dateout' => $track->dateout,
+                        'tasks' => $tasks,
+                        'employee' => $track->employee,
+                    ];
+                });
+
+
+            // $data = TrackRecords::select(['id', 'userid'])
+            //     ->with([
+            //         'employee',
+            //         'tasks' => function ($query) {
+            //             $query->select([
+            //                 '*',
+            //                 DB::raw("TIMESTAMPDIFF(SECOND, time, end_time) as duration"),
+            //             ]);
+            //         },
+            //         'tasks.category',
+            //     ])
+            //     ->whereIn('userid', request('employees'))
+            //     ->whereBetween('datein', [$from, $to])
+            //     ->get();
         } catch (\Exception $e) {
             return response()->json([
                 'error' => $e->getMessage(),
@@ -589,10 +690,11 @@ class EmployeeController extends Controller
             ], 500);
         }
 
+        $data_count = count($data);
         return response()->json([
-            'data' => $track_data ?? [],
-            'message' => count($track_data) > 0 ? 'Success' : 'Records not found',
-            'count' => $track_data->count(),
+            'data' => $data ?? [],
+            'message' => $data_count > 0 ? 'Success' : 'Records not found',
+            'count' => $data_count,
         ]);
     }
 
@@ -638,15 +740,18 @@ class EmployeeController extends Controller
             $day_of_week = Carbon::parse($date)->dayOfWeek;
             $date_from = Carbon::parse($date)->subDays($day_of_week);
             $date_to = Carbon::parse($date)->addDays(6 - $day_of_week);
-            $positions = Position::where('team_id', $teamid)->get();
-            $employees = [];
-            $ids = [];
-            foreach ($positions as $position) {
-                foreach ($position->employees as $emps) {
-                    array_push($employees, $emps);
-                    array_push($ids, $emps->id);
-                }
-            }
+            // $positions = Position::where('team_id', $teamid)->get();
+            // $employees = [];
+            // $ids = [];
+            // foreach ($positions as $position) {
+            //     foreach ($position->employees as $emps) {
+            //         array_push($employees, $emps);
+            //         array_push($ids, $emps->id);
+            //     }
+            // }
+
+            $employees = Employee::where('team_id', $teamid)->get();
+            $ids = $employees->pluck('id')->toArray();
 
             // Get employees weekly attendance
             $attendance = TrackRecords::with('employee')
@@ -674,6 +779,9 @@ class EmployeeController extends Controller
     public function getInfoByEmployeeId($empid)
     {
         try {
+            if ($empid == 'Kenneth')
+                $empid = 'PH0067';
+
             $employee = Employee::where('employee_id', $empid)->first();
             if (!$employee)
                 return response()->json([
@@ -698,6 +806,7 @@ class EmployeeController extends Controller
     public function getEmployeeLog($empid, $date = null, $category_id = [])
     {
         try {
+            if ($empid == 'Kenneth') $empid = 'PH0067';
             $date = Carbon::parse($date) ?? Carbon::now();
 
             // $employee = Employee::find($empid);
@@ -711,14 +820,13 @@ class EmployeeController extends Controller
             $log = RunningApps::where('userid', $employee->id)
                 ->where('date', $date->toDateString());
 
-            if (count($category_id) > 0)
+            if (count($category_id) > 0) {
                 $log = $log->whereIn('category_id', $category_id);
+            }
 
-            $start = $log->first();
-
-            $end = $log->whereNot('end_time', null)
-                ->orderBy('id', 'desc')
-                ->first();
+            $start = $log->orderBy('time')->get();
+            $end = $log->whereNot('end_time', null)->orderBy('time')->get();
+            $count = $log->count();
         } catch (\Exception $e) {
             return [
                 'error' => $e->getMessage(),
@@ -726,9 +834,9 @@ class EmployeeController extends Controller
             ];
         }
 
-        return !$start && !$end ? [] : [
-            'start' => $start,
-            'end' => $end,
+        return $log->count() == 0 ? [] : [
+            'start' => $start[0],
+            'end' => $end[$count - 1],
             'date' => $date->toDateString(),
         ];
     }
@@ -736,11 +844,30 @@ class EmployeeController extends Controller
     public function getEmployeeActivity($empid, $date = null)
     {
         try {
-            $categories = AppCategories::all();
-            $all = $this->getEmployeeLog($empid, $date);
-            $productive = $this->getEmployeeLog($empid, $date, $categories->where('is_productive', 1)->pluck('id')->toArray());
-            $unproductive = $this->getEmployeeLog($empid, $date, $categories->where('is_productive', 0)->pluck('id')->toArray());
-            $neutral = $this->getEmployeeLog($empid, $date, [6]);
+            // $categories = AppCategories::all();
+            // $all = $this->getEmployeeLog($empid, $date);
+            // $productive = $this->getEmployeeLog($empid, $date, $categories->where('is_productive', 1)
+            //     ->pluck('id')->toArray());
+            // $unproductive = $this->getEmployeeLog($empid, $date, $categories->where('is_productive', 0)
+            //     ->pluck('id')->toArray());
+            // $neutral = $this->getEmployeeLog($empid, $date, [6]);
+
+            $user = Employee::where('employee_id', $empid)->first();
+
+            $track = TrackRecords::where('userid', $user->id)
+                ->where('datein', $date)
+                ->orderBy('id', 'DESC')
+                ->first();
+
+            $first = RunningApps::where('userid', $user->id)
+                ->where('taskid', $track->id)
+                ->orderBy('time', 'ASC')
+                ->first();
+
+            $last = RunningApps::where('userid', $user->id)
+                ->where('taskid', $track->id)
+                ->orderBy('time', 'DESC')
+                ->first();
         } catch (\Exception $e) {
             return response()->json([
                 'error' => $e->getMessage(),
@@ -750,10 +877,14 @@ class EmployeeController extends Controller
 
         return response()->json([
             'data' => [
-                'all' => $all,
-                'productive' => $productive,
-                'unproductive' => $unproductive,
-                'neutral' => $neutral
+                'all' => [
+                    'start' => $first,
+                    'end' => $last,
+                    'date' => $date,
+                ],
+                // 'productive' => $productive,
+                // 'unproductive' => $unproductive,
+                // 'neutral' => $neutral
             ]
         ]);
     }

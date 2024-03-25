@@ -78,10 +78,11 @@ const ActivityChart = ({ productivity, rawApps, isLoading }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [rawApps, dataLength]);
 
-  useMemo(() => {
+  useEffect(() => {
     try {
-      let chart = Chart.getChart("track-chart");
-      if (chart) chart.destroy();
+      if (Chart.getChart("track-chart")) {
+        Chart.getChart("track-chart").destroy();
+      }
 
       const data = {
         labels: dataLabel,
@@ -120,7 +121,7 @@ const ActivityChart = ({ productivity, rawApps, isLoading }) => {
       };
 
       // eslint-disable-next-line no-new
-      chart = new Chart("track-chart", {
+      new Chart("track-chart", {
         type: "bar",
         data: data,
         options: {

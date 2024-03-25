@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use DateTimeInterface;
 
 class AppCategories extends Model
 {
@@ -27,6 +28,11 @@ class AppCategories extends Model
     protected $hidden = [
         'update_status',
     ];
+
+    protected function serializeDate(DateTimeInterface $date)
+    {
+        return $date->timezone('Asia/Singapore')->format('Y-m-d H:i:s');
+    }
 
     // Define your relationships
     public function runningapps()
