@@ -1,17 +1,9 @@
-import { cn } from "@/lib/utils";
 import { DataTableColumnHeader } from "./data-table-column-header";
 import { Badge } from "@ui/badge";
-import {
-  ArrowDownIcon,
-  ArrowRightIcon,
-  ArrowUpIcon,
-  CheckCircledIcon,
-  CheckIcon,
-  Cross1Icon,
-  CrossCircledIcon,
-  QuestionMarkCircledIcon,
-} from "@radix-ui/react-icons";
-import { Button } from "@/components/ui/button";
+import EditCategories from "./edit-category";
+//import { Dialog } from "@radix-ui/react-dialog";
+
+
 
 const labels = [
   {
@@ -28,73 +20,23 @@ const labels = [
   },
 ];
 
-export const statuses = [
-  {
-    value: "Approved",
-    label: "Approved",
-    icon: CheckCircledIcon,
-  },
-  {
-    value: "Pending",
-    label: "Pending",
-    icon: QuestionMarkCircledIcon,
-  },
-  {
-    value: "Rejected",
-    label: "Rejected",
-    icon: CrossCircledIcon,
-  },
-];
-
-export const priorities = [
-  {
-    label: "Low",
-    value: "low",
-    icon: ArrowDownIcon,
-  },
-  {
-    label: "Medium",
-    value: "medium",
-    icon: ArrowRightIcon,
-  },
-  {
-    label: "High",
-    value: "high",
-    icon: ArrowUpIcon,
-  },
-];
-
-const getIconColor = (value) => {
-  switch (value) {
-    case "Approved":
-      return "text-green-500";
-    case "Pending":
-      return "text-yellow-500";
-    case "Rejected":
-      return "text-red-500";
-    default:
-      return "text-gray-500";
-  }
+const handleEdit = (row) => {
+  console.log(row, "edit");
 };
 
-const handleApprove = (row) => {
-  console.log(row, "approve");
+const handleDelete = (row) => {
+  console.log(row, "delete");
 };
-
-const handleReject = (row) => {
-  console.log(row, "reject");
-};
-
 
 
 export const columns = [
   {
-    accessorKey: "employeeId",
+    accessorKey: "id",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Category Name" />
+      <DataTableColumnHeader column={column} title="ID" />
     ),
     cell: ({ row }) => (
-      <div className="w-[80px]">{row.getValue("employeeId")}</div>
+      <div className="w-[80px]">{row.getValue("id")}</div>
     ),
     enableSorting: false,
     enableHiding: false,
@@ -102,7 +44,7 @@ export const columns = [
   {
     accessorKey: "name",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Description" />
+      <DataTableColumnHeader column={column} title="Name" />
     ),
     cell: ({ row }) => {
       const label = labels.find((label) => label.value === row.original.label);
@@ -115,6 +57,109 @@ export const columns = [
       );
     },
   },
+  {
+    accessorKey: "description",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Description" />
+    ),
+    cell: ({ row }) => {
+      const label = labels.find((label) => label.value === row.original.label);
+
+      return (
+        <div className="flex space-x-2">
+          {label && <Badge variant="outline">{label.label}</Badge>}
+          <span className="max-w-[500px] truncate">{row.getValue("description")}</span>
+        </div>
+      );
+    },
+  },
+
+  {
+    accessorKey: "is_productive",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Productive" />
+    ),
+    cell: ({ row }) => {
+      const label = labels.find((label) => label.value === row.original.label);
+
+      return (
+        <div className="flex space-x-2">
+          {label && <Badge variant="outline">{label.label}</Badge>}
+          <span className="max-w-[500px] truncate">{row.getValue("is_productive")}</span>
+        </div>
+      );
+    },
+  },
+
+  {
+    accessorKey: "header_name",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Header Name" />
+    ),
+    cell: ({ row }) => {
+      const label = labels.find((label) => label.value === row.original.label);
+
+      return (
+        <div className="flex space-x-2">
+          {label && <Badge variant="outline">{label.label}</Badge>}
+          <span className="max-w-[500px] truncate">{row.getValue("header_name")}</span>
+        </div>
+      );
+    },
+  },
+
+{
+    accessorKey: "icon",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Icon" />
+    ),
+    cell: ({ row }) => {
+      const label = labels.find((label) => label.value === row.original.label);
+    
+      return (
+        <div className="flex space-x-2">
+          {label && <Badge variant="outline">{label.label}</Badge>}
+          <img src="./react/public/icons"/>
+        </div>
+      );
+    }
+
+  },
+  
+
+  {
+    accessorKey: "abbreviation",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Abbreviation" />
+    ),
+    cell: ({ row }) => {
+      const label = labels.find((label) => label.value === row.original.label);
+
+      return (
+        <div className="flex space-x-2">
+          {label && <Badge variant="outline">{label.label}</Badge>}
+          <span className="max-w-[500px] truncate">{row.getValue("abbreviation")}</span>
+        </div>
+      );
+    },
+  },
+  {
+    accessorKey: "priority_id",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Priority Id" />
+    ),
+    cell: ({ row }) => {
+      const label = labels.find((label) => label.value === row.original.label);
+
+      return (
+        <div className="flex space-x-2">
+          {label && <Badge variant="outline">{label.label}</Badge>}
+          <span className="max-w-[500px] truncate">{row.getValue("priority_id")}</span>
+        </div>
+      );
+    },
+  },
+  /*
   {
     accessorKey: "status",
     header: ({ column }) => (
@@ -146,16 +191,16 @@ export const columns = [
     filterFn: (row, id, value) => {
       return value.includes(row.getValue(id));
     },
-  },
+  }, */
   {
-    accessorKey: "requestedOn",
+    accessorKey: "updated_at",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Request Date" />
+      <DataTableColumnHeader column={column} title="Updated Date" />
     ),
     cell: ({ row }) => {
       return (
         <div className="flex items-center">
-          <span>{row.getValue("requestedOn")}</span>
+          <span>{row.getValue("updated_at")}</span>
         </div>
       );
     },
@@ -163,23 +208,44 @@ export const columns = [
       return value.includes(row.getValue(id));
     },
   },
-  {
-    id: "actions",
+
+  /*{
+    accessorKey: "created_at",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Action" />
+      <DataTableColumnHeader column={column} title="Created Date" />
     ),
     cell: ({ row }) => {
       return (
-        <div className="flex">
-          <Button size="3" variant="outline" onClick={() => handleApprove(row)}>
-            <CheckIcon className="h-4 w-4" color="green" />
-          </Button>
-          <Button size="3" variant="outline" onClick={() => handleReject(row)}>
-            <Cross1Icon className="h-4 w-4" color="red" />
-          </Button>
+        <div className="flex items-center">
+          <span>{row.getValue("created_at")}</span>
         </div>
       );
     },
+    filterFn: (row, id, value) => {
+      return value.includes(row.getValue(id));
+    },
+  },*/
+  {
+    id: "actions",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Actions" />
+    ),
+    cell: ({ row }) => (
+      <div className="flex items-center">
+        <EditCategories 
+        name={row.getValue("name")}
+        description={row.getValue("description")} 
+        is_productive={row.getValue("is_productive")}
+        header_name={row.getValue(" header_name")}
+        icon={row.getValue("icon")}
+        abbreviation={row.getValue(" abbreviation")}
+        priority_id={row.getValue("priority_id")}
+        updated_at={row.getValue(" updated_at")}
+        created_at={row.getValue("created_at")}
+        />
+      </div>
+    ),
   },
+  
 ];
 

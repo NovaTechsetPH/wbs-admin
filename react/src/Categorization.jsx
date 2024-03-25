@@ -11,15 +11,21 @@ const Categorization = () => {
 
   useEffect(() => {
     axiosClient
-      .get("/categorization")
+      .get("/categories")
       .then(async ({ data }) => {
         let tmpData = [];
         await data.data.forEach((item) => {
           tmpData.push({
-            employeeId: item.employee_id,
-            name: `${item.first_name} ${item.last_name}`,
-            status: item.status,
-            requestedOn: moment(item.created_at).format("YYYY-MM-DD"),
+            id: item.id,
+            name: item.name,
+            description: item.description,
+            is_productive: item.is_productive,
+            header_name: item.header_name,
+            icon: item.icon,
+            abbreviation: item.abbreviation,
+            priority_id: item.priority_id,
+            updated_at: moment(item.updated_at).format("YYYY-MM-DD"),
+            created_at: moment(item.created_at).format("YYYY-MM-DD"),
           });
         });
         setData(tmpData);
