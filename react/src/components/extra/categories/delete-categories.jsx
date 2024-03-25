@@ -15,7 +15,7 @@ import {
 import { Button } from "@/components/ui/button";
 import axiosClient from "@/axios-client";
 
-import { Trash2 } from 'lucide-react';
+import { Trash2 } from "lucide-react";
 
 export function AlertDialogDemo({ id }) {
   // Destructure id from props
@@ -24,12 +24,12 @@ export function AlertDialogDemo({ id }) {
   const handleDelete = () => {
     console.log("Deleting categories with id:", id);
     // Assuming you have your API endpoint stored in a variable
-    const apiUrl = "http://10.0.0.198/api";
+    // const apiUrl = "http://10.0.0.198/api";
     // fetch(`${apiUrl}/api/categories/${id}`, {
     //   method: "DELETE",
     // })
     axiosClient
-      .delete(`${apiUrl}/categories/${id}`)
+      .delete(`/categories/${id}`)
       .then((response) => {
         if (response.ok) {
           // Handle success
@@ -48,9 +48,12 @@ export function AlertDialogDemo({ id }) {
   };
 
   return (
-    <AlertDialog>
+    <AlertDialog open={isOpen}>
       <AlertDialogTrigger className="flex">
-       <Button><Trash2 className="mr-2"/>Delete</Button> 
+        <Button className="mx-0 px-2.5">
+          <Trash2 className="h-4 w-4" />
+          {/* Delete */}
+        </Button>
       </AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>

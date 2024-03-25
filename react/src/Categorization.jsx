@@ -24,8 +24,12 @@ const Categorization = () => {
             icon: item.icon,
             abbreviation: item.abbreviation,
             priority_id: item.priority_id,
-            updated_at: item.updated_at,
-            created_at: item.created_at,
+            updated_at:
+              item.updated_at ??
+              moment(item.updated_at).format("YYYY-MM-DD HH:mm:ss"),
+            created_at: item.created_at
+              ? moment(item.created_at).format("YYYY-MM-DD HH:mm:ss")
+              : null,
           });
         });
         setData(tmpData);

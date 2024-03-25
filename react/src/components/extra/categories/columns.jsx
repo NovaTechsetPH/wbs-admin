@@ -169,11 +169,11 @@ export const columns = [
     ),
     cell: ({ row }) => {
       return (
-        <div className="flex items-center">
+        <div className="flex items-center w-[100px]">
           <img
-            src={`http://localhost/wbs-admin/react/public/icons/${row.getValue(
-              "icon"
-            )}`}
+            className="aspect-square h-6 w-6 items-center"
+            alt=""
+            src={`/icons/${row.getValue("icon")}`}
           />
         </div>
       );
@@ -253,7 +253,7 @@ export const columns = [
     ),
     cell: ({ row }) => {
       return (
-        <div className="flex space-x-3">
+        <div className="flex space-x-2 my-2">
           <DialogDemo
             id={row.getValue("id")}
             name={row.getValue("name")}
