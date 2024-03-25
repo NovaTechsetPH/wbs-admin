@@ -23,27 +23,24 @@ export function DataTableToolbar({ table }) {
           className="h-8 w-[150px] lg:w-[250px]"
         /> */}
         <Input
-          placeholder="Search Employee..."
+          placeholder="Search Category name..."
           value={table.getColumn("name")?.getFilterValue() ?? ""}
           onChange={(event) =>
             table.getColumn("name")?.setFilterValue(event.target.value)
           }
           className="h-8 w-[150px] lg:w-[250px]"
         />{" "}
-        {table.getColumn("abbreviation") && (
+        {table.getColumn("is_productive") && (
           <DataTableFacetedFilter
-            column={table.getColumn("abbreviation")}
-            title="Abbreviation"
+            column={table.getColumn("is_productive")}
+            title="Type"
             options={[
-              { value: "Productive", label: "Productive" },
-              { value: "Unproductive", label: "Unproductive" },
-              { value: "Others", label: "Others" },
+              { value: "1", label: "Productive" },
+              { value: "0", label: "Unproductive" },
+              { value: "2", label: "Neutral" },
             ]}
           />
         )}
-        {
-          <DialogAdd />
-        }
         {isFiltered && (
           <Button
             variant="ghost"
@@ -55,6 +52,7 @@ export function DataTableToolbar({ table }) {
           </Button>
         )}
       </div>
+      {<DialogAdd className="mr-3" />}
       <DataTableViewOptions table={table} />
     </div>
   );

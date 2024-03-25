@@ -50,7 +50,11 @@ export function AlertDialogDemo({ id }) {
   return (
     <AlertDialog open={isOpen}>
       <AlertDialogTrigger className="flex">
-        <Button className="mx-0 px-2.5">
+        <Button
+          variant="destructive"
+          size="sm"
+          className="ml-auto hidden h-8 lg:flex"
+        >
           <Trash2 className="h-4 w-4" />
           {/* Delete */}
         </Button>

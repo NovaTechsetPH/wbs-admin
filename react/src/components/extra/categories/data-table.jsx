@@ -24,7 +24,9 @@ import { DataTableToolbar } from "./data-table-toolbar";
 
 export function DataTable({ columns, data }) {
   const [rowSelection, setRowSelection] = React.useState({});
-  const [columnVisibility, setColumnVisibility] = React.useState({});
+  const [columnVisibility, setColumnVisibility] = React.useState({
+    created_at: false,
+  });
   const [columnFilters, setColumnFilters] = React.useState([]);
   const [sorting, setSorting] = React.useState([]);
 

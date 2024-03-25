@@ -1,89 +1,91 @@
-import { cn } from "@/lib/utils";
+// import { cn } from "@/lib/utils";
 import { DataTableColumnHeader } from "./data-table-column-header";
-import { Badge } from "@ui/badge";
+// import { Badge } from "@ui/badge";
 import { AlertDialogDemo } from "./delete-categories";
 import { DialogDemo } from "./edit-categories";
-import {
-  ArrowDownIcon,
-  ArrowRightIcon,
-  ArrowUpIcon,
-  CheckCircledIcon,
-  CheckIcon,
-  Cross1Icon,
-  CrossCircledIcon,
-  QuestionMarkCircledIcon,
-} from "@radix-ui/react-icons";
 
-const labels = [
-  {
-    value: "bug",
-    label: "Bug",
-  },
-  {
-    value: "feature",
-    label: "Feature",
-  },
-  {
-    value: "documentation",
-    label: "Documentation",
-  },
-];
+// const labels = [
+//   {
+//     value: "bug",
+//     label: "Bug",
+//   },
+//   {
+//     value: "feature",
+//     label: "Feature",
+//   },
+//   {
+//     value: "documentation",
+//     label: "Documentation",
+//   },
+// ];
 
-export const statuses = [
-  {
-    value: "Approved",
-    label: "Approved",
-    icon: CheckCircledIcon,
-  },
-  {
-    value: "Pending",
-    label: "Pending",
-    icon: QuestionMarkCircledIcon,
-  },
-  {
-    value: "Rejected",
-    label: "Rejected",
-    icon: CrossCircledIcon,
-  },
-];
+// const statuses = [
+//   {
+//     value: "Approved",
+//     label: "Approved",
+//     icon: CheckCircledIcon,
+//   },
+//   {
+//     value: "Pending",
+//     label: "Pending",
+//     icon: QuestionMarkCircledIcon,
+//   },
+//   {
+//     value: "Rejected",
+//     label: "Rejected",
+//     icon: CrossCircledIcon,
+//   },
+// ];
 
-export const priorities = [
-  {
-    label: "Low",
-    value: "low",
-    icon: ArrowDownIcon,
-  },
-  {
-    label: "Medium",
-    value: "medium",
-    icon: ArrowRightIcon,
-  },
-  {
-    label: "High",
-    value: "high",
-    icon: ArrowUpIcon,
-  },
-];
+// const priorities = [
+//   {
+//     label: "Low",
+//     value: "low",
+//     icon: ArrowDownIcon,
+//   },
+//   {
+//     label: "Medium",
+//     value: "medium",
+//     icon: ArrowRightIcon,
+//   },
+//   {
+//     label: "High",
+//     value: "high",
+//     icon: ArrowUpIcon,
+//   },
+// ];
 
-const getIconColor = (value) => {
+// const getIconColor = (value) => {
+//   switch (value) {
+//     case "Approved":
+//       return "text-green-500";
+//     case "Pending":
+//       return "text-yellow-500";
+//     case "Rejected":
+//       return "text-red-500";
+//     default:
+//       return "text-gray-500";
+//   }
+// };
+
+// const handleApprove = (row) => {
+//   console.log(row, "approve");
+// };
+
+// const handleReject = (row) => {
+//   console.log(row, "reject");
+// };
+
+const getProductivityType = (value) => {
   switch (value) {
-    case "Approved":
-      return "text-green-500";
-    case "Pending":
-      return "text-yellow-500";
-    case "Rejected":
-      return "text-red-500";
+    case "1":
+      return "Productive";
+    case "0":
+      return "Unproductive";
+    case "2":
     default:
-      return "text-gray-500";
+      return "Neutral";
   }
-};
-
-const handleApprove = (row) => {
-  console.log(row, "approve");
-};
-
-const handleReject = (row) => {
-  console.log(row, "reject");
 };
 
 export const columns = [
@@ -92,21 +94,21 @@ export const columns = [
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="ID" />
     ),
-    cell: ({ row }) => <div className="w-[80px]">{row.getValue("id")}</div>,
+    cell: ({ row }) => <div className="w-[30px]">{row.getValue("id")}</div>,
     enableSorting: false,
     enableHiding: false,
   },
   {
     accessorKey: "name",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="MySQL" />
+      <DataTableColumnHeader column={column} title="Name" />
     ),
     cell: ({ row }) => {
-      const label = labels.find((label) => label.value === row.original.label);
+      // const label = labels.find((label) => label.value === row.original.label);
 
       return (
         <div className="flex space-x-2">
-          {label && <Badge variant="outline">{label.label}</Badge>}
+          {/* {label && <Badge variant="outline">{label.label}</Badge>} */}
           <span className="max-w-[500px] truncate">{row.getValue("name")}</span>
         </div>
       );
@@ -118,11 +120,11 @@ export const columns = [
       <DataTableColumnHeader column={column} title="Description" />
     ),
     cell: ({ row }) => {
-      const label = labels.find((label) => label.value === row.original.label);
+      // const label = labels.find((label) => label.value === row.original.label);
 
       return (
         <div className="flex space-x-2">
-          {label && <Badge variant="outline">{label.label}</Badge>}
+          {/* {label && <Badge variant="outline">{label.label}</Badge>} */}
           <span className="max-w-[500px] truncate">
             {row.getValue("description")}
           </span>
@@ -133,12 +135,12 @@ export const columns = [
   {
     accessorKey: "is_productive",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Is Productive" />
+      <DataTableColumnHeader column={column} title="Type" />
     ),
     cell: ({ row }) => {
       return (
-        <div className="flex items-center">
-          <span>{row.getValue("is_productive")}</span>
+        <div className="flex items-center w-[100px]">
+          <span>{getProductivityType(row.getValue("is_productive"))}</span>
         </div>
       );
     },
@@ -201,7 +203,7 @@ export const columns = [
   {
     accessorKey: "priority_id",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Priority Id" />
+      <DataTableColumnHeader column={column} title="Priority ID" />
     ),
     cell: ({ row }) => {
       return (
@@ -217,7 +219,7 @@ export const columns = [
   {
     accessorKey: "updated_at",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Updated At" />
+      <DataTableColumnHeader column={column} title="Updated" />
     ),
     cell: ({ row }) => {
       return (
@@ -233,7 +235,7 @@ export const columns = [
   {
     accessorKey: "created_at",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Updated At" />
+      <DataTableColumnHeader column={column} title="Created" />
     ),
     cell: ({ row }) => {
       return (

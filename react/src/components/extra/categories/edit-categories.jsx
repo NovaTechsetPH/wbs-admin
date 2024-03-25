@@ -97,7 +97,11 @@ export function DialogDemo({
   return (
     <Dialog>
       <DialogTrigger className="flex">
-        <Button className="mx-0 py-1 px-2.5">
+        <Button
+          variant="outline"
+          size="sm"
+          className="ml-auto hidden h-8 lg:flex"
+        >
           {/* Edit */}
           <Pencil className="h-4 w-4" />
         </Button>
