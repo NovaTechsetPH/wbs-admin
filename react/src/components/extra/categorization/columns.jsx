@@ -14,7 +14,7 @@ import {
 import { Button } from "@/components/ui/button";
 
 import EditCategoryDialog from "./edit"; // Change import statement
-import DeleteCategoryDialog from "./delete"; // Change import statement
+import SendCategoryDialog from "./send-request"; // Change import statement
 import { BadgeHelp } from 'lucide-react';
 
 const labels = [
@@ -176,17 +176,21 @@ export const columns = [
     ),
     cell: ({ row }) => {
       const label = labels.find((label) => label.value === row.original.label);
-
+  
       return (
         <div className="flex space-x-2">
           {label && <Badge variant="outline">{label.label}</Badge>}
-          <span className="max-w-[500px] truncate">
-            <img src={row.original.icon} />
-          </span>
+          <img 
+            src={`/icons/${row.original.icon}`} // Corrected line
+            className="aspect-square h-6 w-6" // Corrected class name
+            alt="Icon" // Add alt attribute for accessibility
+          />
         </div>
       );
     },
   },
+  
+  
   {
     accessorKey: "abbreviation",
     header: ({ column }) => (
@@ -224,24 +228,6 @@ export const columns = [
     },
   },
   {
-    accessorKey: "header_name",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Header Name" />
-    ),
-    cell: ({ row }) => {
-      const label = labels.find((label) => label.value === row.original.label);
-
-      return (
-        <div className="flex space-x-2">
-          {label && <Badge variant="outline">{label.label}</Badge>}
-          <span className="max-w-[500px] truncate">
-            {row.getValue("header_name")}
-          </span>
-        </div>
-      );
-    },
-  },
-  {
     accessorKey: "updated_at",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Updated at" />
@@ -268,7 +254,7 @@ export const columns = [
     cell: ({ row }) => (
       <div className="flex space-x-3">
         <EditCategoryDialog row={row} /> {/* Pass 'row' as a prop */}
-        <DeleteCategoryDialog row={row} /> {/* Pass 'row' as a prop */}
+        <SendCategoryDialog row={row} /> {/* Pass 'row' as a prop */}
       </div>
     ),
   },
