@@ -11,19 +11,20 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('tmp_taskrunning', function (Blueprint $table) {
+        Schema::create('temp_running_apps', function (Blueprint $table) {
             $table->id();
             $table->integer('userid');
-            $table->integer('taskid');
             $table->string('description');
-            $table->date('date');
-            $table->time('time');
-            $table->string('status');
             $table->integer('category_id');
-            $table->time('end_time');
+            $table->integer('trackid');
+            $table->dateTime('start');
+            $table->dateTime('end');
+            $table->string('status')->default('closed');
             $table->string('platform');
             $table->string('type');
             $table->timestamps();
+
+            $table->index(['trackid', 'userid', 'category_id']);
         });
     }
 
@@ -32,6 +33,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('tmp_taskrunning');
+        Schema::dropIfExists('temp_running_apps');
     }
 };

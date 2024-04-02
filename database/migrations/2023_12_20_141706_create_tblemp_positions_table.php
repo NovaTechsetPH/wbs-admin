@@ -11,12 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('tblemp_positions', function (Blueprint $table) {
+        Schema::create('positions', function (Blueprint $table) {
             $table->id();
-            $table->string('position');
+            $table->string('name');
             $table->text('description')->nullable();
             $table->string('department')->nullable();
-            $table->integer('manager_id')->nullable();
             $table->boolean('active')->default(1);
             $table->timestamps();
         });
@@ -27,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('tblemp_positions');
+        Schema::dropIfExists('positions');
     }
 };

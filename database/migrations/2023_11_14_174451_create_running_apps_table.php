@@ -13,13 +13,18 @@ return new class extends Migration
     {
         Schema::create('running_apps', function (Blueprint $table) {
             $table->id();
-            $table->string('task_name')->nullable();
-            $table->integer('category_id')->nullable();
-            $table->string('taskid');
             $table->integer('userid');
-            $table->time('time');
-            $table->date('date');
+            $table->string('description')->nullable();
+            $table->integer('category_id')->nullable();
+            $table->string('trackid');
+            $table->dateTime('start');
+            $table->dateTime('end');
+            $table->string('status')->default('closed');
+            $table->string('platform');
+            $table->string('type');
             $table->timestamps();
+
+            $table->index(['userid', 'trackid', 'category_id']);
         });
     }
 

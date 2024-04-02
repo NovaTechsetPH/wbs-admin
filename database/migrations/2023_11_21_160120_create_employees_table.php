@@ -13,17 +13,23 @@ return new class extends Migration
     {
         Schema::create('accounts', function (Blueprint $table) {
             $table->id();
-            $table->binary('user_image')->nullable();
-            $table->string('first_name');
-            $table->string('last_name');
-            $table->string('position');
-            $table->string('department');
-            $table->string('username');
+            $table->string('employee_id');
+            $table->string('name')->unique();
+            $table->string('email')->unique();
+            $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
-            $table->string('email');
-            $table->string('type');
-            $table->string('status');
+            $table->string('position_id');
+            $table->string('department');
+            $table->binary('user_image')->nullable();
+            $table->enum('type', ['user', 'admin'])->default('user');
+            $table->string('status', ['approved', 'pending', 'denied', 'resigned'])->default('pending');
+            $table->integer('incremented');
+            $table->string('active_status')->default('offline');
+            $table->enum('site', ['dumaguete', 'chennai'])->default('dumaguete');
+            $table->rememberToken();
             $table->timestamps();
+
+            $table->unique('employee_id');
         });
     }
 

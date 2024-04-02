@@ -11,13 +11,15 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('tbltrackrecords', function (Blueprint $table) {
+        Schema::create('track_records', function (Blueprint $table) {
             $table->id();
             $table->integer('userid');
-            $table->time('timein');
-            $table->time('timeout');
-            $table->date('datein');
+            $table->dateTime('timein');
+            $table->dateTime('timeout');
+            $table->date('date');
             $table->timestamps();
+
+            $table->index(['userid', 'date']);
         });
     }
 
@@ -26,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('tbltrackrecords');
+        Schema::dropIfExists('track_records');
     }
 };
