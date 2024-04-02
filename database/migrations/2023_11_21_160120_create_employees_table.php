@@ -22,7 +22,7 @@ return new class extends Migration
             $table->string('department');
             $table->binary('user_image')->nullable();
             $table->enum('type', ['user', 'admin'])->default('user');
-            $table->string('status', ['approved', 'pending', 'denied', 'resigned'])->default('pending');
+            $table->enum('status', ['approved', 'pending', 'denied', 'resigned'])->default('pending');
             $table->integer('incremented');
             $table->string('active_status')->default('offline');
             $table->enum('site', ['dumaguete', 'chennai'])->default('dumaguete');
