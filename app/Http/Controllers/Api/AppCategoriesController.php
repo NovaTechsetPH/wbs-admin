@@ -50,7 +50,14 @@ class AppCategoriesController extends Controller
                 'priority_id' => 'required|in:0,1,2,3',
             ]);
 
-            $category = AppCategories::create($request->all());
+            $category = AppCategories::create([
+                'name' => $request->name,
+                'header_name' => $request->header_name,
+                'is_productive' => $request->is_productive,
+                'priority_id' => $request->priority_id,
+                'abbreviation' => $request->abbreviation,
+                'description' => $request->description,
+            ]);
         } catch (\Throwable $th) {
             return response()->json([
                 'error' => $th->getMessage(),

@@ -463,11 +463,8 @@ class EmployeeController extends Controller
                 'date' => $date->toDateString(),
             ]);
 
-        $positions = Position::where('team_id', $request->teamId)->get();
-        $emps_under = [];
-        foreach ($positions as $position)
-            foreach ($position->employees as $emps)
-                array_push($emps_under, $emps->id);
+        $emps_under = Employee::select('id')
+            ->where('team_id', $request->teamId)->get();
 
         $data = [];
         RunningApps::with('employee', 'category')
@@ -637,26 +634,28 @@ class EmployeeController extends Controller
             $from = Carbon::parse($from)->toDateString();
             $to = $to ?? Carbon::now()->toDateString();
 
-            // RunningApps::with('employee', 'category')
-            // ->where('date', $date->toDateString())
-            // ->whereColumn('time', '<', 'end_time')
-            // ->whereIn('userid', $emps_under)
-            // ->chunk(1000, function ($runningapps) use (&$apps) {
-            //     foreach ($runningapps as $running) {
-
             $data = TrackRecords::with('employee', 'tasks')
                 ->whereIn('userid', request('employees'))
                 ->whereBetween('datein', [$from, $to])
                 ->cursor()->map(function ($track) {
+                    $check = Redis::get('exTrack:' . $track->userid . ':' . $track->datein);
+                    if ($check != "[]" && $check != null) {
+                        return json_decode($check);
+                    }
+
                     $tasks = [];
                     foreach ($track->tasks as $task) {
+                        if (!$task->category) continue;
+                        $duration = Carbon::parse($task->end_time)->diffInSeconds($task->time);
                         $tasks[] = [
-                            'duration' => Carbon::parse($task->end_time)->diffInSeconds($task->time),
+                            'duration' => $duration > 18000 // 5 hours
+                                ? 86400 - $duration
+                                : $duration,
                             'category' => $task->category->only(['is_productive']),
                         ];
                     }
 
-                    return [
+                    $return = [
                         'id' => $track->id,
                         'userid' => $track->userid,
                         'datein' => $track->datein,
@@ -666,23 +665,12 @@ class EmployeeController extends Controller
                         'tasks' => $tasks,
                         'employee' => $track->employee,
                     ];
+
+                    $ttl = Carbon::parse($track->datein)->isCurrentDay() ? 600 : 86400;
+                    Redis::set('exTrack:' . $track->userid . ":" . $track->datein, json_encode($return), 'EX', $ttl);
+
+                    return $return;
                 });
-
-
-            // $data = TrackRecords::select(['id', 'userid'])
-            //     ->with([
-            //         'employee',
-            //         'tasks' => function ($query) {
-            //             $query->select([
-            //                 '*',
-            //                 DB::raw("TIMESTAMPDIFF(SECOND, time, end_time) as duration"),
-            //             ]);
-            //         },
-            //         'tasks.category',
-            //     ])
-            //     ->whereIn('userid', request('employees'))
-            //     ->whereBetween('datein', [$from, $to])
-            //     ->get();
         } catch (\Exception $e) {
             return response()->json([
                 'error' => $e->getMessage(),

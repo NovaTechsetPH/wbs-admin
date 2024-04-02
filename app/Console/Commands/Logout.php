@@ -48,13 +48,13 @@ class Logout extends Command
             if (!$last_activity) continue;
 
             // $this->info(json_encode(['userid' => $last_activity->userid, 'timeout' => $session->timeout, 'end_time' => $last_activity->end_time]));
-            \Log::channel('cronlog')->info(json_encode([
-                'trackid' => $session->id,
-                'userid' => $session->userid,
-                'dateout' => $session->dateout,
-                'timeout' => $session->timeout,
-                // 'updated' => Carbon::parse($last_activity->updated_at)->toDateTimeString()
-            ], JSON_PRETTY_PRINT));
+            // Log::channel('cronlog')->info(json_encode([
+            //     'trackid' => $session->id,
+            //     'userid' => $session->userid,
+            //     'dateout' => $session->dateout,
+            //     'timeout' => $session->timeout,
+            //     // 'updated' => Carbon::parse($last_activity->updated_at)->toDateTimeString()
+            // ], JSON_PRETTY_PRINT));
 
             // if ($last_activity->end_time && $last_activity->time) {
             $session->dateout = $date->toDateString();

@@ -17,6 +17,7 @@ class AppCategories extends Model
         'name',
         'description',
         'is_productive',
+        'header_name',
         'icon',
         'abbreviation',
         'priority_id',
