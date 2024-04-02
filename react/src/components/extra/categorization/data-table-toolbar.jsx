@@ -1,14 +1,11 @@
 import { Cross2Icon } from "@radix-ui/react-icons";
-import React, { useState } from 'react';
 import { Button } from "@ui/button";
 import { Input } from "@ui/input";
 import { DataTableViewOptions } from "./data-table-view-options";
-import AddCategories from "./add-category"; // Changed import statement
-
-import { DataTableFacetedFilter } from "./data-table-faceted-filter";
+import AddCategories from "./add-category"; 
+import { DataTableFacetedFilter } from "./data-table-faceted-filter"
 
 export function DataTableToolbar({ table }) {
-  const [showFilter, setShowFilter] = useState(false);
   const isFiltered = table.getState().columnFilters.length > 0;
 
   return (
@@ -21,18 +18,19 @@ export function DataTableToolbar({ table }) {
             table.getColumn("name")?.setFilterValue(event.target.value)
           }
           className="h-8 w-[150px] lg:w-[250px]"
-        />
-        {table.getColumn("description") && (
+        />{" "}
+       {table.getColumn("is_productive") && (
           <DataTableFacetedFilter
-            column={table.getColumn("description")}
-            title="description"
+            column={table.getColumn("is_productive")}
+            title="is_productive"
             options={[
-              { value: "Productive", label: "Productive" },
-              { value: "Unproductive", label: "Unproductive" },
-              { value: "Neutral", label: "Neutral" },
+              {value: '1', label: "Productive"}, 
+              {value: '2', label: "Unproductive"}, 
+              {value: '0', label: "Neutral"},
             ]}
           />
         )}
+
         {isFiltered && (
           <Button
             variant="ghost"

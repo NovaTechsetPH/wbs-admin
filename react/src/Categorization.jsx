@@ -4,7 +4,7 @@ import { columns } from "@/components/extra/categorization/columns";
 import { DataTable } from "@/components/extra/categorization/data-table";
 import { useEffect, useState } from "react";
 import axiosClient from "./axios-client";
-import moment from "moment";
+
 
 const Categorization = () => {
   const [data, setData] = useState([]);
@@ -24,8 +24,8 @@ const Categorization = () => {
             icon: item.icon,
             abbreviation: item.abbreviation,
             priority_id: item.priority_id,
-            updated_at: moment(item.updated_at).format("YYYY-MM-DD"),
-            created_at: moment(item.created_at).format("YYYY-MM-DD"),
+            updated_at: item.updated_at,
+            created_at:item.created_at,
           });
         });
         setData(tmpData);

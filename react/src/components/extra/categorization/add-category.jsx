@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import axiosClient from '@/axios-client';
 import { Button } from '@ui/button';
 import { Input } from '@ui/input';
@@ -34,25 +35,59 @@ const AddCategories = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axiosClient.post('/categories', formData); // Adjust the API endpoint accordingly
+      const response = await axiosClient.post('/categories', formData);
       console.log('Category added successfully:', response.data);
-      // You can add further handling here, such as showing a success message or redirecting the user
+      // Reset form after successful submission
+      setFormData({
+        name: '',
+        description: '',
+        is_productive: '',
+        header_name: '',
+        icon: '',
+        abbreviation: '',
+        priority_id: '',
+        updated_at: '',
+        created_at: '',
+      });
+      
+      setTimeout(function(){
+        window.location.href = window.location.href; // Replace '/new-page' with your desired URL
+    }, 500);
+
     } catch (error) {
       console.error('Error adding category:', error);
       // Handle error cases, such as displaying an error message to the user
     }
   };
 
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get('http://10.0.0.198/api/categories', {
+          params: formData,
+        });
+        console.log(JSON.stringify(response.data));
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    fetchData();
+  }, [formData]); // Trigger the effect whenever formData changes
+
   const fields = [
-    { key: 'name', label: 'Name' },
-    { key: 'description', label: 'Description' },
-    { key: 'is_productive', label: 'Is Productive' },
-    { key: 'header_name', label: 'Header Name' },
-    { key: 'icon', label: 'Icon' },
-    { key: 'abbreviation', label: 'Abbreviation' },
-    { key: 'priority_id', label: 'Priority ID' },
-    { key: 'updated_at', label: 'Updated At' },
-    { key: 'created_at', label: 'Created At' },
+    { key: 'name', label: 'Name', required: true },
+    { key: 'description', label: 'Description', required: true },
+    { key: 'is_productive', label: 'Is Productive', options: [
+      { value: '1', label: 'Productive' }, 
+      { value: '2', label: 'Unproductive' }, 
+      { value: '0', label: 'Neutral' } ], required: true },
+    { key: 'header_name', label: 'Header Name', required: true },
+    { key: 'icon', label: 'Icon', required: false },
+    { key: 'abbreviation', label: 'Abbreviation', required: false },
+    { key: 'priority_id', label: 'Priority ID', required: false },
+    { key: 'updated_at', label: 'Updated At', required: false },
+    { key: 'created_at', label: 'Created At', required: true },
   ];
 
   return (
@@ -70,21 +105,36 @@ const AddCategories = () => {
             <div className="grid gap-4 py-4">
               {fields.map((field) => (
                 <div key={field.key} className="grid grid-cols-4 items-center gap-4">
-                  <Label htmlFor={field.key} className="text-right">
-                    {field.label}
-                  </Label>
-                  <Input
-                    id={field.key}
-                    name={field.key}
-                    value={formData[field.key]}
-                    onChange={handleChange}
-                    className="col-span-3"
-                  />
+                 <Label htmlFor={field.key} className="text-right">
+                  {field.label} {field.required && <span className="text-red-500">*</span>}
+                 </Label>
+                  {field.key === 'is_productive' ? (
+                    <select
+                      id={field.key}
+                      name={field.key}
+                      value={formData[field.key]}
+                      onChange={handleChange}
+                      className="col-span-3"
+                    >
+                      {field.options.map((option) => (
+                        <option key={option.value} value={option.value}>
+                          {option.label}
+                        </option>
+                      ))}
+                    </select>
+                  ) : (
+                    <Input
+                      id={field.key}
+                      name={field.key}
+                      value={formData[field.key]}
+                      onChange={handleChange}
+                      className="col-span-3"
+                    />
+                  )}
                 </div>
               ))}
             </div>
             <DialogFooter>
-              <Button type="button">Cancel</Button>
               <Button type="submit">Save changes</Button>
             </DialogFooter>
           </form>

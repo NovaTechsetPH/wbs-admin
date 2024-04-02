@@ -1,7 +1,9 @@
 import { DataTableColumnHeader } from "./data-table-column-header";
 import { Badge } from "@ui/badge";
 import EditCategories from "./edit-category";
+
 //import { Dialog } from "@radix-ui/react-dialog";
+
 
 
 
@@ -20,13 +22,6 @@ const labels = [
   },
 ];
 
-const handleEdit = (row) => {
-  console.log(row, "edit");
-};
-
-const handleDelete = (row) => {
-  console.log(row, "delete");
-};
 
 
 export const columns = [
@@ -48,6 +43,7 @@ export const columns = [
     ),
     cell: ({ row }) => {
       const label = labels.find((label) => label.value === row.original.label);
+
 
       return (
         <div className="flex space-x-2">
@@ -81,11 +77,16 @@ export const columns = [
     ),
     cell: ({ row }) => {
       const label = labels.find((label) => label.value === row.original.label);
+      const isProductive = row.getValue("is_productive");
+
+    /*  if (isProductive != 0) {
+        return null; // Hide rows where is_productive is neither 1 nor 2
+      } */
 
       return (
         <div className="flex space-x-2">
           {label && <Badge variant="outline">{label.label}</Badge>}
-          <span className="max-w-[500px] truncate">{row.getValue("is_productive")}</span>
+          <span className="max-w-[500px] truncate">{isProductive}</span>
         </div>
       );
     },
@@ -118,9 +119,18 @@ export const columns = [
     
       return (
         <div className="flex space-x-2">
-          {label && <Badge variant="outline">{label.label}</Badge>}
-          <img src="./react/public/icons"/>
-        </div>
+        {row.getValue("icon") ? (
+          <img
+            src={`/icons/${row.getValue("icon")}`}
+            className="aspect-square h-6 w-6"
+          />
+        ) : (
+          <div className="aspect-square h-6 w-6 flex items-center justify-center bg-gray-300 text-gray-600 rounded-full">
+            {row.getValue("description")[0]}
+          </div>
+        )}
+      </div>
+      
       );
     }
 
@@ -193,6 +203,22 @@ export const columns = [
     },
   }, */
   {
+    accessorKey: "created_at",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Created Date" />
+    ),
+    cell: ({ row }) => {
+      return (
+        <div className="flex items-center">
+          <span>{row.getValue("created_at")}</span>
+        </div>
+      );
+    },
+    filterFn: (row, id, value) => {
+      return value.includes(row.getValue(id));
+    },
+  },
+  {
     accessorKey: "updated_at",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Updated Date" />
@@ -209,22 +235,7 @@ export const columns = [
     },
   },
 
-  /*{
-    accessorKey: "created_at",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Created Date" />
-    ),
-    cell: ({ row }) => {
-      return (
-        <div className="flex items-center">
-          <span>{row.getValue("created_at")}</span>
-        </div>
-      );
-    },
-    filterFn: (row, id, value) => {
-      return value.includes(row.getValue(id));
-    },
-  },*/
+  
   {
     id: "actions",
     header: ({ column }) => (
@@ -233,6 +244,7 @@ export const columns = [
     cell: ({ row }) => (
       <div className="flex items-center">
         <EditCategories 
+        id={row.getValue("id")}
         name={row.getValue("name")}
         description={row.getValue("description")} 
         is_productive={row.getValue("is_productive")}
@@ -246,6 +258,5 @@ export const columns = [
       </div>
     ),
   },
-  
 ];
 
