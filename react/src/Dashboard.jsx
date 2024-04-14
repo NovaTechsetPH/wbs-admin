@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useDashboardContext } from "@/context/DashboardContextProvider";
-import ActivityChart from "./components/ActivityChart";
+// import ActivityChart from "./components/ActivityChart";
 import axiosClient from "@/axios-client";
 
 import { ScrollArea } from "./components/ui/scroll-area";
@@ -17,6 +17,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "./components/ui/card";
 import TeamWorkHours from "./components/extra/team-work-hours";
 import { Skeleton } from "./components/ui/skeleton";
 import { useStateContext } from "./context/ContextProvider";
+import ProductivityChart from "./components/ProductivityChart";
 
 const CATEGORY = ["Unproductive", "Productive", "Neutral"];
 
@@ -222,7 +223,7 @@ function Dashboard() {
           {/* Adjust here */}
           <div className="mb-4 grid gap-4 md:grid-cols-2 lg:grid-cols-7">
             <div className="col-span-4 overflow-x-auto">
-              <ActivityChart
+              <ProductivityChart
                 productivity={productivity}
                 rawApps={rawApps}
                 appList={appList}
