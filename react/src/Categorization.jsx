@@ -28,8 +28,8 @@ const Categorization = () => {
             priority_id: item.priority_id,
             header_name: item.header_name,
             updated_at: item.updated_at,
-            /*
             created_at: item.created_at,
+            /*
             status: item.status,
             requestedOn: moment(item.created_at).format("YYYY-MM-DD"),
             */

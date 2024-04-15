@@ -13,7 +13,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
-import { Plus } from "lucide-react";
+import { FolderPlus  } from 'lucide-react';
 
 const AddCategories = () => {
   const [formData, setFormData] = useState({
@@ -83,7 +83,7 @@ const AddCategories = () => {
     { key: "description", label: "Description" },
     {
       key: "is_productive",
-      label: "Is Productive",
+      label: "Transaction",
       type: "select",
       options: [
         { value: "1", label: "Productive" },
@@ -104,7 +104,7 @@ const AddCategories = () => {
       <Dialog>
         <DialogTrigger asChild>
           <Button>
-            <Plus className="mr-2" strokeWidth={1.5} />
+            <FolderPlus  className="mr-2" strokeWidth={1.5} />
             Add Category
           </Button>
         </DialogTrigger>

@@ -14,7 +14,7 @@ import {
 import { Button } from "@/components/ui/button";
 
 import EditCategoryDialog from "./edit"; // Change import statement
-import SendCategoryDialog from "./send-request"; // Change import statement
+//import SendCategoryDialog from "./send-request"; // Change import statement
 import { BadgeHelp } from 'lucide-react';
 
 const labels = [
@@ -210,6 +210,32 @@ export const columns = [
     },
   },
   {
+    accessorKey: "reason",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Reason" />
+    ),
+    cell: ({ row }) => (
+      <div className="flex space-x-2">
+        <span className="max-w-[500px] truncate">
+          {row.getValue("reason")}
+        </span>
+      </div>
+    ),
+  },
+  {
+    accessorKey: "edited_by",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Edited By" />
+    ),
+    cell: ({ row }) => (
+      <div className="flex space-x-2">
+        <span className="max-w-[500px] truncate">
+          {row.getValue("edited_by")}
+        </span>
+      </div>
+    ),
+  },
+  {
     accessorKey: "priority_id",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Priority ID" />
@@ -222,6 +248,24 @@ export const columns = [
           {label && <Badge variant="outline">{label.label}</Badge>}
           <span className="max-w-[500px] truncate">
             {row.getValue("priority_id")}
+          </span>
+        </div>
+      );
+    },
+  },
+  {
+    accessorKey: "created_at",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Created at" />
+    ),
+    cell: ({ row }) => {
+      const label = labels.find((label) => label.value === row.original.label);
+
+      return (
+        <div className="flex space-x-2">
+          {label && <Badge variant="outline">{label.label}</Badge>}
+          <span className="max-w-[500px] truncate">
+            {row.getValue("created_at")}
           </span>
         </div>
       );
@@ -251,11 +295,16 @@ export const columns = [
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Action" />
     ),
-    cell: ({ row }) => (
-      <div className="flex space-x-3">
-        <EditCategoryDialog row={row} /> {/* Pass 'row' as a prop */}
-        <SendCategoryDialog row={row} /> {/* Pass 'row' as a prop */}
-      </div>
-    ),
+    cell: ({ row }) => {
+      const isProductive = row.getValue("is_productive");
+      const disableButtons = isProductive === "1" || isProductive === "2";
+  
+      return (
+        <div className="flex space-x-3">
+          {!disableButtons && <EditCategoryDialog row={row} />}
+          {/*{!disableButtons && <SendCategoryDialog row={row} />}*/}
+        </div>
+      );
+    },
   },
 ];

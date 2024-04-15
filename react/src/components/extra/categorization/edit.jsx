@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { PencilRuler } from 'lucide-react';
+import { Pencil  } from 'lucide-react';
 import axios from 'axios';
 
 const EditCategoryDialog = ({ row }) => {
@@ -26,6 +26,7 @@ const EditCategoryDialog = ({ row }) => {
     priority_id: "",
     updated_at: "",
     created_at: "", // Include "created_at" in editedFields state
+    reason: "", // Add reason field
   });
 
   const [isOpen, setIsOpen] = useState(false);
@@ -42,7 +43,7 @@ const EditCategoryDialog = ({ row }) => {
       abbreviation: row.getValue("abbreviation"),
       priority_id: row.getValue("priority_id"),
       updated_at: row.getValue("updated_at"),
-      //created_at: row.getValue("created_at"),
+      reason: row.getValue("reason") || "", // Set reason field
     });
   };
 
@@ -57,7 +58,8 @@ const EditCategoryDialog = ({ row }) => {
 
   const handleSaveChanges = () => {
     axios.put(`http://10.0.0.198/api/categories/${editedFields.id}`, {
-      is_productive: editedFields.is_productive
+      is_productive: editedFields.is_productive,
+      reason: editedFields.reason, // Include reason in the request body
     }, {
       headers: {
         'Accept': 'application/json',
@@ -78,25 +80,26 @@ const EditCategoryDialog = ({ row }) => {
     { key: "description", label: "Description" },
     {
       key: "is_productive",
-      label: "Is Productive",
+      label: "Transaction",
       options: [
         { value: "1", label: "Productive" },
-        { value: "0", label: "Neutral" },
+        //{ value: "0", label: "Neutral" },
         { value: "2", label: "Not Productive" },
       ],
     },
-    { key: "header_name", label: "Header Name" },
-    { key: "icon", label: "Icon" },
-    { key: "abbreviation", label: "Abbreviation" },
-    { key: "priority_id", label: "Priority ID" },
-    { key: "updated_at", label: "Updated At" },
+    { key: "reason", label: "Reason"},
+    //{ key: "header_name", label: "Header Name" },
+    //{ key: "icon", label: "Icon" },
+    //{ key: "abbreviation", label: "Abbreviation" },
+    //{ key: "priority_id", label: "Priority ID" },
+    //{ key: "updated_at", label: "Updated At" },
     //{ key: "created_at", label: "Created At" },
   ];
 
   return (
     <Dialog isOpen={isOpen} onDismiss={() => setIsOpen(false)}>
       <DialogTrigger asChild>
-        <Button onClick={() => setIsOpen(true)}><PencilRuler className="mr-2" strokeWidth={1.5} />Edit</Button>
+        <Button onClick={() => setIsOpen(true)}><Pencil className="mr-2" strokeWidth={1.5} />Edit</Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
@@ -125,13 +128,23 @@ const EditCategoryDialog = ({ row }) => {
                   ))}
                 </select>
               ) : (
-                <Input
-                  id={key}
-                  value={editedFields[key]}
-                  onChange={(e) => handleFieldChange(key, e.target.value)}
-                  className="col-span-3"
-                  disabled={key !== "is_productive"} 
-                />
+                key === "reason" ? ( // Check if it's the reason field
+                  <Input
+                    id={key}
+                    value={editedFields[key]}
+                    onChange={(e) => handleFieldChange(key, e.target.value)}
+                    className="col-span-3"
+                    maxLength={250} // Limit reason input to 250 characters
+                  />
+                ) : (
+                  <Input
+                    id={key}
+                    value={editedFields[key]}
+                    onChange={(e) => handleFieldChange(key, e.target.value)}
+                    className="col-span-3"
+                    disabled={key !== "is_productive"} 
+                  />
+                )
               )}
             </div>
           ))}
