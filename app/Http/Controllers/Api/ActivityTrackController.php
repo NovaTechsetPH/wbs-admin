@@ -130,4 +130,56 @@ class ActivityTrackController extends Controller
             'message' => 'Success',
         ], 200);
     }
+
+    /**
+     * New Team Productivity Data
+     */
+    public function getTeamProductivityData($team_id, $date = null)
+    {
+        try {
+            Validator::make([
+                'team_id' => $team_id,
+                'date' => $date,
+            ], [
+                'team_id' => 'required|integer|exists:teams,id',
+                'date' => 'nullable|date',
+            ]);
+
+            $date = Carbon::parse($date) ?? Carbon::now();
+            $employees = Employee::where('team_id', $team_id)->get();
+            $tracks = TrackRecords::whereIn('userid', $employees->pluck('id'))
+                ->where('datein', $date->toDateString())
+                ->get();
+
+            $data = [];
+            foreach ($tracks as $track) {
+                $apps = RunningApps::with('category')
+                    ->where('taskid', $track->id)
+                    ->where('userid', $track->userid)
+                    ->get();
+
+                $duration = $apps->groupBy('category.is_productive')->map(function ($item) {
+                    return [
+                        'type' => $item->first()->category->is_productive,
+                        'duration' => $item->sum('duration'),
+                    ];
+                });
+
+                $data[] = [
+                    'userid' => $track->userid,
+                    'unproductive' => collect($duration)->where('type', "0")->first()['duration'] ?? 0,
+                    'productive' => collect($duration)->where('type', "1")->first()['duration'] ?? 0,
+                    'neutral' => collect($duration)->where('type', "2")->first()['duration'] ?? 0,
+                    'first_name' => $apps->first()->employee->first_name,
+                ];
+            }
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+
+        return response()->json([
+            'data' => $data,
+            'message' => 'Success',
+        ], 200);
+    }
 }

@@ -39,67 +39,33 @@ class TimeLog extends Command
      */
     public function handle()
     {
-        $ref_date = '2024-04-11';
-        $track = TrackRecords::whereDate('datein', '=', $ref_date)
-            ->where('userid', 20)
-            ->first();
-
-        $logs = RunningApps::where('taskid', $track->id)
-            ->whereBetween('time', ['20:40:00', '22:30:00'])
+        $ref_date = '2024-04-15';
+        $members = Employee::select('id')->whereIn('team_id', [10])->get();
+        $tracks = TrackRecords::whereDate('datein', '=', $ref_date)
+            ->whereIn('userid', $members->pluck('id'))
             ->get();
 
-        $this->info('Logs: ' . $logs->count());
-        foreach ($logs as $log) {
+        $this->info('Logs: ' . $tracks->count());
+        foreach ($tracks as $track) {
             // $employee = Employee::find($log->userid);
             // $this->info($log->time);
             $insert = RunningApps::insert([
-                'userid' => 20,
-                'taskid' => 3332,
-                'description' => $log->description,
-                'category_id' => $log->category_id,
-                'date' => '2024-04-12',
-                'time' => $log->time,
-                'end_time' => $log->end_time,
-                'duration' => $this->convertTimeToSecond($log->end_time) - $this->convertTimeToSecond($log->time),
-                'status' =>  $log->status,
+                'userid' => $track->userid,
+                'taskid' => $track->id,
+                'description' => 'Team meeting',
+                'category_id' => 155,
+                'date' => '2024-04-15',
+                'time' => '13:30',
+                'end_time' => '15:30',
+                'duration' => 7200,
+                'status' =>  'closed',
                 'platform' => 'desktop',
-                'type' => 'Offline',
+                'type' => 'actual',
             ]);
 
             if (!$insert) {
-                $this->info('Error: ' . $log->id);
+                $this->info('Error: ' . $track->id);
             }
         }
-
-        // $new_ids = [];
-        // foreach ($tracks as $track) {
-        //     $item = RunningApps::where('date', $track->datein)
-        //         ->where('userid', $track->userid)
-        //         ->first();
-
-        //     if (!$item) continue;
-
-        //     $new_ids[] = [
-        //         'old' => $item->taskid,
-        //         'new' => $track->id
-        //     ];
-        // }
-
-        // foreach ($new_ids as $taskid) {
-        //     $updated = RunningApps::where('taskid', $taskid['old'])
-        //         ->update([
-        //             'taskid' => $taskid['new']
-        //         ]);
-
-        //     $this->info('Updated: ' . $updated . 'TaskId: ' . $taskid['new']);
-        // }
-
-
-
-        // foreach ($apps as $app) {
-        //     // $log = RunningApps::find($app->id);
-        //     $app->end_time =  Carbon::parse($app->end_time)->addHours(22);
-        //     $app->save();
-        // }
     }
 }
