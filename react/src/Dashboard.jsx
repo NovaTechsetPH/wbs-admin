@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useDashboardContext } from "@/context/DashboardContextProvider";
 // import ActivityChart from "./components/ActivityChart";
+import ProductivityChart from "./components/ProductivityChart";
 import axiosClient from "@/axios-client";
 
 import { ScrollArea } from "./components/ui/scroll-area";
@@ -17,7 +18,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "./components/ui/card";
 import TeamWorkHours from "./components/extra/team-work-hours";
 import { Skeleton } from "./components/ui/skeleton";
 import { useStateContext } from "./context/ContextProvider";
-import ProductivityChart from "./components/ProductivityChart";
 
 const CATEGORY = ["Unproductive", "Productive", "Neutral"];
 
