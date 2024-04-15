@@ -30,7 +30,7 @@ class Logout extends Command
      */
     public function handle()
     {
-        // $date = Carbon::parse('2024-02-29');
+        // $date = Carbon::parse('2024-03-23');
         $date = Carbon::now()->subDay();
         $sessions = TrackRecords::where('datein', $date->toDateString())
             ->where('timeout', null)
@@ -47,24 +47,11 @@ class Logout extends Command
 
             if (!$last_activity) continue;
 
-            // $this->info(json_encode(['userid' => $last_activity->userid, 'timeout' => $session->timeout, 'end_time' => $last_activity->end_time]));
-            \Log::channel('cronlog')->info(json_encode([
-                'trackid' => $session->id,
-                'userid' => $session->userid,
-                'dateout' => $session->dateout,
-                'timeout' => $session->timeout,
-                // 'updated' => Carbon::parse($last_activity->updated_at)->toDateTimeString()
-            ], JSON_PRETTY_PRINT));
-
-            // if ($last_activity->end_time && $last_activity->time) {
             $session->dateout = $date->toDateString();
             $session->timeout = $last_activity->end_time ?? $last_activity->time;
             $session->save();
-            // }
-
 
             $employee = Employee::find($session->userid);
-
             if ($last_activity->end_time == null && $employee->active_status == 'Offline') {
                 $last_activity->status = 'Closed';
                 $last_activity->end_time = $last_activity->time;
