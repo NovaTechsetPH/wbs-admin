@@ -29,6 +29,8 @@ const Categorization = () => {
             header_name: item.header_name,
             updated_at: item.updated_at,
             created_at: item.created_at,
+            reason: item.reason,
+            edited_by: item.edited_by,
             /*
             status: item.status,
             requestedOn: moment(item.created_at).format("YYYY-MM-DD"),
