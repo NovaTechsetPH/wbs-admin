@@ -10,6 +10,7 @@ import { TeamAppList } from "./components/extra/team-app-list";
 import { DatePicker } from "./components/extra/date-picker";
 
 import ActivityChart from "./components/ActivityChart";
+import ActivityIcon from "./components/ActivityIcon";
 import SelectDialog from "./components/extra/employee-select-dialog";
 import Widget from "./components/extra/widget";
 
@@ -169,7 +170,7 @@ const ActivityTracking = () => {
         <div className="flex items-center space-x-2">
           <DatePicker />
         </div>
-      </div>
+      </div> 
       <Separator className="my-4" />
       <div className="relative">
         <ScrollArea>
@@ -177,6 +178,13 @@ const ActivityTracking = () => {
             <div className="grid grid-cols-2 gap-4">
               <div className="col-span-1">
                 <ActivityChart
+                  isLoading={loading}
+                  productivity={productivity}
+                  rawApps={rawApps}
+                />
+              </div>
+              <div className="col-span-1">
+                <ActivityIcon
                   isLoading={loading}
                   productivity={productivity}
                   rawApps={rawApps}

@@ -11,11 +11,11 @@ import {
 } from "@/components/ui/dialog";
 
 import { Button } from "@/components/ui/button";
-import { TrashIcon } from "@radix-ui/react-icons";
+//import { TrashIcon } from "@radix-ui/react-icons";
 import { EditIcon } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Send } from 'lucide-react';
+//import { Send } from 'lucide-react';
 
 const EditCategories = ({ id, name, description, is_productive, header_name, icon, abbreviation, priority_id, updated_at, created_at }) => {
   const [editedData, setEditedData] = useState({
@@ -90,7 +90,7 @@ const EditCategories = ({ id, name, description, is_productive, header_name, ico
   
   
 
-  const handleSendRequest = async () => {
+ /* const handleSendRequest = async () => {
     try {
       // Send request logic here
     } catch (error) {
@@ -112,83 +112,81 @@ const EditCategories = ({ id, name, description, is_productive, header_name, ico
       console.error(error);
       // Handle error (e.g., show an error message)
     }
-  };
+  }; */
+  
 
   const fields = [
-    { key: "name", value: name, label: "Name", type: "disabled" },
-    { key: "description", value: description, label: "Description", type: "disabled" },
-    { key: "is_productive", value: is_productive, label: "Is Productive", type: "select", options: [
+    { key: "name", value: name, label: "Name" },
+    { key: "description", value: description, label: "Description"},
+    { key: "is_productive", value: is_productive, label: "Transaction", type: "select", options: [
       {value: '1', label: "Productive"}, 
       {value: '2', label: "Unproductive"}, 
-      {value: '0', label: "Neutral"} ] },
-    { key: "header_name", value: header_name, label: "Header Name", type: "disabled" },
+     ] },
+   /* { key: "header_name", value: header_name, label: "Header Name", type: "disabled" },
     { key: "icon", value: icon, label: "Icon", type: "disabled" },
     { key: "abbreviation", value: abbreviation, label: "Abbreviation", type: "disabled" },
     { key: "priority_id", value: priority_id, label: "Priority ID" },
     { key: "updated_at", value: updated_at, label: "Updated At" },
-    { key: "created_at", value: created_at, label: "Created At", type: "disabled" }
+    { key: "created_at", value: created_at, label: "Created At", type: "disabled" } */
   ];
 
   return (
-    <div className="flex">
-      <Dialog>
-        <DialogTrigger asChild>
-          <Button size="3" variant="outline" >
-            <EditIcon className="h-4 w-4" color="blue" />
-          </Button>
-        </DialogTrigger>
-        <DialogContent className="sm:max-w-[425px]">
-          <DialogHeader>
-            <DialogTitle>Edit Category</DialogTitle>
-          </DialogHeader>
-          <DialogDescription>
-            Make changes to your category here. Click save when you're done.
-          </DialogDescription>
-          <div className="grid gap-4 py-4">
-            {fields.map(field => (
-              <div key={field.key} className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor={field.key} className="text-right">
-                  {field.label}
-                </Label>
-                {field.type === "disabled" ? (
-                  <Input
-                    id={field.key}
-                    name={field.key}
-                    value={editedData[field.key]}
-                    disabled
-                    className="col-span-3"
-                  />
-                ) : field.type === "select" ? (
-                  <select
-                    id={field.key}
-                    name={field.key}
-                    value={editedData[field.key]}
-                    onChange={(e) => handleChange(field.key, e.target.value)}
-                    className="col-span-3"
-                  >
-                    {field.options.map(option => (
-                      <option key={option.value} value={option.value}>{option.label}</option>
-                    ))}
-                  </select>
-                ) : (
-                  <Input
-                    id={field.key}
-                    name={field.key}
-                    value={editedData[field.key]}
-                    onChange={(e) => handleChange(field.key, e.target.value)}
-                    className="col-span-3"
-                  />
-                )}
-              </div>
-            ))}
-          </div>
-          <DialogFooter>
-            <Button type="button" onClick={handleSave}>Save changes</Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog> |
-  
-      <Dialog>
+    <>
+    {is_productive !== '1' && is_productive !== '2' && (
+      <div className="flex">
+        <Dialog>
+          <DialogTrigger asChild>
+            <Button size="3" variant="outline">
+              <EditIcon className="h-4 w-4" color="blue" />
+            </Button>
+          </DialogTrigger>
+          <DialogContent className="sm:max-w-[425px]">
+            <DialogHeader>
+              <DialogTitle>Edit Category</DialogTitle>
+            </DialogHeader>
+            <DialogDescription>
+              Make changes to your category here. Click save when you're done.
+            </DialogDescription>
+            <div className="grid gap-4 py-4">
+              {fields.map(field => (
+                <div key={field.key} className="grid grid-cols-4 items-center gap-4">
+                  <Label htmlFor={field.key} className="text-right">
+                    {field.label}
+                  </Label>
+                  {field.type === "select" ? (
+                    <select
+                      id={field.key}
+                      name={field.key}
+                      value={editedData[field.key]}
+                      onChange={(e) => handleChange(field.key, e.target.value)}
+                      className="col-span-3"
+                    >
+                      {field.options.map(option => (
+                        <option key={option.value} value={option.value}>{option.label}</option>
+                      ))}
+                    </select>
+                  ) : (
+                    <Input
+                      id={field.key}
+                      name={field.key}
+                      value={editedData[field.key]}
+                      onChange={(e) => handleChange(field.key, e.target.value)}
+                      className="col-span-3"
+                    />
+                  )}
+                </div>
+              ))}
+            </div>
+            <DialogFooter>
+              <Button type="button" onClick={handleSave}>Save changes</Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+      </div>
+    )}
+    </>
+
+         /*<Dialog>
         <DialogTrigger asChild>
           <Button size="3" variant="outline">
             <Send className="h-4 w-4" color="blue"/> 
@@ -207,7 +205,7 @@ const EditCategories = ({ id, name, description, is_productive, header_name, ico
             </Button>
           </DialogFooter>
         </DialogContent>
-      </Dialog> |
+      </Dialog> 
 
       <Dialog>
         <DialogTrigger asChild>
@@ -228,8 +226,8 @@ const EditCategories = ({ id, name, description, is_productive, header_name, ico
             </Button>
           </DialogFooter>
         </DialogContent>
-      </Dialog>
-    </div>
+          </Dialog> */
+   
   );
 };
 

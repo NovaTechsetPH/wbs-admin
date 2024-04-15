@@ -22,7 +22,7 @@ export function DataTableToolbar({ table }) {
        {table.getColumn("is_productive") && (
           <DataTableFacetedFilter
             column={table.getColumn("is_productive")}
-            title="is_productive"
+            title="transactions"
             options={[
               {value: '1', label: "Productive"}, 
               {value: '2', label: "Unproductive"}, 

@@ -32,6 +32,7 @@ export const columns = [
     ),
     cell: ({ row }) => (
       <div className="w-[80px]">{row.getValue("id")}</div>
+      
     ),
     enableSorting: false,
     enableHiding: false,
@@ -60,7 +61,7 @@ export const columns = [
     ),
     cell: ({ row }) => {
       const label = labels.find((label) => label.value === row.original.label);
-
+     
       return (
         <div className="flex space-x-2">
           {label && <Badge variant="outline">{label.label}</Badge>}
@@ -73,24 +74,21 @@ export const columns = [
   {
     accessorKey: "is_productive",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Productive" />
+      <DataTableColumnHeader column={column} title="Transaction" />
     ),
     cell: ({ row }) => {
       const label = labels.find((label) => label.value === row.original.label);
       const isProductive = row.getValue("is_productive");
-
-    /*  if (isProductive != 0) {
-        return null; // Hide rows where is_productive is neither 1 nor 2
-      } */
-
-      return (
-        <div className="flex space-x-2">
-          {label && <Badge variant="outline">{label.label}</Badge>}
-          <span className="max-w-[500px] truncate">{isProductive}</span>
-        </div>
-      );
+  
+        return (
+          <div className="flex space-x-2">
+            {label && <Badge variant="outline">{label.label}</Badge>}
+            <span className="max-w-[500px] truncate">{isProductive}</span>
+          </div>
+        );
     },
   },
+  
 
   {
     accessorKey: "header_name",
@@ -258,5 +256,7 @@ export const columns = [
       </div>
     ),
   },
+
+
 ];
 
