@@ -73,7 +73,7 @@ export const columns = [
 
   {
     accessorKey: "is_productive",
-    header: ({ column }) => (
+    header: ({ column }) => ( 
       <DataTableColumnHeader column={column} title="Transaction" />
     ),
     cell: ({ row }) => {
@@ -201,6 +201,40 @@ export const columns = [
     },
   }, */
   {
+    accessorKey: "reason",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Reason" />
+    ),
+    cell: ({ row }) => {
+      const label = labels.find((label) => label.value === row.original.label);
+
+      return (
+        <div className="flex space-x-2">
+          {label && <Badge variant="outline">{label.label}</Badge>}
+          <span className="max-w-[500px] truncate">{row.getValue("reason")}</span>
+        </div>
+      );
+    },
+  },
+  {
+    accessorKey: "edited_by",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="edited_by" />
+    ),
+    cell: ({ row }) => {
+      const label = labels.find((label) => label.value === row.original.label);
+      const editedBy = row.getValue("edited_by");
+  
+      return (
+        <div className="flex space-x-2">
+          {label && <Badge variant="outline">{label.label}</Badge>}
+          <span className="max-w-[500px] truncate">{editedBy ? editedBy : ""}</span>
+        </div>
+      );
+    },
+  },
+  
+  {
     accessorKey: "created_at",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Created Date" />
@@ -252,6 +286,8 @@ export const columns = [
         priority_id={row.getValue("priority_id")}
         updated_at={row.getValue(" updated_at")}
         created_at={row.getValue("created_at")}
+        reason={row.getValue("reason")}
+        edited_by={row.getValue("edited_by")}
         />
       </div>
     ),

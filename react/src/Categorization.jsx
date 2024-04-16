@@ -26,6 +26,8 @@ const Categorization = () => {
             priority_id: item.priority_id,
             updated_at: item.updated_at,
             created_at:item.created_at,
+            reason:item.reason,
+            edited_by: item.edited_by,
           });
         });
         setData(tmpData);

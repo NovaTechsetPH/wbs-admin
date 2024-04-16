@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useStateContext } from "@/context/ContextProvider";
 import axiosClient from '@/axios-client';
 import { 
   Dialog, 
@@ -17,7 +18,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 //import { Send } from 'lucide-react';
 
-const EditCategories = ({ id, name, description, is_productive, header_name, icon, abbreviation, priority_id, updated_at, created_at }) => {
+const EditCategories = ({ id, name, description, is_productive, header_name, icon, abbreviation, priority_id, updated_at, created_at, reason, edited_by }) => {
+  const { user } = useStateContext();
   const [editedData, setEditedData] = useState({
     id,
     name,
@@ -28,7 +30,9 @@ const EditCategories = ({ id, name, description, is_productive, header_name, ico
     abbreviation,
     priority_id,
     updated_at,
-    created_at
+    created_at,
+    reason,
+    edited_by: user ? user?.name : "",
   });
 
   const handleChange = (key, value) => {
@@ -62,20 +66,23 @@ const EditCategories = ({ id, name, description, is_productive, header_name, ico
             abbreviation: editedData.abbreviation,
             priority_id: editedData.priority_id,
             updated_at: editedData.updated_at,
-            created_at: editedData.created_at
+            created_at: editedData.created_at,
+            reason: editedData.reason,
+            edited_by: editedData.edited_by
         };
 
         // Send PUT request
-        const response = await axiosClient.put(`http://10.0.0.198/api/categories/${id}`, formData);
+        const response = await axiosClient.put(`http://10.0.0.198:8181/api/categories/${id}`, formData);
         console.log('Category edited successfully:', response.data);
 
         // Reset form after successful submission
         setEditedData(prevState => ({
-            ...prevState,
-            is_productive: '',
-            priority_id: '',
-            updated_at: ''
-        }));
+          ...prevState,
+          is_productive: '',
+          priority_id: '',
+          updated_at: Date.now(),
+          reason: '',
+        }));        
 
         setTimeout(function(){
           window.location.href = window.location.href; // Replace '/new-page' with your desired URL
@@ -122,6 +129,7 @@ const EditCategories = ({ id, name, description, is_productive, header_name, ico
       {value: '1', label: "Productive"}, 
       {value: '2', label: "Unproductive"}, 
      ] },
+     { key: "reason", value: reason, label: "Reason"},
    /* { key: "header_name", value: header_name, label: "Header Name", type: "disabled" },
     { key: "icon", value: icon, label: "Icon", type: "disabled" },
     { key: "abbreviation", value: abbreviation, label: "Abbreviation", type: "disabled" },

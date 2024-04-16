@@ -23,7 +23,7 @@ const AddCategories = () => {
     icon: '',
     abbreviation: '',
     priority_id: '',
-    updated_at: '',
+    //updated_at: '',
     created_at: '',
   });
 
@@ -46,8 +46,8 @@ const AddCategories = () => {
         icon: '',
         abbreviation: '',
         priority_id: '',
-        updated_at: '',
-        created_at: '',
+        //updated_at: '',
+        created_at:  Date.now(),
       });
       
       setTimeout(function(){
@@ -63,7 +63,7 @@ const AddCategories = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get('http://10.0.0.198/api/categories', {
+        const response = await axios.get('http://10.0.0.198:8181/api/categories', {
           params: formData,
         });
         console.log(JSON.stringify(response.data));
@@ -86,8 +86,8 @@ const AddCategories = () => {
     { key: 'icon', label: 'Icon', required: false },
     { key: 'abbreviation', label: 'Abbreviation', required: false },
     { key: 'priority_id', label: 'Priority ID', required: false },
-    { key: 'updated_at', label: 'Updated At', required: false },
-    { key: 'created_at', label: 'Created At', required: true },
+    //{ key: 'updated_at', label: 'Updated At', required: false },
+    { key: 'created_at', label: 'Created At', type: 'hidden', required: false },
   ];
 
   return (

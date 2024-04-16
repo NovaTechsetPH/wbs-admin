@@ -19,6 +19,7 @@ class AppCategories extends Model
         'icon',
         'abbreviation',
         'priority_id',
+        'reason',
         'update_status',
         'created_at',
         'updated_at',
