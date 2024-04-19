@@ -23,8 +23,6 @@ const AddCategories = () => {
     icon: '',
     abbreviation: '',
     priority_id: '',
-    //updated_at: '',
-    created_at: '',
   });
 
   const handleChange = (e) => {
@@ -35,7 +33,10 @@ const AddCategories = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axiosClient.post('/categories', formData);
+      // Set created_at before sending the request
+      const newData = { ...formData, created_at: Date.now() };
+
+      const response = await axiosClient.post('/categories', newData);
       console.log('Category added successfully:', response.data);
       // Reset form after successful submission
       setFormData({
@@ -46,14 +47,11 @@ const AddCategories = () => {
         icon: '',
         abbreviation: '',
         priority_id: '',
-        //updated_at: '',
-        created_at:  Date.now(),
       });
-      
-      setTimeout(function(){
-        window.location.href = window.location.href; // Replace '/new-page' with your desired URL
-    }, 500);
 
+      setTimeout(function () {
+        window.location.href = window.location.href; // Replace '/new-page' with your desired URL
+      }, 500);
     } catch (error) {
       console.error('Error adding category:', error);
       // Handle error cases, such as displaying an error message to the user
@@ -79,15 +77,11 @@ const AddCategories = () => {
     { key: 'name', label: 'Name', required: true },
     { key: 'description', label: 'Description', required: true },
     { key: 'is_productive', label: 'Is Productive', options: [
-      { value: '1', label: 'Productive' }, 
-      { value: '2', label: 'Unproductive' }, 
       { value: '0', label: 'Neutral' } ], required: true },
     { key: 'header_name', label: 'Header Name', required: true },
     { key: 'icon', label: 'Icon', required: false },
     { key: 'abbreviation', label: 'Abbreviation', required: false },
     { key: 'priority_id', label: 'Priority ID', required: false },
-    //{ key: 'updated_at', label: 'Updated At', required: false },
-    { key: 'created_at', label: 'Created At', type: 'hidden', required: false },
   ];
 
   return (
@@ -105,31 +99,35 @@ const AddCategories = () => {
             <div className="grid gap-4 py-4">
               {fields.map((field) => (
                 <div key={field.key} className="grid grid-cols-4 items-center gap-4">
-                 <Label htmlFor={field.key} className="text-right">
-                  {field.label} {field.required && <span className="text-red-500">*</span>}
-                 </Label>
-                  {field.key === 'is_productive' ? (
-                    <select
-                      id={field.key}
-                      name={field.key}
-                      value={formData[field.key]}
-                      onChange={handleChange}
-                      className="col-span-3"
-                    >
-                      {field.options.map((option) => (
-                        <option key={option.value} value={option.value}>
-                          {option.label}
-                        </option>
-                      ))}
-                    </select>
-                  ) : (
-                    <Input
-                      id={field.key}
-                      name={field.key}
-                      value={formData[field.key]}
-                      onChange={handleChange}
-                      className="col-span-3"
-                    />
+                  {field.key !== 'created_at' && (
+                    <>
+                      <Label htmlFor={field.key} className="text-right">
+                        {field.label} {field.required && <span className="text-red-500">*</span>}
+                      </Label>
+                      {field.key === 'is_productive' ? (
+                        <select
+                          id={field.key}
+                          name={field.key}
+                          value={formData[field.key]}
+                          onChange={handleChange}
+                          className="col-span-3"
+                        >
+                          {field.options.map((option) => (
+                            <option key={option.value} value={option.value}>
+                              {option.label}
+                            </option>
+                          ))}
+                        </select>
+                      ) : (
+                        <Input
+                          id={field.key}
+                          name={field.key}
+                          value={formData[field.key]}
+                          onChange={handleChange}
+                          className="col-span-3"
+                        />
+                      )}
+                    </>
                   )}
                 </div>
               ))}

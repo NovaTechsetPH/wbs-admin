@@ -78,7 +78,7 @@ export const columns = [
     ),
     cell: ({ row }) => {
       const label = labels.find((label) => label.value === row.original.label);
-      const is_productive = row.getValue("is_productive") === "2" ? "Neutral" : "";
+      const is_productive = row.getValue("is_productive") === "1" ? "Yes" : "No";
   
         return (
           <div className="flex space-x-2">
@@ -200,7 +200,39 @@ export const columns = [
       return value.includes(row.getValue(id));
     },
   }, */
- 
+  {
+    accessorKey: "reason",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Reason" />
+    ),
+    cell: ({ row }) => {
+      const label = labels.find((label) => label.value === row.original.label);
+
+      return (
+        <div className="flex space-x-2">
+          {label && <Badge variant="outline">{label.label}</Badge>}
+          <span className="max-w-[500px] truncate">{row.getValue("reason")}</span>
+        </div>
+      );
+    },
+  },
+  {
+    accessorKey: "edited_by",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="edited_by" />
+    ),
+    cell: ({ row }) => {
+      const label = labels.find((label) => label.value === row.original.label);
+      const editedBy = row.getValue("edited_by");
+  
+      return (
+        <div className="flex space-x-2">
+          {label && <Badge variant="outline">{label.label}</Badge>}
+          <span className="max-w-[500px] truncate">{editedBy ? editedBy : ""}</span>
+        </div>
+      );
+    },
+  },
   
   {
     accessorKey: "created_at",
@@ -235,31 +267,7 @@ export const columns = [
     },
   },
 
-  
-  {
-    id: "actions",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Actions" />
-    ),
-    cell: ({ row }) => (
-      <div className="flex items-center">
-        <EditCategories 
-        id={row.getValue("id")}
-        name={row.getValue("name")}
-        description={row.getValue("description")} 
-        is_productive={row.getValue("is_productive")}
-        header_name={row.getValue(" header_name")}
-        icon={row.getValue("icon")}
-        abbreviation={row.getValue(" abbreviation")}
-        priority_id={row.getValue("priority_id")}
-        updated_at={row.getValue(" updated_at")}
-        created_at={row.getValue("created_at")}
-        reason={row.getValue("reason")}
-        edited_by={row.getValue("edited_by")}
-        />
-      </div>
-    ),
-  },
+
 
 
 ];

@@ -1,40 +1,10 @@
 import { DashboardContextProvider } from "@/context/DashboardContextProvider";
 import { Separator } from "@ui/separator";
-import { columns } from "@/components/extra/categorization/columns";
-import { DataTable } from "@/components/extra/categorization/data-table";
-import { useEffect, useState } from "react";
-import axiosClient from "./axios-client";
-
+import Neutral from "@/components/extra/categorization/neutral";
+import Productive from "@/components/extra/categorization/productive";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "./components/ui/tabs";
 
 const Categorization = () => {
-  const [data, setData] = useState([]);
-
-  useEffect(() => {
-    axiosClient
-      .get("/categories")
-      .then(async ({ data }) => {
-        let tmpData = [];
-        await data.data.forEach((item) => {
-          tmpData.push({
-            id: item.id,
-            name: item.name,
-            description: item.description,
-            is_productive: item.is_productive,
-            header_name: item.header_name,
-            icon: item.icon,
-            abbreviation: item.abbreviation,
-            priority_id: item.priority_id,
-            updated_at: item.updated_at,
-            created_at:item.created_at,
-            reason:item.reason,
-            edited_by: item.edited_by,
-          });
-        });
-        setData(tmpData);
-      })
-      .catch((err) => console.log(err));
-  }, []);
-
   return (
     <DashboardContextProvider>
       <div className="h-full px-4 py-6 lg:px-8">
@@ -46,11 +16,22 @@ const Categorization = () => {
           </div>
         </div>
         <Separator className="my-4" />
-        <div className="relative">
-          <div className="hidden h-full flex-1 flex-col space-y-8 p-8 md:flex">
-            <DataTable data={data} columns={columns} />
-          </div>
-        </div>
+        <Tabs defaultValue="neutral">
+          <TabsList>
+            <TabsTrigger value="neutral" className="relative">
+              Neutral
+            </TabsTrigger>
+            <TabsTrigger value="productive">
+              Productive/Unproductive
+            </TabsTrigger>
+          </TabsList>
+          <TabsContent value="neutral">
+            <Neutral />
+          </TabsContent>
+          <TabsContent value="productive">
+            <Productive />
+          </TabsContent>
+        </Tabs>
       </div>
     </DashboardContextProvider>
   );

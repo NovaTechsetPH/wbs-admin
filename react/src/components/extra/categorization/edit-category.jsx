@@ -127,7 +127,7 @@ const EditCategories = ({ id, name, description, is_productive, header_name, ico
     { key: "description", value: description, label: "Description"},
     { key: "is_productive", value: is_productive, label: "Transaction", type: "select", options: [
       {value: '1', label: "Productive"}, 
-      {value: '2', label: "Unproductive"}, 
+      {value: '0', label: "Unproductive"}, 
      ] },
      { key: "reason", value: reason, label: "Reason"},
    /* { key: "header_name", value: header_name, label: "Header Name", type: "disabled" },
@@ -140,7 +140,7 @@ const EditCategories = ({ id, name, description, is_productive, header_name, ico
 
   return (
     <>
-    {is_productive !== '1' && is_productive !== '2' && (
+    {is_productive !== '1' && is_productive !== '0' && (
       <div className="flex">
         <Dialog>
           <DialogTrigger asChild>

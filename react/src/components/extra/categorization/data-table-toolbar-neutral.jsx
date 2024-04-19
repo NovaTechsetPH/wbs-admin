@@ -3,7 +3,7 @@ import { Button } from "@ui/button";
 import { Input } from "@ui/input";
 import { DataTableViewOptions } from "./data-table-view-options";
 import AddCategories from "./add-category"; 
-import { DataTableFacetedFilter } from "./data-table-faceted-filter"
+//import { DataTableFacetedFilter } from "./data-table-faceted-filter"
 
 export function DataTableToolbar({ table }) {
   const isFiltered = table.getState().columnFilters.length > 0;
@@ -27,18 +27,8 @@ export function DataTableToolbar({ table }) {
           }
           className="h-8 w-[150px] lg:w-[250px]"
         />{" "}
-        {table.getColumn("is_productive") && (
-          <DataTableFacetedFilter
-            column={table.getColumn("is_productive")}
-            title="Transactions"
-            options={[
-              { value: "1", label: "Productive" },
-              { value: "0", label: "Unproductive" }
-            ]}
-          />
-        )}
-        {
-        }
+        
+        
         {isFiltered && (
           <Button
             variant="ghost"
