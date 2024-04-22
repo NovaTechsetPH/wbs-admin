@@ -259,6 +259,7 @@ export const AlertDialogTemplate = ({
         );
       })
       .catch((err) => console.log(err));
+    console.log(employees, "employees");
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentTeam]);
 

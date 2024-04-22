@@ -6,6 +6,24 @@ import EditCategories from "./edit-category";
 
 
 
+import { cn } from "@/lib/utils";
+import { DataTableColumnHeader } from "./data-table-column-header";
+import { Badge } from "@ui/badge";
+import {
+  ArrowDownIcon,
+  ArrowRightIcon,
+  ArrowUpIcon,
+  CheckCircledIcon,
+  CheckIcon,
+  Cross1Icon,
+  CrossCircledIcon,
+  QuestionMarkCircledIcon,
+} from "@radix-ui/react-icons";
+import { Button } from "@/components/ui/button";
+
+import EditCategoryDialog from "./edit"; // Change import statement
+//import SendCategoryDialog from "./send-request"; // Change import statement
+import { BadgeHelp } from "lucide-react";
 
 const labels = [
   {
@@ -22,7 +40,62 @@ const labels = [
   },
 ];
 
+export const statuses = [
+  {
+    value: "Approved",
+    label: "Approved",
+    icon: CheckCircledIcon,
+  },
+  {
+    value: "Pending",
+    label: "Pending",
+    icon: QuestionMarkCircledIcon,
+  },
+  {
+    value: "Rejected",
+    label: "Rejected",
+    icon: CrossCircledIcon,
+  },
+];
 
+export const priorities = [
+  {
+    label: "Low",
+    value: "low",
+    icon: ArrowDownIcon,
+  },
+  {
+    label: "Medium",
+    value: "medium",
+    icon: ArrowRightIcon,
+  },
+  {
+    label: "High",
+    value: "high",
+    icon: ArrowUpIcon,
+  },
+];
+
+const getIconColor = (value) => {
+  switch (value) {
+    case "Approved":
+      return "text-green-500";
+    case "Pending":
+      return "text-yellow-500";
+    case "Rejected":
+      return "text-red-500";
+    default:
+      return "text-gray-500";
+  }
+};
+
+const handleApprove = (row) => {
+  console.log(row, "approve");
+};
+
+const handleReject = (row) => {
+  console.log(row, "reject");
+};
 
 export const columns = [
   {
@@ -147,6 +220,9 @@ export const columns = [
         <div className="flex space-x-2">
           {label && <Badge variant="outline">{label.label}</Badge>}
           <span className="max-w-[500px] truncate">{row.getValue("abbreviation")}</span>
+          <span className="max-w-[500px] truncate">
+            {row.getValue("abbreviation")}
+          </span>
         </div>
       );
     },

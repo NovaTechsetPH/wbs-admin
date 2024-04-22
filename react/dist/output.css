@@ -743,6 +743,11 @@ body {
   margin-bottom: 1rem;
 }
 
+.my-2 {
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
 .-ml-3 {
   margin-left: -0.75rem;
 }
@@ -817,6 +822,10 @@ body {
 
 .mt-auto {
   margin-top: auto;
+}
+
+.mr-3 {
+  margin-right: 0.75rem;
 }
 
 .block {
@@ -1117,6 +1126,10 @@ body {
 
 .w-full {
   width: 100%;
+}
+
+.w-\[30px\] {
+  width: 30px;
 }
 
 .min-w-\[8rem\] {

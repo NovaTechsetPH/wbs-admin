@@ -5,8 +5,14 @@ import { DataTableViewOptions } from "./data-table-view-options";
 import AddCategories from "./add-category"; 
 import { DataTableFacetedFilter } from "./data-table-faceted-filter"
 
-export function DataTableToolbar({ table }) {
+export function DataTableToolbar({ table, row }) {
   const isFiltered = table.getState().columnFilters.length > 0;
+  const [filterOption, setFilterOption] = useState("all");
+
+  const handleFilterChange = (option) => {
+    setFilterOption(option);
+    // Implement filtering logic based on the selected option
+  };
 
   return (
     <div className="flex items-center justify-between">

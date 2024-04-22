@@ -25,6 +25,6 @@ class PostAnomaly extends Command
      */
     public function handle()
     {
-        //
+        $this->info('test');
     }
 }
