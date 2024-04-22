@@ -127,7 +127,6 @@ const ActivityTracking = () => {
           let endTime = moment(app.end_time, "H:mm:ss");
           let startTime = moment(app.time, "H:mm:ss");
           let totalTime = moment.duration(endTime.diff(startTime)).asSeconds();
-
           if (tmp.includes(app.category.header_name)) {
             let index = listApps[
               CATEGORY[app.category.is_productive]

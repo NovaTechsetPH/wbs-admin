@@ -3,20 +3,20 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\StoreUserRequest;
-use App\Http\Requests\UpdateUserRequest;
-use App\Http\Resources\AppCategoriesResource;
 use App\Models\AppCategories;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
 
 class AppCategoriesController extends Controller
 {
+    private $disabled_categories = [90];
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        $categories = AppCategories::orderBy('priority_id', 'ASC')
+        $categories = AppCategories::whereNotIn('id', $this->disabled_categories)
+            ->orderBy('priority_id', 'ASC')
             ->orderBy('id', 'ASC')
             ->get();
 
@@ -27,19 +27,36 @@ class AppCategoriesController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
     {
-        //
+        try {
+            // return $request->all();
+            $request->validate([
+                'name' => 'required|string|max:255|unique:tblapp_categories,name',
+                'header_name' => 'required|string|max:255',
+                'is_productive' => 'required|in:0,1,2',
+                'priority_id' => 'required|in:0,1,2,3',
+            ]);
+
+            $category = AppCategories::create([
+                'name' => $request->name,
+                'header_name' => $request->header_name,
+                'is_productive' => $request->is_productive,
+                'priority_id' => $request->priority_id,
+                'abbreviation' => $request->abbreviation,
+                'description' => $request->description,
+            ]);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'error' => $th->getMessage(),
+            ], 400);
+        }
+        return response()->json([
+            'data' => $category,
+            'message' => 'Successfully retrieved category',
+        ]);
     }
 
     /**
@@ -47,15 +64,21 @@ class AppCategoriesController extends Controller
      */
     public function show(string $id)
     {
-        //
-    }
+        try {
+            Validator::validate(['id' => $id], [
+                'id' => 'required|exists:tblapp_categories,id',
+            ]);
+            $category = AppCategories::findOrFail($id);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'error' => $th->getMessage(),
+            ], 400);
+        }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
+        return response()->json([
+            'data' => $category,
+            'message' => 'Successfully retrieved category',
+        ]);
     }
 
     /**
@@ -63,7 +86,18 @@ class AppCategoriesController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        try {
+            $category = AppCategories::findOrFail($id);
+            $category->update($request->all());
+        } catch (\Throwable $th) {
+            return response()->json([
+                'error' => $th->getMessage(),
+            ], 400);
+        }
+
+        return response()->json([
+            'message' => 'Successfully updated category',
+        ]);
     }
 
     /**
@@ -71,6 +105,19 @@ class AppCategoriesController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        try {
+            Validator::validate(['id' => $id], [
+                'id' => 'required|exists:tblapp_categories,id',
+            ]);
+            AppCategories::destroy($id);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'error' => $th->getMessage(),
+            ], 400);
+        }
+
+        return response()->json([
+            'message' => 'Successfully deleted category'
+        ]);
     }
 }

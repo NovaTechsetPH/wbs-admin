@@ -37,7 +37,9 @@ const ErrorAlert = ({ alertOpen, setAlertOpen, message }) => {
 export default function Login() {
   const emailRef = createRef();
   const passwordRef = createRef();
-  const { setUser, setToken } = useStateContext();
+  const { setUser, setToken, setCurrentTeam, setTeams } = useStateContext();
+  // const { setUser, setCurrentTeam, setTeams, setToken, user } =
+  // useStateContext();
   const [message, setMessage] = useState(null);
   const [looding, setLooding] = useState(false);
   const [alertOpen, setAlertOpen] = useState(false);
@@ -54,6 +56,8 @@ export default function Login() {
       .then(({ data }) => {
         setUser(data.user);
         setToken(data.token);
+        setCurrentTeam(data.teams[0].id);
+        setTeams(data.teams);
         localStorage.setItem("SESSION_EMAIL", data.user.email);
       })
       .then(() => setLooding(false))

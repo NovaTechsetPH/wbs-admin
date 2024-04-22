@@ -50,7 +50,7 @@ const isWeekend = (date) => {
 
 const TeamWorkHours = ({ productive, handleTotalChange }) => {
   const { date } = useDashboardContext();
-  const { currentTeam } = useStateContext();
+  const { currentTeam, setEmployees } = useStateContext();
   const [workLogs, setWorkLogs] = useState([]);
   const [loading, setLoading] = useState(false);
   const [total, setTotal] = useState({
@@ -75,9 +75,11 @@ const TeamWorkHours = ({ productive, handleTotalChange }) => {
       .then(({ data }) => {
         setLoading(false);
         let empIds = [];
+        let emps = [];
         let items = data.data.map((item) => {
           if (!empIds.includes(item.employee.id)) {
             empIds.push(item.employee.id);
+            emps.push(item.employee);
           }
           return {
             id: uuidv4(),
@@ -85,6 +87,8 @@ const TeamWorkHours = ({ productive, handleTotalChange }) => {
             ...item,
           };
         });
+
+        setEmployees(emps);
         return {
           empIds: empIds,
           items,
