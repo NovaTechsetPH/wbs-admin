@@ -3,27 +3,15 @@ import { Badge } from "@ui/badge";
 import EditCategories from "./edit-category";
 
 //import { Dialog } from "@radix-ui/react-dialog";
-
-
-
-import { cn } from "@/lib/utils";
-import { DataTableColumnHeader } from "./data-table-column-header";
-import { Badge } from "@ui/badge";
 import {
   ArrowDownIcon,
   ArrowRightIcon,
   ArrowUpIcon,
   CheckCircledIcon,
-  CheckIcon,
-  Cross1Icon,
   CrossCircledIcon,
   QuestionMarkCircledIcon,
 } from "@radix-ui/react-icons";
-import { Button } from "@/components/ui/button";
 
-import EditCategoryDialog from "./edit"; // Change import statement
-//import SendCategoryDialog from "./send-request"; // Change import statement
-import { BadgeHelp } from "lucide-react";
 
 const labels = [
   {
