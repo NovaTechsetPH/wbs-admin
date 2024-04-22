@@ -72,7 +72,7 @@ const EditCategories = ({ id, name, description, is_productive, header_name, ico
         };
 
         // Send PUT request
-        const response = await axiosClient.put(`http://10.0.0.198:8181/api/categories/${id}`, formData);
+        const response = await axiosClient.put(`categories/${id}`, formData);
         console.log('Category edited successfully:', response.data);
 
         // Reset form after successful submission
@@ -123,8 +123,8 @@ const EditCategories = ({ id, name, description, is_productive, header_name, ico
   
 
   const fields = [
-    { key: "name", value: name, label: "Name" },
-    { key: "description", value: description, label: "Description"},
+    { key: "name", value: name, type: "disabled", label: "Name"},
+    { key: "description", value: description, type: "disabled", label: "Description" },
     { key: "is_productive", value: is_productive, label: "Transaction", type: "select", options: [
       {value: '1', label: "Productive"}, 
       {value: '0', label: "Unproductive"}, 
