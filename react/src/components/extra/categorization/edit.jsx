@@ -11,8 +11,9 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Pencil  } from 'lucide-react';
-import axios from 'axios';
+import { Pencil } from "lucide-react";
+// import axios from 'axios';
+import axiosClient from "../../../axios-client";
 
 const EditCategoryDialog = ({ row }) => {
   const [editedFields, setEditedFields] = useState({
@@ -57,22 +58,18 @@ const EditCategoryDialog = ({ row }) => {
   };
 
   const handleSaveChanges = () => {
-    axios.put(`http://10.0.0.198/api/categories/${editedFields.id}`, {
-      is_productive: editedFields.is_productive,
-      reason: editedFields.reason, // Include reason in the request body
-    }, {
-      headers: {
-        'Accept': 'application/json',
-        'Authorization': 'Bearer Bearer 432|X5MA5PudbH9cFMhv3J5bByIp2IZUP1qifzkXnQ5X6d1f3400'
-      }
-    })
-    .then(response => {
-      console.log("Changes saved successfully:", response.data);
-      setIsOpen(false); // Close the modal after saving
-    })
-    .catch(error => {
-      console.error("Error saving changes:", error);
-    });
+    axiosClient
+      .put(`/categories/${editedFields.id}`, {
+        is_productive: editedFields.is_productive,
+        reason: editedFields.reason, // Include reason in the request body
+      })
+      .then((response) => {
+        console.log("Changes saved successfully:", response.data);
+        setIsOpen(false); // Close the modal after saving
+      })
+      .catch((error) => {
+        console.error("Error saving changes:", error);
+      });
   };
 
   const fields = [
@@ -87,7 +84,7 @@ const EditCategoryDialog = ({ row }) => {
         { value: "2", label: "Not Productive" },
       ],
     },
-    { key: "reason", label: "Reason"},
+    { key: "reason", label: "Reason" },
     //{ key: "header_name", label: "Header Name" },
     //{ key: "icon", label: "Icon" },
     //{ key: "abbreviation", label: "Abbreviation" },
@@ -99,7 +96,10 @@ const EditCategoryDialog = ({ row }) => {
   return (
     <Dialog isOpen={isOpen} onDismiss={() => setIsOpen(false)}>
       <DialogTrigger asChild>
-        <Button onClick={() => setIsOpen(true)}><Pencil className="mr-2" strokeWidth={1.5} />Edit</Button>
+        <Button onClick={() => setIsOpen(true)}>
+          <Pencil className="mr-2" strokeWidth={1.5} />
+          Edit
+        </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
@@ -127,24 +127,22 @@ const EditCategoryDialog = ({ row }) => {
                     </option>
                   ))}
                 </select>
+              ) : key === "reason" ? ( // Check if it's the reason field
+                <Input
+                  id={key}
+                  value={editedFields[key]}
+                  onChange={(e) => handleFieldChange(key, e.target.value)}
+                  className="col-span-3"
+                  maxLength={250} // Limit reason input to 250 characters
+                />
               ) : (
-                key === "reason" ? ( // Check if it's the reason field
-                  <Input
-                    id={key}
-                    value={editedFields[key]}
-                    onChange={(e) => handleFieldChange(key, e.target.value)}
-                    className="col-span-3"
-                    maxLength={250} // Limit reason input to 250 characters
-                  />
-                ) : (
-                  <Input
-                    id={key}
-                    value={editedFields[key]}
-                    onChange={(e) => handleFieldChange(key, e.target.value)}
-                    className="col-span-3"
-                    disabled={key !== "is_productive"} 
-                  />
-                )
+                <Input
+                  id={key}
+                  value={editedFields[key]}
+                  onChange={(e) => handleFieldChange(key, e.target.value)}
+                  className="col-span-3"
+                  disabled={key !== "is_productive"}
+                />
               )}
             </div>
           ))}

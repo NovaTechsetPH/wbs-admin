@@ -15,7 +15,7 @@ import { Button } from "@/components/ui/button";
 
 import EditCategoryDialog from "./edit"; // Change import statement
 //import SendCategoryDialog from "./send-request"; // Change import statement
-import { BadgeHelp } from 'lucide-react';
+import { BadgeHelp } from "lucide-react";
 
 const labels = [
   {
@@ -176,11 +176,11 @@ export const columns = [
     ),
     cell: ({ row }) => {
       const label = labels.find((label) => label.value === row.original.label);
-  
+
       return (
         <div className="flex space-x-2">
           {label && <Badge variant="outline">{label.label}</Badge>}
-          <img 
+          <img
             src={`/icons/${row.original.icon}`} // Corrected line
             className="aspect-square h-6 w-6" // Corrected class name
             alt="Icon" // Add alt attribute for accessibility
@@ -189,8 +189,7 @@ export const columns = [
       );
     },
   },
-  
-  
+
   {
     accessorKey: "abbreviation",
     header: ({ column }) => (
@@ -216,9 +215,7 @@ export const columns = [
     ),
     cell: ({ row }) => (
       <div className="flex space-x-2">
-        <span className="max-w-[500px] truncate">
-          {row.getValue("reason")}
-        </span>
+        <span className="max-w-[500px] truncate">{row.getValue("reason")}</span>
       </div>
     ),
   },
@@ -297,10 +294,12 @@ export const columns = [
     ),
     cell: ({ row }) => {
       const isProductive = row.getValue("is_productive");
-      const disableButtons = isProductive === "1" || isProductive === "2";
-  
+      const disableButtons =
+        isProductive === "1" || isProductive === "2" ? true : false;
+
       return (
         <div className="flex space-x-3">
+          <EditCategoryDialog row={row} />
           {!disableButtons && <EditCategoryDialog row={row} />}
           {/*{!disableButtons && <SendCategoryDialog row={row} />}*/}
         </div>
