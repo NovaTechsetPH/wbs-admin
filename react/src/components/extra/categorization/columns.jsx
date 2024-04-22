@@ -1,4 +1,4 @@
-import { cn } from "@/lib/utils";
+// import { cn } from "@/lib/utils";
 import { DataTableColumnHeader } from "./data-table-column-header";
 import { Badge } from "@ui/badge";
 import {
@@ -6,16 +6,16 @@ import {
   ArrowRightIcon,
   ArrowUpIcon,
   CheckCircledIcon,
-  CheckIcon,
-  Cross1Icon,
+  // CheckIcon,
+  // Cross1Icon,
   CrossCircledIcon,
   QuestionMarkCircledIcon,
 } from "@radix-ui/react-icons";
-import { Button } from "@/components/ui/button";
+// import { Button } from "@/components/ui/button";
 
 import EditCategoryDialog from "./edit"; // Change import statement
 //import SendCategoryDialog from "./send-request"; // Change import statement
-import { BadgeHelp } from "lucide-react";
+// import { BadgeHelp } from "lucide-react";
 
 const labels = [
   {
@@ -53,40 +53,52 @@ export const statuses = [
 export const priorities = [
   {
     label: "Low",
-    value: "low",
+    value: "3",
     icon: ArrowDownIcon,
   },
   {
     label: "Medium",
-    value: "medium",
+    value: "2",
     icon: ArrowRightIcon,
   },
   {
     label: "High",
-    value: "high",
+    value: "1",
     icon: ArrowUpIcon,
   },
 ];
 
-const getIconColor = (value) => {
+// const getIconColor = (value) => {
+//   switch (value) {
+//     case "Approved":
+//       return "text-green-500";
+//     case "Pending":
+//       return "text-yellow-500";
+//     case "Rejected":
+//       return "text-red-500";
+//     default:
+//       return "text-gray-500";
+//   }
+// };
+
+// const handleApprove = (row) => {
+//   console.log(row, "approve");
+// };
+
+// const handleReject = (row) => {
+//   console.log(row, "reject");
+// };
+
+const getProductivityType = (value) => {
   switch (value) {
-    case "Approved":
-      return "text-green-500";
-    case "Pending":
-      return "text-yellow-500";
-    case "Rejected":
-      return "text-red-500";
+    case "1":
+      return "Productive";
+    case "0":
+      return "Unproductive";
+    case "2":
     default:
-      return "text-gray-500";
+      return "Neutral";
   }
-};
-
-const handleApprove = (row) => {
-  console.log(row, "approve");
-};
-
-const handleReject = (row) => {
-  console.log(row, "reject");
 };
 
 export const columns = [
@@ -139,14 +151,9 @@ export const columns = [
       <DataTableColumnHeader column={column} title="Productive" />
     ),
     cell: ({ row }) => {
-      const label = labels.find((label) => label.value === row.original.label);
-
       return (
-        <div className="flex space-x-2">
-          {label && <Badge variant="outline">{label.label}</Badge>}
-          <span className="max-w-[500px] truncate">
-            {row.getValue("is_productive")}
-          </span>
+        <div className="flex items-center w-[100px]">
+          <span>{getProductivityType(row.getValue("is_productive"))}</span>
         </div>
       );
     },
@@ -294,13 +301,13 @@ export const columns = [
     ),
     cell: ({ row }) => {
       const isProductive = row.getValue("is_productive");
-      const disableButtons =
-        isProductive === "1" || isProductive === "2" ? true : false;
+      const enableButtons = isProductive === "2";
 
       return (
         <div className="flex space-x-3">
-          <EditCategoryDialog row={row} />
-          {!disableButtons && <EditCategoryDialog row={row} />}
+          {enableButtons && <EditCategoryDialog row={row} />}
+          {/* <EditCategoryDialog row={row} /> */}
+          {/* {!disableButtons && <EditCategoryDialog row={row} />} */}
           {/*{!disableButtons && <SendCategoryDialog row={row} />}*/}
         </div>
       );
