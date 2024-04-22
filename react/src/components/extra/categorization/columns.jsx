@@ -208,9 +208,6 @@ export const columns = [
         <div className="flex space-x-2">
           {label && <Badge variant="outline">{label.label}</Badge>}
           <span className="max-w-[500px] truncate">{row.getValue("abbreviation")}</span>
-          <span className="max-w-[500px] truncate">
-            {row.getValue("abbreviation")}
-          </span>
         </div>
       );
     },

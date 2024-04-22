@@ -123,8 +123,8 @@ const EditCategories = ({ id, name, description, is_productive, header_name, ico
   
 
   const fields = [
-    { key: "name", value: name, type: "disabled", label: "Name"},
-    { key: "description", value: description, type: "disabled", label: "Description" },
+    { key: "name", value: name, label: "Name"},
+    { key: "description", value: description, label: "Description" },
     { key: "is_productive", value: is_productive, label: "Transaction", type: "select", options: [
       {value: '1', label: "Productive"}, 
       {value: '0', label: "Unproductive"}, 
@@ -173,13 +173,14 @@ const EditCategories = ({ id, name, description, is_productive, header_name, ico
                         <option key={option.value} value={option.value}>{option.label}</option>
                       ))}
                     </select>
-                  ) : (
+                  ) :  (
                     <Input
                       id={field.key}
                       name={field.key}
                       value={editedData[field.key]}
                       onChange={(e) => handleChange(field.key, e.target.value)}
                       className="col-span-3"
+                      disabled={field.key === "name" || field.key === "description"}
                     />
                   )}
                 </div>
