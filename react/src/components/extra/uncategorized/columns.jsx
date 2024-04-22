@@ -94,30 +94,14 @@ export const columns = [
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="ID" />
     ),
-    cell: ({ row }) => <div className="w-[30px]">{row.getValue("id")}</div>,
+    cell: ({ row }) => <div className="w-[60px]">{row.getValue("id")}</div>,
     enableSorting: false,
     enableHiding: false,
   },
   {
-    accessorKey: "name",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Name" />
-    ),
-    cell: ({ row }) => {
-      // const label = labels.find((label) => label.value === row.original.label);
-
-      return (
-        <div className="flex space-x-2">
-          {/* {label && <Badge variant="outline">{label.label}</Badge>} */}
-          <span className="max-w-[500px] truncate">{row.getValue("name")}</span>
-        </div>
-      );
-    },
-  },
-  {
     accessorKey: "description",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Description" />
+      <DataTableColumnHeader column={column} title="Task Description" />
     ),
     cell: ({ row }) => {
       // const label = labels.find((label) => label.value === row.original.label);
@@ -133,114 +117,29 @@ export const columns = [
     },
   },
   {
-    accessorKey: "is_productive",
+    accessorKey: "employee",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Type" />
+      <DataTableColumnHeader column={column} title="Employee" />
     ),
     cell: ({ row }) => {
+      // const label = labels.find((label) => label.value === row.original.label);
+      const employee = row.getValue("employee");
       return (
-        <div className="flex items-center w-[100px]">
-          <span>{getProductivityType(row.getValue("is_productive"))}</span>
+        <div className="flex space-x-2">
+          <span className="max-w-[500px] truncate">{`${employee.first_name} ${employee.last_name}`}</span>
         </div>
       );
     },
-    filterFn: (row, id, value) => {
-      return value.includes(row.getValue(id));
-    },
   },
   {
-    accessorKey: "header_name",
+    accessorKey: "date",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Header Name" />
+      <DataTableColumnHeader column={column} title="Date" />
     ),
     cell: ({ row }) => {
       return (
         <div className="flex items-center">
-          <span>{row.getValue("header_name")}</span>
-        </div>
-      );
-    },
-    filterFn: (row, id, value) => {
-      return value.includes(row.getValue(id));
-    },
-  },
-  {
-    accessorKey: "icon",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Icon" />
-    ),
-    cell: ({ row }) => {
-      return (
-        <div className="flex items-center w-[100px]">
-          <img
-            className="aspect-square h-6 w-6 items-center"
-            alt=""
-            src={`/icons/${row.getValue("icon")}`}
-          />
-        </div>
-      );
-    },
-    filterFn: (row, id, value) => {
-      return value.includes(row.getValue(id));
-    },
-  },
-  {
-    accessorKey: "abbreviation",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Abbreviation" />
-    ),
-    cell: ({ row }) => {
-      return (
-        <div className="flex items-center">
-          <span>{row.getValue("abbreviation")}</span>
-        </div>
-      );
-    },
-    filterFn: (row, id, value) => {
-      return value.includes(row.getValue(id));
-    },
-  },
-  {
-    accessorKey: "priority_id",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Priority ID" />
-    ),
-    cell: ({ row }) => {
-      return (
-        <div className="flex items-center">
-          <span>{row.getValue("priority_id")}</span>
-        </div>
-      );
-    },
-    filterFn: (row, id, value) => {
-      return value.includes(row.getValue(id));
-    },
-  },
-  {
-    accessorKey: "updated_at",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Updated" />
-    ),
-    cell: ({ row }) => {
-      return (
-        <div className="flex items-center">
-          <span>{row.getValue("updated_at")}</span>
-        </div>
-      );
-    },
-    filterFn: (row, id, value) => {
-      return value.includes(row.getValue(id));
-    },
-  },
-  {
-    accessorKey: "created_at",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Created" />
-    ),
-    cell: ({ row }) => {
-      return (
-        <div className="flex items-center">
-          <span>{row.getValue("created_at")}</span>
+          <span>{row.getValue("date")}</span>
         </div>
       );
     },
@@ -256,18 +155,7 @@ export const columns = [
     cell: ({ row }) => {
       return (
         <div className="flex space-x-2 my-2">
-          <DialogDemo
-            id={row.getValue("id")}
-            name={row.getValue("name")}
-            description={row.getValue("description")}
-            is_productive={row.getValue("is_productive")}
-            header_name={row.getValue("header_name")}
-            icon={row.getValue("icon")}
-            abbreviation={row.getValue("abbreviation")}
-            priority_id={row.getValue("priority_id")}
-            updated_at={row.getValue("updated_at")}
-            created_at={row.getValue("created_at")}
-          />
+          <DialogDemo id={row.getValue("id")} />
           <AlertDialogDemo id={row.getValue("id")} />
         </div>
       );

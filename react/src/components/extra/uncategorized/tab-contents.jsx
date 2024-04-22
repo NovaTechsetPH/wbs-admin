@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { DataTable } from "./data-table";
 import { columns } from "./columns";
 import axiosClient from "@/axios-client";
@@ -11,12 +11,19 @@ import moment from "moment";
 const TabContents = () => {
   const { date, currentTeam } = useDashboardContext();
   const [data, setData] = useState({});
+  const [total, setTotal] = useState(0);
+  const [perPage, setPerPage] = useState(10);
+  const [currentPage, setCurrentPage] = useState(1);
 
-  useMemo(() => {
+  useEffect(() => {
+    console.log(date, "date");
+  }, [date]);
+
+  useEffect(() => {
     axiosClient
       .get("/apps/neutral", {
         params: {
-          date: moment(date).format("YYYY-MM-DD"),
+          date: moment("2024-03-06").format("YYYY-MM-DD"),
           page: 1,
           per_page: 10,
           team_id: currentTeam,
@@ -25,13 +32,22 @@ const TabContents = () => {
       .then(({ data }) => {
         // setData(data)
         console.log(data);
+        setTotal(data.total);
+        setCurrentPage(data.current_page);
+        setPerPage(data.per_page);
         setData(data.data);
       });
   }, [currentTeam, date]);
 
   return (
     <DashboardContextProvider>
-      <DataTable data={data} columns={columns} />
+      <DataTable
+        data={data}
+        total={total}
+        currentPage={currentPage}
+        perPage={perPage}
+        columns={columns}
+      />
     </DashboardContextProvider>
   );
 };

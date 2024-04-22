@@ -6,11 +6,18 @@ import axiosClient from "./axios-client";
 import moment from "moment";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "./components/ui/tabs";
 import TabContents from "./components/extra/uncategorized/tab-contents";
+// import { DateRangePicker } from "./components/extra/date-range-picker";
+import { DatePicker } from "./components/extra/date-picker";
 
 // import { Button } from "@/components/ui/button";
 
 const Categorization = () => {
   const [data, setData] = useState([]);
+
+  // const [dateRange, setDateRange] = useState({
+  //   from: moment().subtract(7, "days").toDate(),
+  //   to: moment().toDate(),
+  // });
 
   useEffect(() => {
     axiosClient
@@ -27,13 +34,6 @@ const Categorization = () => {
             icon: item.icon,
             abbreviation: item.abbreviation,
             priority_id: item.priority_id,
-            // header_name: item.header_name,
-            // updated_at: item.updated_at,
-            // created_at: item.created_at,
-            /*
-            status: item.status,
-            requestedOn: moment(item.created_at).format("YYYY-MM-DD"),
-            */
             updated_at:
               item.updated_at ??
               moment(item.updated_at).format("YYYY-MM-DD HH:mm:ss"),
@@ -58,13 +58,18 @@ const Categorization = () => {
           </div>
         </div>
         <Tabs defaultValue="uncategorized" className="h-full space-y-6">
-          <div className="space-between flex items-center">
-            <TabsList>
-              <TabsTrigger value="uncategorized" className="relative">
-                Uncategorized / Neutral
-              </TabsTrigger>
-              <TabsTrigger value="categories">Categories</TabsTrigger>
-            </TabsList>
+          <div className="space-between flex items-center justify-between">
+            <div className="space-x-2">
+              <TabsList>
+                <TabsTrigger value="uncategorized" className="relative">
+                  Uncategorized / Neutral
+                </TabsTrigger>
+                <TabsTrigger value="categories">Categories</TabsTrigger>
+              </TabsList>
+            </div>
+            <div className="space-x-2">
+              <DatePicker />
+            </div>
           </div>
           <TabsContent value="uncategorized">
             <TabContents />
