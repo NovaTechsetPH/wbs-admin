@@ -50,10 +50,6 @@ export function DataTable({ columns, data }) {
     getFacetedUniqueValues: getFacetedUniqueValues(),
   });
 
-  React.useEffect(() => {
-    console.log(table.getRowModel().rows);
-  }, []);
-
   return (
     <div className="space-y-4">
       <DataTableToolbar table={table} />

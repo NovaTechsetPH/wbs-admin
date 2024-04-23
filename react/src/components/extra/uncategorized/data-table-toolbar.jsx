@@ -6,8 +6,9 @@ import { DataTableViewOptions } from "./data-table-view-options";
 
 // import { DataTableFacetedFilter } from "./data-table-faceted-filter";
 
-import { DialogAdd } from "./add";
+// import { DialogAdd } from "./add";
 import { useState } from "react";
+import { NewCategory } from "./new-category";
 
 export function DataTableToolbar({ table }) {
   const isFiltered = table.getState().columnFilters.length > 0;
@@ -56,7 +57,7 @@ export function DataTableToolbar({ table }) {
           </Button>
         )}
       </div>
-      {<DialogAdd className="mr-3" />}
+      {<NewCategory className="mr-3" />}
       <DataTableViewOptions table={table} />
     </div>
   );

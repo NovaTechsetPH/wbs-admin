@@ -24,8 +24,8 @@ const TabContents = () => {
       .get("/apps/neutral", {
         params: {
           date: moment("2024-03-06").format("YYYY-MM-DD"),
-          page: 1,
-          per_page: 10,
+          page: 50,
+          per_page: 20,
           team_id: currentTeam,
         },
       })

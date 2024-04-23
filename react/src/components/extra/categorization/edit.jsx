@@ -15,7 +15,7 @@ import { Pencil } from "lucide-react";
 // import axios from 'axios';
 import axiosClient from "../../../axios-client";
 
-const EditCategoryDialog = ({ row }) => {
+const EditCategoryDialog = ({ row, disabled }) => {
   const [editedFields, setEditedFields] = useState({
     id: "",
     name: "",
@@ -32,8 +32,8 @@ const EditCategoryDialog = ({ row }) => {
 
   const [isOpen, setIsOpen] = useState(false);
 
-  // Function to set form data based on provided row
-  const setFormData = () => {
+  // Call setFormData when the component mounts
+  useEffect(() => {
     setEditedFields({
       id: row.getValue("id"),
       name: row.getValue("name"),
@@ -46,12 +46,7 @@ const EditCategoryDialog = ({ row }) => {
       updated_at: row.getValue("updated_at"),
       reason: row.getValue("reason") || "", // Set reason field
     });
-  };
-
-  // Call setFormData when the component mounts
-  useEffect(() => {
-    setFormData();
-  }, []);
+  }, [row]);
 
   const handleFieldChange = (key, value) => {
     setEditedFields({ ...editedFields, [key]: value });
@@ -96,9 +91,13 @@ const EditCategoryDialog = ({ row }) => {
   return (
     <Dialog isOpen={isOpen} onDismiss={() => setIsOpen(false)}>
       <DialogTrigger asChild>
-        <Button onClick={() => setIsOpen(true)}>
-          <Pencil className="mr-2" strokeWidth={1.5} />
-          Edit
+        <Button
+          disabled={disabled}
+          size="sm"
+          className="h-7"
+          onClick={() => setIsOpen(true)}
+        >
+          <Pencil className="h-4 w-4" strokeWidth={1.5} />
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">

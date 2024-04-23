@@ -5,7 +5,7 @@ import { Input } from "@ui/input";
 import { DataTableViewOptions } from "./data-table-view-options";
 
 import { DataTableFacetedFilter } from "./data-table-faceted-filter";
-import AddCategories from "./add";
+// import AddCategories from "./add";
 
 export function DataTableToolbar({ table }) {
   const isFiltered = table.getState().columnFilters.length > 0;
@@ -51,7 +51,7 @@ export function DataTableToolbar({ table }) {
           </Button>
         )}
       </div>
-      {<AddCategories className="mr-3" />}
+      {/* {<AddCategories className="mr-3" />} */}
       <DataTableViewOptions table={table} />
     </div>
   );

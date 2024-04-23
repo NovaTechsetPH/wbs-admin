@@ -305,7 +305,7 @@ export const columns = [
 
       return (
         <div className="flex space-x-3">
-          {enableButtons && <EditCategoryDialog row={row} />}
+          <EditCategoryDialog disabled={enableButtons} row={row} />
           {/* <EditCategoryDialog row={row} /> */}
           {/* {!disableButtons && <EditCategoryDialog row={row} />} */}
           {/*{!disableButtons && <SendCategoryDialog row={row} />}*/}
