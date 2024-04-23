@@ -24,9 +24,7 @@ import { DataTableToolbar } from "./data-table-toolbar";
 
 export function DataTable({ columns, data }) {
   const [rowSelection, setRowSelection] = React.useState({});
-  const [columnVisibility, setColumnVisibility] = React.useState({
-    created_at: false,
-  });
+  const [columnVisibility, setColumnVisibility] = React.useState({});
   const [columnFilters, setColumnFilters] = React.useState([]);
   const [sorting, setSorting] = React.useState([]);
 
@@ -80,7 +78,9 @@ export function DataTable({ columns, data }) {
               table.getRowModel().rows.map((row) => (
                 <TableRow
                   key={row.id}
-                  data-state={row.original.status === "Pending" && "selected"}
+                  data-state={
+                    row.original.is_productive === "Neutral" && "selected"
+                  }
                   // className={row.original.status == "Pending" && "font-bold"}
                 >
                   {row.getVisibleCells().map((cell) => (
