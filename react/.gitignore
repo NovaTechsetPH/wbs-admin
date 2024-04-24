@@ -12,6 +12,12 @@ dist-ssr
 public/images/*
 *.local
 
+# exclude everything
+dist/*
+
+# exception to the rule
+!dist/.gitignore
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
