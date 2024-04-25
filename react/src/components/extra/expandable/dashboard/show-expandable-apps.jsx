@@ -28,16 +28,23 @@ import { useQuery } from "@tanstack/react-query";
 import axiosClient from "@/axios-client";
 import { useDashboardContext } from "@/context/DashboardContextProvider";
 import { useStateContext } from "@/context/ContextProvider";
+import { secondsToHuman } from "@/lib/timehash";
 
-export const ShowExpandableApps = () => {
+export const ShowExpandableApps = ({ prodType }) => {
   const { date } = useDashboardContext();
   const { currentTeam } = useStateContext();
   // const rerender = React.useReducer(() => ({}), {})[1];
 
+  const isProductive = [
+    "Unproductive apps",
+    "Productive apps",
+    "Neutral apps",
+  ].indexOf(prodType);
+
   const columns = React.useMemo(
     () => [
       {
-        accessorKey: "userid",
+        accessorKey: "empId",
         header: ({ table }) => (
           <>
             {/* <IndeterminateCheckbox
@@ -58,7 +65,7 @@ export const ShowExpandableApps = () => {
                 <PlusCircledIcon />
               )}
             </button>{" "} */}
-            First Name
+            ID#
           </>
         ),
         cell: ({ row, getValue }) => (
@@ -79,7 +86,7 @@ export const ShowExpandableApps = () => {
                   onChange: row.getToggleSelectedHandler(),
                 }}
               />{" "} */}
-              {row.getCanExpand() ? (
+              {row.getCanExpand() && (
                 <Button
                   variant="ghost"
                   className="leading-6 m-0 p-1"
@@ -120,8 +127,6 @@ export const ShowExpandableApps = () => {
                     </svg>
                   )}
                 </Button>
-              ) : (
-                "🔵"
               )}{" "}
               {getValue()}
             </div>
@@ -130,30 +135,27 @@ export const ShowExpandableApps = () => {
         footer: (props) => props.column.id,
       },
       {
-        accessorFn: (row) => row.description,
-        id: "description",
+        accessorFn: (row) => row.name,
+        id: "name",
         cell: (info) => info.getValue(),
-        header: () => <span>Last Name</span>,
+        header: () => <span>Employee</span>,
         footer: (props) => props.column.id,
       },
       {
-        accessorKey: "age",
-        header: () => "Age",
+        accessorKey: "count",
+        header: () => <span>Count</span>,
         footer: (props) => props.column.id,
       },
       {
-        accessorKey: "visits",
-        header: () => <span>Visits</span>,
+        accessorKey: "date",
+        header: () => <span>Date</span>,
         footer: (props) => props.column.id,
       },
       {
-        accessorKey: "status",
-        header: "Status",
-        footer: (props) => props.column.id,
-      },
-      {
-        accessorKey: "progress",
-        header: "Profile Progress",
+        accessorKey: "totalDuration",
+        cell: ({ row, getValue }) =>
+          row.getCanExpand() ? secondsToHuman(getValue()) : getValue(),
+        header: () => <span>Total Duration (s)</span>,
         footer: (props) => props.column.id,
       },
     ],
@@ -166,22 +168,55 @@ export const ShowExpandableApps = () => {
   const [expanded, setExpanded] = React.useState({});
 
   const formatData = (data) => {
-    return [
-      {
-        userid: "Renhart Cajes",
-        status: "Slacking",
-        subRows: data,
-      },
-    ];
+    let formattedData = [];
+    const employees = [];
+
+    data.forEach((item) => {
+      if (!employees.includes(item.employee.id)) {
+        formattedData.push({
+          userid: item.employee.id,
+          empId: item.employee.employee_id,
+          name: item.employee.name,
+          count: 1,
+          totalDuration: item.duration,
+          date: item.date,
+          subRows: [
+            {
+              empId: item.userid,
+              name: item.description,
+              count: item.time,
+              date: item.end_time,
+              totalDuration: item.duration,
+            },
+          ],
+        });
+        employees.push(item.employee.id);
+      } else {
+        let index = formattedData.findIndex(
+          (x) => x.userid === item.employee.id
+        );
+        formattedData[index].count += 1;
+        formattedData[index].totalDuration += item.duration;
+        formattedData[index].subRows.push({
+          empId: item.userid,
+          name: item.description,
+          count: item.time,
+          date: item.end_time,
+          totalDuration: item.duration,
+        });
+      }
+    });
+
+    return formattedData;
   };
 
   const { isLoading, error, data } = useQuery({
     queryKey: ["repoData"],
     queryFn: async () => {
       const res = await axiosClient.post("dashboard/apps", {
-        // date: "2024-04-21",
         date: date,
         teamId: currentTeam,
+        isProductive: isProductive,
       });
       return formatData(res.data.data);
     },
@@ -212,7 +247,6 @@ export const ShowExpandableApps = () => {
     <>
       <div className="space-y-4">
         <div className="rounder-md border" />
-        {/* <ScrollArea className="max-h-[800px]"> */}
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
@@ -253,7 +287,6 @@ export const ShowExpandableApps = () => {
             })}
           </TableBody>
         </Table>
-        {/* </ScrollArea> */}
       </div>
       <PaginationComponent table={table} />
     </>

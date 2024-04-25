@@ -144,7 +144,7 @@ export function DialogBox({ btnTrigger, title }) {
         </DialogHeader>
         {/* Contents here */}
         <ScrollArea className="max-h-[75vh]">
-          <ShowExpandableApps />
+          <ShowExpandableApps prodType={title} />
         </ScrollArea>
         <DialogFooter>
           {/* <Button type="button" variant="outline">

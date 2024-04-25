@@ -466,11 +466,16 @@ class EmployeeController extends Controller
         $emps_under = Employee::select('id')
             ->where('team_id', $request->teamId)->get();
 
+        $categories = AppCategories::select('id')
+            ->where('is_productive', $request->isProductive)->get();
+
         $data = [];
         RunningApps::with('employee', 'category')
             ->where('date', $date->toDateString())
             ->whereColumn('time', '<', 'end_time')
             ->whereIn('userid', $emps_under)
+            ->whereIn('category_id', $categories)
+            // ->limit(100) // must disabled
             ->chunk(1000, function ($runningapps) use (&$data) {
                 foreach ($runningapps as $running) {
                     $employee = $running->employee;
@@ -482,8 +487,11 @@ class EmployeeController extends Controller
                         'time' => $running->time,
                         'end_time' => $running->end_time,
                         'status' => $running->status,
+                        'duration' => $running->duration,
                         'employee' => [
                             'id' => $employee->id,
+                            'name' => $employee->getFullNameAttribute(),
+                            'employee_id' => $employee->employee_id,
                         ],
                         'category' => [
                             'id' => $category->id,
