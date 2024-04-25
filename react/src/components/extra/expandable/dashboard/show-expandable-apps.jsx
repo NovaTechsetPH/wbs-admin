@@ -213,7 +213,7 @@ export const ShowExpandableApps = ({ prodType }) => {
   const { isLoading, error, data } = useQuery({
     queryKey: ["repoData"],
     queryFn: async () => {
-      const res = await axiosClient.post("dashboard/apps", {
+      const res = await axiosClient.post("dashboard/categoryapps", {
         date: date,
         teamId: currentTeam,
         isProductive: isProductive,

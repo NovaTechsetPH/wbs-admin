@@ -52,6 +52,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // Dashboard
     Route::post('/dashboard/apps', [EmployeeController::class, 'getAllDailyOpenedApps']);
+    Route::post('/dashboard/categoryapps', [EmployeeController::class, 'getAllDailyOpenedByCategory']);
     Route::get('/dashboard/workhrs/{date?}/{teamid?}', [EmployeeController::class, 'getWorkHrs']);
 
     // Productivity Dashboard
