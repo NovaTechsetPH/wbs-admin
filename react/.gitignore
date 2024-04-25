@@ -13,10 +13,10 @@ public/images/*
 *.local
 
 # exclude everything
-dist/*
+dist
 
 # exception to the rule
-!dist/.gitignore
+# !dist/.gitignore
 
 # Editor directories and files
 .vscode/*

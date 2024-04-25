@@ -17,3 +17,9 @@ yarn-error.log
 /.fleet
 /.idea
 /.vscode
+
+# exclude everything
+react/*
+
+# exception to the rule
+!react/.gitignore
