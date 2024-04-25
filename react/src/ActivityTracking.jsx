@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import axiosClient from "./axios-client";
 import { useEffect, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
@@ -17,6 +18,7 @@ import { CandleData, handleAllocateTime, secondsToHuman } from "./lib/timehash";
 import { useDashboardContext } from "@/context/DashboardContextProvider";
 import { useParams } from "react-router-dom";
 import { useStateContext } from "./context/ContextProvider";
+import ProductivityChart from "./components/ProductivityChart";
 
 const CATEGORY = ["Unproductive", "Productive", "Neutral"];
 
@@ -175,11 +177,12 @@ const ActivityTracking = () => {
           <div className="flex space-x-4 pb-4 col">
             <div className="grid grid-cols-2 gap-4">
               <div className="col-span-1">
-                <ActivityChart
+                {/* <ActivityChart
                   isLoading={loading}
                   productivity={productivity}
                   rawApps={rawApps}
-                />
+                /> */}
+                <ProductivityChart />
               </div>
               <div className="col-span-1">
                 <div className="grid grid-cols-2 gap-4">

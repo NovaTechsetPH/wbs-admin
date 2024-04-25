@@ -107,3 +107,15 @@
 .bg-warning {
   background-color: hsl(var(--warning));
 }
+
+.blink {
+  animation: blinker 1s linear infinite;
+  /* filter: invert(48%) sepia(79%) saturate(2476%) hue-rotate(86deg) brightness(118%) contrast(119%); */
+  filter: invert(20%) sepia(95%) saturate(3245%) hue-rotate(336deg) brightness(90%) contrast(96%);
+}
+
+@keyframes blinker {
+  50% {
+    opacity: 0;
+  }
+}
