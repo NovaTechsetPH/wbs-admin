@@ -466,8 +466,12 @@ class EmployeeController extends Controller
         $emps_under = Employee::select('id')
             ->where('team_id', $request->teamId)->get();
 
-        $categories = AppCategories::select('id')
-            ->where('is_productive', $request->isProductive)->get();
+        if ($request->has('isProductive')) {
+            $categories = AppCategories::select('id')
+                ->where('is_productive', $request->isProductive)->get();
+        } else {
+            $categories = AppCategories::select('id')->get();
+        }
 
         $data = [];
         RunningApps::with('employee', 'category')
