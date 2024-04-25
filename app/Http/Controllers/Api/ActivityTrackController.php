@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\AppCategories;
 use App\Models\RunningApps;
 use App\Models\Employee;
 use App\Models\TrackRecords;
@@ -179,6 +180,45 @@ class ActivityTrackController extends Controller
 
         return response()->json([
             'data' => $data,
+            'message' => 'Success',
+        ], 200);
+    }
+
+    public function getNeutralProductiveDuration(Request $request)
+    {
+        try {
+            $request->validate([
+                'date' => 'required|date',
+                'userid' => 'required|integer|exists:accounts,id',
+            ]);
+
+            $date = Carbon::parse($request->date);
+            $employee = Employee::find($request->userid);
+            $track = TrackRecords::where('userid', $employee->id)
+                ->where('datein', $date->toDateString())
+                ->first();
+
+            if (!$track) {
+                return response()->json([
+                    'data' => 0,
+                    'message' => 'No data found',
+                ], 200);
+            }
+
+            $categories = AppCategories::select('id')->whereIn('is_productive', [1, 2])->get();
+
+            $duration = RunningApps::where('taskid', $track->id)
+                ->whereIn('category_id', $categories->pluck('id'))
+                ->sum('duration');
+        } catch (\Throwable $th) {
+            return response()->json([
+                'error' => $th->getMessage(),
+                'message' => 'Internal Server Error!',
+            ], 500);
+        }
+
+        return response()->json([
+            'data' => $duration,
             'message' => 'Success',
         ], 200);
     }

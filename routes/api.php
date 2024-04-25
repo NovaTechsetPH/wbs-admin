@@ -56,6 +56,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // Productivity Dashboard
     Route::get('/productivity/team/{team_id}/{date?}', [ActivityTrackController::class, 'getTeamProductivityData']);
+    Route::get('/productivity/duration', [ActivityTrackController::class, 'getNeutralProductiveDuration']);
 
     // Employees
     Route::get('/employees/absent', [EmployeeController::class, 'absent']);
