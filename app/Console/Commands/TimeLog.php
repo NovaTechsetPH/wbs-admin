@@ -25,44 +25,47 @@ class TimeLog extends Command
      */
     protected $description = 'Magic your logs';
 
+
+
+    private function convertTimeToSecond(string $time): int
+    {
+        $d = explode(':', $time);
+        return ($d[0] * 3600) + ($d[1] * 60) + $d[2];
+    }
+
+
     /**
      * Execute the console command.
      */
     public function handle()
     {
-        $ref_date = '2024-02-28';
+        $ref_date = '2024-04-15';
+        $members = Employee::select('id')->whereIn('team_id', [10])->get();
         $tracks = TrackRecords::whereDate('datein', '=', $ref_date)
+            ->whereIn('userid', $members->pluck('id'))
             ->get();
 
-        $new_ids = [];
+        $this->info('Logs: ' . $tracks->count());
         foreach ($tracks as $track) {
-            $item = RunningApps::where('date', $track->datein)
-                ->where('userid', $track->userid)
-                ->first();
+            // $employee = Employee::find($log->userid);
+            // $this->info($log->time);
+            $insert = RunningApps::insert([
+                'userid' => $track->userid,
+                'taskid' => $track->id,
+                'description' => 'Team meeting',
+                'category_id' => 155,
+                'date' => '2024-04-15',
+                'time' => '13:30',
+                'end_time' => '15:30',
+                'duration' => 7200,
+                'status' =>  'closed',
+                'platform' => 'desktop',
+                'type' => 'actual',
+            ]);
 
-            if (!$item) continue;
-
-            $new_ids[] = [
-                'old' => $item->taskid,
-                'new' => $track->id
-            ];
+            if (!$insert) {
+                $this->info('Error: ' . $track->id);
+            }
         }
-
-        foreach ($new_ids as $taskid) {
-            $updated = RunningApps::where('taskid', $taskid['old'])
-                ->update([
-                    'taskid' => $taskid['new']
-                ]);
-
-            $this->info('Updated: ' . $updated . 'TaskId: ' . $taskid['new']);
-        }
-
-
-
-        // foreach ($apps as $app) {
-        //     // $log = RunningApps::find($app->id);
-        //     $app->end_time =  Carbon::parse($app->end_time)->addHours(22);
-        //     $app->save();
-        // }
     }
 }

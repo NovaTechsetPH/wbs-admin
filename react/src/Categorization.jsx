@@ -1,15 +1,28 @@
 import { DashboardContextProvider } from "@/context/DashboardContextProvider";
 import { Separator } from "@ui/separator";
+<<<<<<<<< Temporary merge branch 1
+import { columns } from "@/components/extra/categories/columns";
+import { DataTable } from "@/components/extra/categories/data-table";
+=========
 import { columns } from "@/components/extra/categorization/columns";
 import { DataTable } from "@/components/extra/categorization/data-table";
 import { useEffect, useState } from "react";
 import axiosClient from "./axios-client";
 import moment from "moment";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "./components/ui/tabs";
+import TabContents from "./components/extra/uncategorized/tab-contents";
+// import { DateRangePicker } from "./components/extra/date-range-picker";
+import { DatePicker } from "./components/extra/date-picker";
 
-import { Button } from "@/components/ui/button";
+// import { Button } from "@/components/ui/button";
 
 const Categorization = () => {
   const [data, setData] = useState([]);
+
+  // const [dateRange, setDateRange] = useState({
+  //   from: moment().subtract(7, "days").toDate(),
+  //   to: moment().toDate(),
+  // });
 
   useEffect(() => {
     axiosClient
@@ -26,15 +39,7 @@ const Categorization = () => {
             icon: item.icon,
             abbreviation: item.abbreviation,
             priority_id: item.priority_id,
-            header_name: item.header_name,
-            // updated_at: item.updated_at,
-            // created_at: item.created_at,
-            reason: item.reason,
-            edited_by: item.edited_by,
-            /*
-            status: item.status,
-            requestedOn: moment(item.created_at).format("YYYY-MM-DD"),
-            */
+<<<<<<<<< Temporary merge branch 1
             updated_at:
               item.updated_at ??
               moment(item.updated_at).format("YYYY-MM-DD HH:mm:ss"),
@@ -50,20 +55,38 @@ const Categorization = () => {
 
   return (
     <DashboardContextProvider>
-      <div className="h-full px-4 py-6 lg:px-8">
-        <div className="flex items-center justify-between">
+      <div className="flex-1 space-y-4 p-8 pt-6">
+        <div className="flex items-center justify-between space-y-2">
           <div className="space-y-1">
-            <h2 className="text-2xl font-semibold tracking-tight">
+            <h2 className="text-3xl font-bold tracking-tight">
               Categorization
             </h2>
           </div>
         </div>
-        <Separator className="my-4" />
-        <div className="relative">
-          <div className="hidden h-full flex-1 flex-col space-y-8 p-8 md:flex">
-            <DataTable data={data} columns={columns} />
+        <Tabs defaultValue="uncategorized" className="h-full space-y-6">
+          <div className="space-between flex items-center justify-between">
+            <div className="space-x-2">
+              <TabsList>
+                <TabsTrigger value="uncategorized" className="relative">
+                  Uncategorized / Neutral
+                </TabsTrigger>
+                <TabsTrigger value="categories">Categories</TabsTrigger>
+              </TabsList>
+            </div>
+            <div className="space-x-2">
+              <DatePicker />
+            </div>
           </div>
-        </div>
+          <TabsContent value="uncategorized">
+            <TabContents />
+          </TabsContent>
+          <TabsContent value="categories">
+            <DataTable data={data} columns={columns} />
+          </TabsContent>
+        </Tabs>
+
+        {/* <Separator className="my-4" /> */}
+        <div className="relative"></div>
       </div>
     </DashboardContextProvider>
   );

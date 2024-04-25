@@ -6,14 +6,14 @@ import {
 } from "@radix-ui/react-icons";
 
 import { cn } from "@/lib/utils";
-import { Button } from "../../ui/button";
+import { Button } from "@ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "../../ui/dropdown-menu";
+} from "@ui/dropdown-menu";
 
 export function DataTableColumnHeader({ column, title, className }) {
   if (!column.getCanSort()) {

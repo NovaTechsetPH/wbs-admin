@@ -4,35 +4,40 @@ import { Button } from "@ui/button";
 import { Input } from "@ui/input";
 import { DataTableViewOptions } from "./data-table-view-options";
 
-import { DataTableFacetedFilter } from "./data-table-faceted-filter";
+// import { DataTableFacetedFilter } from "./data-table-faceted-filter";
 
-import { DialogAdd } from "./add";
+// import { DialogAdd } from "./add";
+import { useState } from "react";
+import { NewCategory } from "./new-category";
 
 export function DataTableToolbar({ table }) {
   const isFiltered = table.getState().columnFilters.length > 0;
+  const [employeeFilter, setEmployeeFilter] = useState("");
+  const handleFilterByEmployee = (event) => {
+    // table.getColumn("employee")?.setFilterValue(event.target.value)
+    setEmployeeFilter(event.target.value);
+  };
 
   return (
     <div className="flex items-center justify-between">
       <div className="flex flex-1 items-center space-x-2">
-        {/* <Input
-          placeholder="Filter by employee ID..."
-          value={table.getColumn("employeeId")?.getFilterValue() ?? ""}
-          onChange={(event) =>
-            table.getColumn("employeeId")?.setFilterValue(event.target.value)
-          }
-          className="h-8 w-[150px] lg:w-[250px]"
-        /> */}
         <Input
-          placeholder="Search Category name..."
-          value={table.getColumn("name")?.getFilterValue() ?? ""}
+          placeholder="Filter by employee..."
+          value={employeeFilter}
+          onChange={handleFilterByEmployee}
+          className="h-8 w-[150px] lg:w-[250px]"
+        />
+        <Input
+          placeholder="Search Task description..."
+          value={table.getColumn("description")?.getFilterValue() ?? ""}
           onChange={(event) =>
-            table.getColumn("name")?.setFilterValue(event.target.value)
+            table.getColumn("description")?.setFilterValue(event.target.value)
           }
           className="h-8 w-[150px] lg:w-[250px]"
         />{" "}
-        {table.getColumn("is_productive") && (
+        {/* {table.getColumn("is_productive") && (
           <DataTableFacetedFilter
-            column={table.getColumn("is_productive")}
+            column={table.getColumn("userid")}
             title="Type"
             options={[
               { value: "1", label: "Productive" },
@@ -40,7 +45,7 @@ export function DataTableToolbar({ table }) {
               { value: "2", label: "Neutral" },
             ]}
           />
-        )}
+        )} */}
         {isFiltered && (
           <Button
             variant="ghost"
@@ -52,7 +57,7 @@ export function DataTableToolbar({ table }) {
           </Button>
         )}
       </div>
-      {<DialogAdd className="mr-3" />}
+      {<NewCategory className="mr-3" />}
       <DataTableViewOptions table={table} />
     </div>
   );

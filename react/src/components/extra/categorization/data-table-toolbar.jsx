@@ -1,56 +1,43 @@
 import { Cross2Icon } from "@radix-ui/react-icons";
-import { useState } from "react";
 
 import { Button } from "@ui/button";
 import { Input } from "@ui/input";
 import { DataTableViewOptions } from "./data-table-view-options";
+
 import { DataTableFacetedFilter } from "./data-table-faceted-filter";
+// import AddCategories from "./add";
 
-import AddCategoryDialog from "./add";
-
-export function DataTableToolbar({ table, row }) {
+export function DataTableToolbar({ table }) {
   const isFiltered = table.getState().columnFilters.length > 0;
-  const [filterOption, setFilterOption] = useState("all");
-
-  const handleFilterChange = (option) => {
-    setFilterOption(option);
-    // Implement filtering logic based on the selected option
-  };
 
   return (
     <div className="flex items-center justify-between">
       <div className="flex flex-1 items-center space-x-2">
+        {/* <Input
+          placeholder="Filter by employee ID..."
+          value={table.getColumn("employeeId")?.getFilterValue() ?? ""}
+          onChange={(event) =>
+            table.getColumn("employeeId")?.setFilterValue(event.target.value)
+          }
+          className="h-8 w-[150px] lg:w-[250px]"
+        /> */}
         <Input
-          placeholder="Search Employee..."
+          placeholder="Search Category name..."
           value={table.getColumn("name")?.getFilterValue() ?? ""}
           onChange={(event) =>
             table.getColumn("name")?.setFilterValue(event.target.value)
           }
           className="h-8 w-[150px] lg:w-[250px]"
-        />
-        <div className="flex space-x-2">
-          <AddCategoryDialog row={row} />
-        </div>
-
+        />{" "}
         {table.getColumn("is_productive") && (
           <DataTableFacetedFilter
             column={table.getColumn("is_productive")}
-            title="Transactions"
+            title="Type"
             options={[
-              { value: "0", label: "Neutral" },
               { value: "1", label: "Productive" },
-              { value: "2", label: "Not Productive" },
+              { value: "0", label: "Unproductive" },
+              { value: "2", label: "Neutral" },
             ]}
-            onChange={(selectedOptions) => {
-              const selectedValues = selectedOptions.map((option) => option.value);
-              table.getColumn("is_productive")?.setFilterValue(
-                selectedValues.length > 0 ? selectedValues : null
-              );
-            }}
-            filterFn={(filterValue, rowValue) => {
-              if (!filterValue) return true; // Show all rows if no filter applied
-              return rowValue === filterValue;
-            }}
           />
         )}
         {isFiltered && (
@@ -64,6 +51,7 @@ export function DataTableToolbar({ table, row }) {
           </Button>
         )}
       </div>
+      {/* {<AddCategories className="mr-3" />} */}
       <DataTableViewOptions table={table} />
     </div>
   );

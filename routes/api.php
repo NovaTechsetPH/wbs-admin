@@ -54,6 +54,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/dashboard/apps', [EmployeeController::class, 'getAllDailyOpenedApps']);
     Route::get('/dashboard/workhrs/{date?}/{teamid?}', [EmployeeController::class, 'getWorkHrs']);
 
+    // Productivity Dashboard
+    Route::get('/productivity/team/{team_id}/{date?}', [ActivityTrackController::class, 'getTeamProductivityData']);
+
     // Employees
     Route::get('/employees/absent', [EmployeeController::class, 'absent']);
     Route::get('/employees/anomaly', [EmployeeController::class, 'anomaly']);
@@ -85,6 +88,7 @@ Route::middleware('auth:sanctum')->group(function () {
     // NEW API HERE
     Route::put('/record', [RunningAppsController::class, 'recordLog'])->name('record');
     Route::patch('/record', [RunningAppsController::class, 'updateLog'])->name('record-update');
+    Route::get('/apps/neutral', [RunningAppsController::class, 'getNeutralApps']);
 
     Route::put('/record/vdi', [RunningAppsController::class, 'recordVDILog']);
 

@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
 import axiosClient from "@/axios-client";
 import { Button } from "@ui/button";
 import { Input } from "@ui/input";
@@ -13,9 +12,10 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
-import { FolderPlus  } from 'lucide-react';
+import { FolderPlus } from "lucide-react";
 
 const AddCategories = () => {
+  const [open, setOpen] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
     description: "",
@@ -50,16 +50,22 @@ const AddCategories = () => {
         updated_at: "",
         created_at: "",
       });
+
+      handleClose();
     } catch (error) {
       console.error("Error adding category:", error);
       // Handle error cases, such as displaying an error message to the user
     }
   };
 
+  const handleClose = () => {
+    setOpen(false);
+  };
+
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get("http://10.0.0.198/api/categories", {
+        const response = await axiosClient.get("/categories", {
           params: {
             name: formData.name,
             description: formData.description,
@@ -76,7 +82,8 @@ const AddCategories = () => {
     };
 
     fetchData();
-  }, [formData]); // Trigger the effect whenever formData changes
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // Trigger the effect whenever formData changes
 
   const fields = [
     { key: "name", label: "Name" },
@@ -94,17 +101,25 @@ const AddCategories = () => {
     { key: "header_name", label: "Header Name" },
     { key: "icon", label: "Icon" },
     { key: "abbreviation", label: "Abbreviation" },
-    { key: "priority_id", label: "Priority ID" },
-    { key: "updated_at", label: "Updated At" },
-    { key: "created_at", label: "Created At" },
+    {
+      key: "priority_id",
+      label: "Priority Level",
+      type: "select",
+      options: [
+        { value: "1", label: "High" },
+        { value: "2", label: "Low" },
+      ],
+    },
+    // { key: "updated_at", label: "Updated At" },
+    // { key: "created_at", label: "Created At" },
   ];
 
   return (
     <div className="flex">
-      <Dialog>
+      <Dialog open={open} onDismiss={handleClose}>
         <DialogTrigger asChild>
           <Button>
-            <FolderPlus  className="mr-2" strokeWidth={1.5} />
+            <FolderPlus className="mr-2" strokeWidth={1.5} />
             Add Category
           </Button>
         </DialogTrigger>
@@ -152,7 +167,9 @@ const AddCategories = () => {
               ))}
             </div>
             <DialogFooter>
-              <Button type="button">Cancel</Button>
+              <Button onChange={handleClose} type="button">
+                Cancel
+              </Button>
               <Button type="submit">Save changes</Button>
             </DialogFooter>
           </form>
