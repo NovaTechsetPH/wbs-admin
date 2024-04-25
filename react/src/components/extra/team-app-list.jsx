@@ -16,6 +16,12 @@ import {
 
 import ShowExpandableApps from "./expandable/dashboard/show-expandable-apps";
 import { InfoCircledIcon } from "@radix-ui/react-icons";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "../ui/tooltip";
 
 export function TeamAppList({ title, apps, className }) {
   const convertSeconds = (seconds) => {
@@ -103,7 +109,16 @@ export function TeamAppList({ title, apps, className }) {
           title={title}
           btnTrigger={
             <Button variant="outline" className="px-3 shadow-none w-full">
-              <InfoCircledIcon className="mr-1 h-4 w-4 blink" />
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <InfoCircledIcon className="mr-1 h-4 w-4 blink" />
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Beta</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
               View More
             </Button>
           }

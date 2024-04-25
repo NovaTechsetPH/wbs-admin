@@ -177,12 +177,12 @@ const ActivityTracking = () => {
           <div className="flex space-x-4 pb-4 col">
             <div className="grid grid-cols-2 gap-4">
               <div className="col-span-1">
-                {/* <ActivityChart
+                <ActivityChart
                   isLoading={loading}
                   productivity={productivity}
                   rawApps={rawApps}
-                /> */}
-                <ProductivityChart />
+                />
+                {/* <ProductivityChart /> */}
               </div>
               <div className="col-span-1">
                 <div className="grid grid-cols-2 gap-4">
