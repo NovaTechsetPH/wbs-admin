@@ -10,7 +10,7 @@ class AppCategories extends Model
 {
     use HasFactory;
 
-    protected $table = 'tblapp_categories';
+    protected $table = 'app_categories';
 
     protected $fillable = [
         'id',
@@ -21,13 +21,15 @@ class AppCategories extends Model
         'icon',
         'abbreviation',
         'priority_id',
-        'update_status',
+        'sync',
         'created_at',
         'updated_at',
     ];
 
     protected $hidden = [
-        'update_status',
+        'sync',
+        'created_at',
+        'updated_at',
     ];
 
     protected function serializeDate(DateTimeInterface $date)

@@ -10,20 +10,20 @@ class TempTaskrunning extends Model
 {
     use HasFactory;
 
-    protected $table = 'tmp_taskrunning';
+    protected $table = 'temp_running_apps';
 
     protected $fillable = [
         'id',
-        'userid',
-        'taskid',
+        'empid',
+        'trackid',
         'description',
-        'date',
-        'time',
+        'start',
+        'end',
         'status',
         'category_id',
-        'end_time',
         'platform',
         'type',
+        'duration',
         'created_at',
         'updated_at',
     ];

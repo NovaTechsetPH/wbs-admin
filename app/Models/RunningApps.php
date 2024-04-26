@@ -10,7 +10,7 @@ class RunningApps extends Model
 {
     use HasFactory;
 
-    protected $table = 'tbltaskrunning';
+    protected $table = 'running_apps';
 
     protected $fillable = [
         'id',
@@ -24,6 +24,7 @@ class RunningApps extends Model
         'end_time',
         'platform',
         'type',
+        'duration',
         'created_at',
         'updated_at',
     ];

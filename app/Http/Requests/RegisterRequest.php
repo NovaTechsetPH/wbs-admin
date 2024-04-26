@@ -25,11 +25,11 @@ class RegisterRequest extends FormRequest
     public function rules()
     {
         return [
-            'email' => ['required', 'email', 'unique:accounts,email'],
-            'first_name' => ['required', 'string'],
-            'last_name' => ['required', 'string'],
-            'employee_id' => ['required', 'unique:accounts,employee_id'],
-            'position_id' => ['required', 'exists:tblemp_positions,id'],
+            'email' => ['required', 'email', 'unique:employees,email'],
+            'name' => ['required', 'string'],
+            'employee_id' => ['required', 'unique:employees,employee_id'],
+            'position_id' => ['required', 'exists:positions,id'],
+            'type' => ['in:user,admin']
         ];
     }
 }

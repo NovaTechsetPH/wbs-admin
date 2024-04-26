@@ -9,28 +9,29 @@ class TrackRecords extends Model
 {
     use HasFactory;
 
-    protected $table = 'tbltrackrecords';
+    protected $table = 'track_records';
 
     protected $fillable = [
         'id',
-        'userid',
+        'empid',
         'timein',
-        'datein',
-        'timebreakin',
-        'datebreakin',
-        'timebreakout',
-        'datebreakout',
         'timeout',
+        'date',
         'dateout',
     ];
 
     public function employee()
     {
-        return $this->belongsTo(Employee::class, 'userid', 'id');
+        return $this->belongsTo(Employee::class, 'empid', 'id');
     }
 
     public function tasks()
     {
-        return $this->hasMany(RunningApps::class, 'taskid', 'id');
+        return $this->hasMany(RunningApps::class, 'trackid', 'id');
+    }
+
+    public function running_apps()
+    {
+        return $this->hasMany(RunningApps::class, 'trackid', 'id');
     }
 }

@@ -9,14 +9,13 @@ class Position extends Model
 {
     use HasFactory;
 
-    protected $table = 'tblemp_positions';
+    protected $table = 'positions';
 
     protected $fillable = [
         'id',
-        'position',
+        'name',
         'description',
         'department',
-        'manager_id',
         'team_id',
         'active',
     ];

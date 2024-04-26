@@ -80,23 +80,19 @@ class AuthController extends Controller
 
         $user = Employee::create([
             'employee_id' => $data['employee_id'],
-            'first_name' => $data['first_name'],
-            'last_name' => $data['last_name'],
+            'name' => $data['name'],
             'email' => $data['email'],
             'position_id' => $data['position_id'],
-            'position' => json_encode([$position->position, $position->id]),
-            'username' => $request->username ?? $data['employee_id'],
-            'type' => 'User',
-            'status' => 'Pending',
             'department' => $position->department,
-            'phone_no' => $request->phone_no,
+            'type' => $data['type'],
             'incremented' => 0,
-            'active_status' => 'Offline',
             'password' => bcrypt($password),
-            'site' => $request->site ?? 'Dumaguete',
         ]);
 
         $token = $user->createToken('employee')->plainTextToken;
+        $user->auth_token = $token;
+        $user->save();
+
         return response(compact('user', 'token'));
     }
 
