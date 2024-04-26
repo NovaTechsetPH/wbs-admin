@@ -2,6 +2,12 @@ import * as React from "react";
 import {
   flexRender,
   getCoreRowModel,
+  getExpandedRowModel,
+  getFacetedRowModel,
+  getFacetedUniqueValues,
+  getFilteredRowModel,
+  getPaginationRowModel,
+  getSortedRowModel,
   // getFacetedRowModel,
   // getFacetedUniqueValues,
   // getFilteredRowModel,
@@ -19,10 +25,11 @@ import {
   TableRow,
 } from "@ui/table";
 
-import { DataTablePagination } from "./data-table-pagination";
+// import { DataTablePagination } from "./data-table-pagination";
 import { DataTableToolbar } from "./data-table-toolbar";
+import PaginationComponent from "../expandable/pagination-component";
 
-export function DataTable({ columns, data, total, perPage, currentPage }) {
+export function DataTable({ columns, data }) {
   // eslint-disable-next-line no-unused-vars
   const [rowSelection, setRowSelection] = React.useState({});
   // eslint-disable-next-line no-unused-vars
@@ -34,51 +41,64 @@ export function DataTable({ columns, data, total, perPage, currentPage }) {
   // eslint-disable-next-line no-unused-vars
   const [sorting, setSorting] = React.useState([]);
 
-  // const table = useReactTable({
-  //   data,
-  //   columns,
-  //   state: {
-  //     sorting,
-  //     columnVisibility,
-  //     rowSelection,
-  //     columnFilters,
-  //   },
-  //   enableRowSelection: true,
-  //   onRowSelectionChange: setRowSelection,
-  //   onSortingChange: setSorting,
-  //   onColumnFiltersChange: setColumnFilters,
-  //   onColumnVisibilityChange: setColumnVisibility,
-  //   getCoreRowModel: getCoreRowModel(),
-  //   // rowCount: 100,
-  //   getFilteredRowModel: getFilteredRowModel(),
-  //   getPaginationRowModel: getPaginationRowModel(),
-  //   // manualPagination: true,
-  //   getSortedRowModel: getSortedRowModel(),
-  //   getFacetedRowModel: getFacetedRowModel(),
-  //   getFacetedUniqueValues: getFacetedUniqueValues(),
-  // });
+  const [expanded, setExpanded] = React.useState({});
 
   const table = useReactTable({
     data,
     columns,
-    pageCount: Math.floor(total / perPage) ?? -1, //you can now pass in `rowCount` instead of pageCount and `pageCount` will be calculated internally (new in v8.13.0)
-    rowCount: total, // new in v8.13.0 - alternatively, just pass in `pageCount` directly
     state: {
-      pagination: {
-        pageIndex: (currentPage ?? 1) - 1,
-        pageSize: perPage,
-      },
       sorting,
       columnVisibility,
       rowSelection,
       columnFilters,
+      expanded,
     },
-    // onPaginationChange: setPagination,
+    enableRowSelection: true,
+    onRowSelectionChange: setRowSelection,
+    onSortingChange: setSorting,
+    onColumnFiltersChange: setColumnFilters,
+    onColumnVisibilityChange: setColumnVisibility,
     getCoreRowModel: getCoreRowModel(),
-    manualPagination: true, //we're doing manual "server-side" pagination
-    // getPaginationRowModel: getPaginationRowModel(), // If only doing manual pagination, you don't need this
+    // rowCount: 100,
+    getFilteredRowModel: getFilteredRowModel(),
+    getPaginationRowModel: getPaginationRowModel(),
+    // manualPagination: true,
+    getSortedRowModel: getSortedRowModel(),
+    getFacetedRowModel: getFacetedRowModel(),
+    getFacetedUniqueValues: getFacetedUniqueValues(),
+    onExpandedChange: setExpanded,
+    getExpandedRowModel: getExpandedRowModel(),
+    getSubRows: (row) => row.subRows,
     debugTable: true,
   });
+
+  // const table = useReactTable({
+  //   data,
+  //   columns,
+  //   pageCount: Math.floor(total / perPage) ?? -1, //you can now pass in `rowCount` instead of pageCount and `pageCount` will be calculated internally (new in v8.13.0)
+  //   rowCount: total, // new in v8.13.0 - alternatively, just pass in `pageCount` directly
+  //   state: {
+  //     pagination: {
+  //       pageIndex: (currentPage ?? 1) - 1,
+  //       pageSize: perPage,
+  //     },
+  //     sorting,
+  //     columnVisibility,
+  //     rowSelection,
+  //     columnFilters,
+  //     expanded,
+  //   },
+  //   // onPaginationChange: setPagination,
+  //   onExpandedChange: setExpanded,
+  //   getCoreRowModel: getCoreRowModel(),
+  //   getExpandedRowModel: getExpandedRowModel(),
+  //   getSubRows: (row) => row.subRows,
+  //   // getPaginationRowModel: getPaginationRowModel(),
+  //   getFilteredRowModel: getFilteredRowModel(),
+  //   manualPagination: true, //we're doing manual "server-side" pagination
+  //   // getPaginationRowModel: getPaginationRowModel(), // If only doing manual pagination, you don't need this
+  //   debugTable: true,
+  // });
 
   return (
     <div className="space-y-4">
@@ -134,7 +154,8 @@ export function DataTable({ columns, data, total, perPage, currentPage }) {
           </TableBody>
         </Table>
       </div>
-      <DataTablePagination table={table} />
+      {/* <DataTablePagination table={table} /> */}
+      <PaginationComponent table={table} />
     </div>
   );
 }
