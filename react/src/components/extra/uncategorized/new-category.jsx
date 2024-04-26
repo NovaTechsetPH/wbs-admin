@@ -85,9 +85,9 @@ export function NewCategory({ className }) {
       </DialogTrigger>
       <DialogContent className="grid gap-6">
         <DialogHeader>
-          <DialogTitle>Report an issue</DialogTitle>
+          <DialogTitle>Add new category</DialogTitle>
           <DialogDescription>
-            What area are you having problems with?
+            Add a new category to your list.
           </DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="grid gap-6">

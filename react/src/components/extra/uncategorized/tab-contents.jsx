@@ -8,7 +8,7 @@ import {
 import moment from "moment";
 import { Button } from "@/components/ui/button";
 import { secondsToHuman } from "@/lib/timehash";
-import LoadingOverlayWrapper from "react-loading-overlay-ts";
+// import LoadingOverlayWrapper from "react-loading-overlay-ts";
 import { useQuery } from "@tanstack/react-query";
 import { DataTable } from "./data-table";
 import { useStateContext } from "@/context/ContextProvider";
@@ -20,19 +20,23 @@ const TabContents = () => {
   const columns = useMemo(
     () => [
       {
-        accessorKey: "id",
-        header: () => <span>#</span>,
+        // cell: ({ row, getValue }) =>
+        //   row.getCanExpand() ? secondsToHuman(getValue()) : getValue(),
+        accessorKey: "description",
+        header: () => <span>Task Description</span>,
         cell: ({ row, getValue }) => (
           <div
             style={{
-              paddingLeft: `${row.depth * 2}rem`,
+              paddingLeft: `${row.depth * 3}rem`,
+              maxWidth: "300px",
+              // borderRight: "1px solid #ccc",
             }}
           >
             <div className="flex items-center justify-start space-x-2">
               {row.getCanExpand() && (
                 <Button
                   variant="ghost"
-                  className="leading-6 m-0 p-1"
+                  className="leading-6 m-0 p-1 pr-3"
                   {...{
                     onClick: row.getToggleExpandedHandler(),
                     style: { cursor: "pointer" },
@@ -77,49 +81,30 @@ const TabContents = () => {
         ),
         footer: (props) => props.column.id,
       },
+      // {
+      //   accessorFn: (row) => row.employee,
+      //   id: "employee",
+      //   cell: ({ getValue }) => getValue(),
+      //   header: ({ table }) => (
+      //     <span>{table.getIsAllRowsExpanded() && "Employee"}</span>
+      //   ),
+      //   footer: (props) => props.column.id,
+      // },
       {
         accessorKey: "totalDuration",
         cell: ({ row, getValue }) =>
           row.getCanExpand() ? secondsToHuman(getValue()) : getValue(),
-        header: () => <span>Total Duration</span>,
+        header: () => <div>Total Duration</div>,
         footer: (props) => props.column.id,
       },
-      {
-        accessorFn: (row) => row.employee,
-        id: "employee",
-        cell: (info) => info.getValue(),
-        header: () => <span>Employee</span>,
-        footer: (props) => props.column.id,
-      },
-      {
-        accessorKey: "description",
-        header: () => <span>Task Description</span>,
-        footer: (props) => props.column.id,
-      },
-      // {
-      //   // accessorFn: (row) => row.description,
-      //   // id: "description",
-      //   accessorKey: "description",
-      //   cell: ({ getValue }) => {
-      //     <div
-      //       style={{
-      //         maxWidth: "300px",
-      //       }}
-      //     >
-      //       {getValue()}
-      //     </div>;
-      //   },
-      //   header: () => <span>Task Description</span>,
-      //   footer: (props) => props.column.id,
-      // },
       {
         accessorKey: "count",
-        header: () => <span>Total Count</span>,
+        header: () => <div>Total Count</div>,
         footer: (props) => props.column.id,
       },
       {
         accessorKey: "date",
-        header: () => <span>Date</span>,
+        header: () => <div>Date</div>,
         footer: (props) => props.column.id,
       },
     ],
@@ -128,27 +113,29 @@ const TabContents = () => {
 
   const formatData = (data) => {
     let formattedData = [];
-    const neutralLogs = [];
+    let neutralLogs = [];
 
     data.forEach((item) => {
       let subRow = {
         id: item.userid,
-        tolalDuration: item.duration,
-        employee: `${item.employee.first_name} ${item.employee.last_name}`,
-        description: item.description,
+        totalDuration: item.duration ?? 0,
+        // employee: `${item.employee.first_name} ${item.employee.last_name}`,
+        // description: item.description,
+        description: `${item.employee.first_name} ${item.employee.last_name}`,
         count: item.time,
         date: item.end_time,
+        level: 2,
       };
-      // console.log(item.duration);
 
       if (!neutralLogs.includes(item.description)) {
         formattedData.push({
           id: item.userid,
-          tolalDuration: item.duration,
+          totalDuration: item.duration ?? 0,
           employee: null,
           description: item.description,
           count: 1,
           date: item.date,
+          level: 1,
           subRows: [subRow],
         });
         neutralLogs.push(item.description);
@@ -156,13 +143,12 @@ const TabContents = () => {
         let index = formattedData.findIndex(
           (x) => x.description === item.description
         );
+
         formattedData[index].count += 1;
-        formattedData[index].totalDuration += item.duration;
+        formattedData[index].totalDuration += parseInt(item.duration);
         formattedData[index].subRows.push(subRow);
       }
     });
-
-    console.log(formattedData);
 
     return formattedData;
   };
@@ -181,7 +167,7 @@ const TabContents = () => {
     },
   });
 
-  if (isLoading) return <LoadingOverlayWrapper />;
+  if (isLoading) return "Loading data...";
 
   if (error) return "An error has occurred: " + error.message;
 

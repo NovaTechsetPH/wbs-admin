@@ -92,8 +92,8 @@ export function DataTable({ columns, data }) {
               table.getRowModel().rows.map((row) => (
                 <TableRow
                   key={row.id}
-                  data-state={row.original.status === "Pending" && "selected"}
-                  // className={row.original.status == "Pending" && "font-bold"}
+                  // data-state={row.original.level === 1 && "selected"}
+                  className={row.original.level === 1 && "font-bold"}
                 >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id}>
