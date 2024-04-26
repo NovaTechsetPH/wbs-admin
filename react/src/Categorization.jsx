@@ -1,9 +1,9 @@
 import { DashboardContextProvider } from "@/context/DashboardContextProvider";
 import { Separator } from "@ui/separator";
-<<<<<<<<< Temporary merge branch 1
-import { columns } from "@/components/extra/categories/columns";
-import { DataTable } from "@/components/extra/categories/data-table";
-=========
+//<<<<<<<<< Temporary merge branch 1
+//import { columns } from "@/components/extra/categories/columns";
+//import { DataTable } from "@/components/extra/categories/data-table";
+//=========
 import { columns } from "@/components/extra/categorization/columns";
 import { DataTable } from "@/components/extra/categorization/data-table";
 import { useEffect, useState } from "react";
@@ -11,10 +11,10 @@ import axiosClient from "./axios-client";
 import moment from "moment";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "./components/ui/tabs";
 import TabContents from "./components/extra/uncategorized/tab-contents";
-// import { DateRangePicker } from "./components/extra/date-range-picker";
+import { DateRangePicker } from "./components/extra/date-range-picker";
 import { DatePicker } from "./components/extra/date-picker";
 
-// import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/button";
 
 const Categorization = () => {
   const [data, setData] = useState([]);
@@ -39,7 +39,7 @@ const Categorization = () => {
             icon: item.icon,
             abbreviation: item.abbreviation,
             priority_id: item.priority_id,
-<<<<<<<<< Temporary merge branch 1
+//<<<<<<<<< Temporary merge branch 1
             updated_at:
               item.updated_at ??
               moment(item.updated_at).format("YYYY-MM-DD HH:mm:ss"),
