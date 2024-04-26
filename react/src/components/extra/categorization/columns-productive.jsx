@@ -1,6 +1,6 @@
 import { DataTableColumnHeader } from "./data-table-column-header";
 import { Badge } from "@ui/badge";
-import EditCategories from "./edit-category";
+
 
 //import { Dialog } from "@radix-ui/react-dialog";
 
@@ -74,7 +74,7 @@ export const columns = [
   {
     accessorKey: "is_productive",
     header: ({ column }) => ( 
-      <DataTableColumnHeader column={column} title="Transaction" />
+      <DataTableColumnHeader column={column} title="Productive" />
     ),
     cell: ({ row }) => {
       const label = labels.find((label) => label.value === row.original.label);

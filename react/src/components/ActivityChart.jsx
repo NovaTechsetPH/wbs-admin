@@ -89,89 +89,61 @@ const ActivityChart = ({ productivity, rawApps, isLoading }) => {
         datasets: [
           {
             label: "Productive",
-            data: isFutureDate(date)
-              ? Utils.numbers(NUMBER_CFG).map((x) => x * 0)
-              : productive, // productivity.map((x) => x.productive),
+            data: productive,
             backgroundColor: `hsl(${COLORS.productive})`,
-            parsing: {
-              yAxisKey: "unproductive",
-            },
+            stack: "productive",
+            barThickness: 10, // Adjust bar size here
           },
           {
             label: "Neutral",
-            data: isFutureDate(date)
-              ? Utils.numbers(NUMBER_CFG).map((x) => x * 0)
-              : neutral,
+            data: neutral,
             backgroundColor: Utils.CHART_COLORS.grey,
-            parsing: {
-              yAxisKey: "neutral",
-            },
+            stack: "neutral",
+            barThickness: 10, // Adjust bar size here
           },
           {
             label: "Unproductive",
-            data: isFutureDate(date)
-              ? Utils.numbers(NUMBER_CFG).map((x) => x * 0)
-              : unproductive,
-            backgroundColor: `hsl(${COLORS.unproductive})`, // Utils.CHART_COLORS.red
-            parsing: {
-              yAxisKey: "productive",
-            },
+            data: unproductive,
+            backgroundColor: `hsl(${COLORS.unproductive})`,
+            stack: "unproductive",
+            barThickness: 10, // Adjust bar size here
+            
           },
         ],
       };
+      
 
+
+     
       // eslint-disable-next-line no-new
       new Chart("track-chart", {
         type: "bar",
         data: data,
         options: {
-          animation: {
-            duration: 1000,
-            onProgress: function (animation) {
-              progress.value = animation.currentStep / animation.numSteps;
-            },
-            onComplete: function (animation) {
-              window.setTimeout(function () {
-                progress.value = 0;
-              }, 2000);
-            },
-          },
           plugins: {
-            legend: {
-              display: false,
-            },
-            tooltip: {
-              callbacks: {
-                label: function (context) {
-                  let data = parseInt(context.formattedValue.replace(/,/g, ""));
-                  let label = context.dataset.label;
-                  let formatedData =
-                    secondsToHuman(data) === "" ? "0" : secondsToHuman(data);
-                  return `${label}: ${formatedData}`;
-                },
-              },
+            title: {
+              display: true,
+              text: "Chart.js Bar Chart - Stacked",
             },
           },
-          interaction: {
-            intersect: true,
-            mode: "point",
-          },
-          maintainAspectRatio: false,
           responsive: true,
+          interaction: {
+            intersect: false,
+          },
           scales: {
             x: {
               stacked: true,
               grid: {
                 // display: false,
-                drawBorder: false,
+                drawBorder: true,
                 display: true,
-                drawOnChartArea: false,
-                drawTicks: false,
+                drawOnChartArea: true,
+                drawTicks: true,
                 borderDash: [5, 5],
               },
               ticks: {
                 display: true,
-                color: "#ccc",
+                color: "grey",
                 padding: 20,
               },
               afterBuildTicks: function (myChart) {
@@ -187,12 +159,17 @@ const ActivityChart = ({ productivity, rawApps, isLoading }) => {
             y: {
               stacked: true,
               grid: {
-                display: false,
+                display: true,
                 drawBorder: false,
                 // display: true,
                 drawOnChartArea: true,
                 drawTicks: false,
                 borderDash: [5, 5],
+                color: function (context) {
+                  if (context.tick.value === 8) {
+                    return "#000";
+                  }
+                },
               },
               border: {
                 display: false,
@@ -204,7 +181,7 @@ const ActivityChart = ({ productivity, rawApps, isLoading }) => {
                 beginAtZero: true,
                 display: true,
                 padding: 5,
-                color: "#fbfbfb",
+                color: "#000",
                 font: {
                   size: 11,
                   family: "Open Sans",
@@ -216,11 +193,10 @@ const ActivityChart = ({ productivity, rawApps, isLoading }) => {
           },
         },
       });
-    } catch (err) {
-      console.log(err);
+    } catch (error) {
+      console.log(error);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [neutral, productive, unproductive, dataLabel]);
+  }, [dataLabel, productive, neutral, unproductive]);
 
   return (
     <div className="bg-base-100 rounded-lg border shadow-sm">
