@@ -1,13 +1,11 @@
-import React, {  useMemo } from "react";
-// import { DataTable } from "./data-table";
-// import { columns } from "./columns";
+import React, { useMemo } from "react";
 import axiosClient from "@/axios-client";
 import {
   DashboardContextProvider,
   useDashboardContext,
 } from "@/context/DashboardContextProvider";
+
 import moment from "moment";
-// import ShowExpandableApps from "../expandable/neutral/show-expandable-apps";
 import { Button } from "@/components/ui/button";
 import { secondsToHuman } from "@/lib/timehash";
 import LoadingOverlayWrapper from "react-loading-overlay-ts";
@@ -18,15 +16,12 @@ import { useStateContext } from "@/context/ContextProvider";
 const TabContents = () => {
   const { date } = useDashboardContext();
   const { currentTeam } = useStateContext();
-  // const [total, setTotal] = useState(0);
-  // const [perPage, setPerPage] = useState(25);
-  // const [currentPage, setCurrentPage] = useState(1);
 
   const columns = useMemo(
     () => [
       {
-        accessorKey: "empId",
-        header: () => <span>ID#</span>,
+        accessorKey: "id",
+        header: () => <span>#</span>,
         cell: ({ row, getValue }) => (
           <div
             style={{
@@ -83,27 +78,48 @@ const TabContents = () => {
         footer: (props) => props.column.id,
       },
       {
-        accessorFn: (row) => row.name,
-        id: "name",
+        accessorKey: "totalDuration",
+        cell: ({ row, getValue }) =>
+          row.getCanExpand() ? secondsToHuman(getValue()) : getValue(),
+        header: () => <span>Total Duration</span>,
+        footer: (props) => props.column.id,
+      },
+      {
+        accessorFn: (row) => row.employee,
+        id: "employee",
         cell: (info) => info.getValue(),
         header: () => <span>Employee</span>,
         footer: (props) => props.column.id,
       },
       {
+        accessorKey: "description",
+        header: () => <span>Task Description</span>,
+        footer: (props) => props.column.id,
+      },
+      // {
+      //   // accessorFn: (row) => row.description,
+      //   // id: "description",
+      //   accessorKey: "description",
+      //   cell: ({ getValue }) => {
+      //     <div
+      //       style={{
+      //         maxWidth: "300px",
+      //       }}
+      //     >
+      //       {getValue()}
+      //     </div>;
+      //   },
+      //   header: () => <span>Task Description</span>,
+      //   footer: (props) => props.column.id,
+      // },
+      {
         accessorKey: "count",
-        header: () => <span>Count</span>,
+        header: () => <span>Total Count</span>,
         footer: (props) => props.column.id,
       },
       {
         accessorKey: "date",
         header: () => <span>Date</span>,
-        footer: (props) => props.column.id,
-      },
-      {
-        accessorKey: "totalDuration",
-        cell: ({ row, getValue }) =>
-          row.getCanExpand() ? secondsToHuman(getValue()) : getValue(),
-        header: () => <span>Total Duration (s)</span>,
         footer: (props) => props.column.id,
       },
     ],
@@ -112,43 +128,41 @@ const TabContents = () => {
 
   const formatData = (data) => {
     let formattedData = [];
-    const employees = [];
+    const neutralLogs = [];
 
     data.forEach((item) => {
-      if (!employees.includes(item.employee.id)) {
+      let subRow = {
+        id: item.userid,
+        tolalDuration: item.duration,
+        employee: `${item.employee.first_name} ${item.employee.last_name}`,
+        description: item.description,
+        count: item.time,
+        date: item.end_time,
+      };
+      // console.log(item.duration);
+
+      if (!neutralLogs.includes(item.description)) {
         formattedData.push({
-          userid: item.employee.id,
-          empId: item.employee.employee_id,
-          name: `${item.employee.first_name} ${item.employee.last_name}`,
+          id: item.userid,
+          tolalDuration: item.duration,
+          employee: null,
+          description: item.description,
           count: 1,
-          totalDuration: item.duration,
           date: item.date,
-          subRows: [
-            {
-              empId: item.userid,
-              name: item.description,
-              count: item.time,
-              date: item.end_time,
-              totalDuration: item.duration,
-            },
-          ],
+          subRows: [subRow],
         });
-        employees.push(item.employee.id);
+        neutralLogs.push(item.description);
       } else {
         let index = formattedData.findIndex(
-          (x) => x.userid === item.employee.id
+          (x) => x.description === item.description
         );
         formattedData[index].count += 1;
         formattedData[index].totalDuration += item.duration;
-        formattedData[index].subRows.push({
-          empId: item.userid,
-          name: item.description,
-          count: item.time,
-          date: item.end_time,
-          totalDuration: item.duration,
-        });
+        formattedData[index].subRows.push(subRow);
       }
     });
+
+    console.log(formattedData);
 
     return formattedData;
   };
@@ -174,15 +188,6 @@ const TabContents = () => {
   return (
     <DashboardContextProvider>
       <DataTable data={data} columns={columns} />
-      {/* <ShowExpandableApps
-        data={data}
-        isLoading={isLoading}
-        error={error}
-        total={total}
-        currentPage={currentPage}
-        perPage={perPage}
-        columns={columns}
-      /> */}
     </DashboardContextProvider>
   );
 };

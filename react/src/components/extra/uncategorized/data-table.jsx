@@ -8,11 +8,6 @@ import {
   getFilteredRowModel,
   getPaginationRowModel,
   getSortedRowModel,
-  // getFacetedRowModel,
-  // getFacetedUniqueValues,
-  // getFilteredRowModel,
-  // getPaginationRowModel,
-  // getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
 
@@ -58,10 +53,8 @@ export function DataTable({ columns, data }) {
     onColumnFiltersChange: setColumnFilters,
     onColumnVisibilityChange: setColumnVisibility,
     getCoreRowModel: getCoreRowModel(),
-    // rowCount: 100,
     getFilteredRowModel: getFilteredRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
-    // manualPagination: true,
     getSortedRowModel: getSortedRowModel(),
     getFacetedRowModel: getFacetedRowModel(),
     getFacetedUniqueValues: getFacetedUniqueValues(),
@@ -70,34 +63,6 @@ export function DataTable({ columns, data }) {
     getSubRows: (row) => row.subRows,
     debugTable: true,
   });
-
-  // const table = useReactTable({
-  //   data,
-  //   columns,
-  //   pageCount: Math.floor(total / perPage) ?? -1, //you can now pass in `rowCount` instead of pageCount and `pageCount` will be calculated internally (new in v8.13.0)
-  //   rowCount: total, // new in v8.13.0 - alternatively, just pass in `pageCount` directly
-  //   state: {
-  //     pagination: {
-  //       pageIndex: (currentPage ?? 1) - 1,
-  //       pageSize: perPage,
-  //     },
-  //     sorting,
-  //     columnVisibility,
-  //     rowSelection,
-  //     columnFilters,
-  //     expanded,
-  //   },
-  //   // onPaginationChange: setPagination,
-  //   onExpandedChange: setExpanded,
-  //   getCoreRowModel: getCoreRowModel(),
-  //   getExpandedRowModel: getExpandedRowModel(),
-  //   getSubRows: (row) => row.subRows,
-  //   // getPaginationRowModel: getPaginationRowModel(),
-  //   getFilteredRowModel: getFilteredRowModel(),
-  //   manualPagination: true, //we're doing manual "server-side" pagination
-  //   // getPaginationRowModel: getPaginationRowModel(), // If only doing manual pagination, you don't need this
-  //   debugTable: true,
-  // });
 
   return (
     <div className="space-y-4">
