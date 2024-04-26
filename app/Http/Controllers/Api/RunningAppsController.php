@@ -19,6 +19,8 @@ use Illuminate\Support\Facades\Redis;
 
 class RunningAppsController extends Controller
 {
+    private $seconds_ten_min_ttl = 300; // 5min
+
     /**
      * Display a listing of the resource.
      */
@@ -325,14 +327,53 @@ class RunningAppsController extends Controller
     public function getNeutralApps(Request $request)
     {
         try {
-            $apps = RunningApps::with('employee')
-                ->where('category_id', 6)
+            $request->validate([
+                'date' => 'date|required',
+                'teamId' => 'integer|required',
+            ]);
+
+            $date = Carbon::parse($request->date) ?? Carbon::now();
+            $is_past = Carbon::now()->startOfDay()->gt($date);
+
+            $redis_apps = Redis::get('neutral_apps:' . $request->teamId . ':' . $date->toDateString());
+
+            if ($redis_apps != "[]" && $redis_apps != null) {
+                return json_decode($redis_apps);
+            }
+
+            $data = [];
+            $member_ids = Employee::where('team_id', $request->teamId)->pluck('id');
+
+            RunningApps::where('category_id', 6)
                 ->where('date', $request->date)
-                ->paginate($request->per_page ?? 15);
+                ->whereIn('userid', $member_ids)
+                ->limit(25)
+                ->chunk(1000, function ($runningapps) use (&$data) {
+                    foreach ($runningapps as $running) {
+                        $employee = $running->employee;
+                        $data[] = [
+                            'userid' => $running->id,
+                            'description' => $running->description,
+                            'date' => $running->date,
+                            'time' => $running->time,
+                            'end_time' => $running->end_time,
+                            'status' => $running->status,
+                            'duration' => $running->duration,
+                            'employee' => [
+                                'id' => $employee->id,
+                                'first_name' => $employee->first_name,
+                                'last_name' => $employee->last_name,
+                                'employee_id' => $employee->employee_id,
+                            ],
+                        ];
+                    }
+                });
+            $ttl = $is_past ? 3600 : $this->seconds_ten_min_ttl;
+            Redis::set('neutral_apps:' . $request->teamId . ':' . $date->toDateString(), json_encode($data), 'EX', $ttl);
         } catch (\Throwable $th) {
             throw $th;
         }
 
-        return $apps;
+        return $data;
     }
 }
