@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo } from "react";
+import React, {  useMemo } from "react";
 // import { DataTable } from "./data-table";
 // import { columns } from "./columns";
 import axiosClient from "@/axios-client";
@@ -152,10 +152,6 @@ const TabContents = () => {
 
     return formattedData;
   };
-
-  useEffect(() => {
-    console.log(currentTeam);
-  }, [currentTeam]);
 
   const { isLoading, error, data } = useQuery({
     queryKey: ["neutralData", date, currentTeam],

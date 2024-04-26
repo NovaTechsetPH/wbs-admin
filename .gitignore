@@ -19,7 +19,7 @@ yarn-error.log
 /.vscode
 
 # exclude everything
-react/*
+# react/*
 
 # exception to the rule
-!react/.gitignore
+# !react/.gitignore

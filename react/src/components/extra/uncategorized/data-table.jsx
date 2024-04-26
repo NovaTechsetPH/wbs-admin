@@ -25,7 +25,6 @@ import {
   TableRow,
 } from "@ui/table";
 
-// import { DataTablePagination } from "./data-table-pagination";
 import { DataTableToolbar } from "./data-table-toolbar";
 import PaginationComponent from "../expandable/pagination-component";
 
