@@ -22,7 +22,7 @@ import {
 
 import React from "react";
 // import { makeData } from "./make-data";
-import PaginationComponent from "./pagination-component";
+import PaginationComponent from "../pagination-component";
 import { Button } from "@/components/ui/button";
 import { useQuery } from "@tanstack/react-query";
 import axiosClient from "@/axios-client";
