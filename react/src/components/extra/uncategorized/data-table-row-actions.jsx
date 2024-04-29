@@ -1,40 +1,25 @@
 import { DotsHorizontalIcon } from "@radix-ui/react-icons";
 
-import { Button } from "../../ui/button";
+import { Button } from "@ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuRadioGroup,
-  DropdownMenuRadioItem,
-  DropdownMenuSeparator,
-  DropdownMenuShortcut,
-  DropdownMenuSub,
-  DropdownMenuSubContent,
-  DropdownMenuSubTrigger,
+  // DropdownMenuRadioGroup,
+  // DropdownMenuRadioItem,
+  // DropdownMenuSeparator,
+  // DropdownMenuShortcut,
+  // DropdownMenuSub,
+  // DropdownMenuSubContent,
+  // DropdownMenuSubTrigger,
   DropdownMenuTrigger,
-} from "../../ui/dropdown-menu";
+} from "@ui/dropdown-menu";
 
 // import { labels } from "../data/data"
 // import { taskSchema } from "../data/schema"
 
-const labels = [
-  {
-    value: "bug",
-    label: "Bug",
-  },
-  {
-    value: "feature",
-    label: "Feature",
-  },
-  {
-    value: "documentation",
-    label: "Documentation",
-  },
-];
-
 export function DataTableRowActions({ row }) {
-  const task = row.original;
+  // const task = row.original;
 
   return (
     <DropdownMenu>

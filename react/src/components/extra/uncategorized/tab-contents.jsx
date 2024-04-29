@@ -12,6 +12,7 @@ import { secondsToHuman } from "@/lib/timehash";
 import { useQuery } from "@tanstack/react-query";
 import { DataTable } from "./data-table";
 import { useStateContext } from "@/context/ContextProvider";
+import { DataTableColumnHeader } from "./data-table-column-header";
 
 const TabContents = () => {
   const { date } = useDashboardContext();
@@ -20,16 +21,15 @@ const TabContents = () => {
   const columns = useMemo(
     () => [
       {
-        // cell: ({ row, getValue }) =>
-        //   row.getCanExpand() ? secondsToHuman(getValue()) : getValue(),
         accessorKey: "description",
-        header: () => <span>Task Description</span>,
+        header: ({ column }) => (
+          <DataTableColumnHeader column={column} title="Task Description" />
+        ),
         cell: ({ row, getValue }) => (
           <div
             style={{
               paddingLeft: `${row.depth * 3}rem`,
               maxWidth: "300px",
-              // borderRight: "1px solid #ccc",
             }}
           >
             <div className="flex items-center justify-start space-x-2">
@@ -94,12 +94,16 @@ const TabContents = () => {
         accessorKey: "totalDuration",
         cell: ({ row, getValue }) =>
           row.getCanExpand() ? secondsToHuman(getValue()) : getValue(),
-        header: () => <div>Total Duration</div>,
+        header: ({ column }) => (
+          <DataTableColumnHeader column={column} title="Total Duration" />
+        ),
         footer: (props) => props.column.id,
       },
       {
         accessorKey: "count",
-        header: () => <div>Total Count</div>,
+        header: ({ column }) => (
+          <DataTableColumnHeader column={column} title="Total Count" />
+        ),
         footer: (props) => props.column.id,
       },
       {

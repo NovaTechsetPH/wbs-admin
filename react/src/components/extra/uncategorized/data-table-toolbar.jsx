@@ -34,7 +34,7 @@ export function DataTableToolbar({ table }) {
           placeholder="Search..."
           value={searchFilter}
           onChange={(event) => {
-            table.getColumn("name")?.setFilterValue(event.target.value);
+            table.getColumn("description")?.setFilterValue(event.target.value);
             setSearchFilter(event.target.value);
           }}
           className="h-8 w-[150px] lg:w-[250px]"
