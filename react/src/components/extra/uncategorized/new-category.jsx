@@ -94,24 +94,15 @@ export const NewCategory = ({ className }) => {
       new Promise((resolve, reject) => {
         setOpen(false);
         axiosClient.post("/categories", newVals).then(
-          (resp) => {
-            console.log(resp);
-            resolve(true);
-          },
-          (err) => {
-            console.log(err);
-            reject(err);
-          }
+          (resp) => resolve(resp),
+          (err) => reject(err)
         );
-        // setTimeout(() => {
-        //   resolve(true);
-        // }, 2000);
       });
 
     toast.promise(promise, {
       loading: "Applying changes...",
       success: (resp) => {
-        return `Added category and applied changes`;
+        return `${JSON.stringify(resp.data.message)}`;
       },
       error: (err) => {
         return `Error: ${err}`;

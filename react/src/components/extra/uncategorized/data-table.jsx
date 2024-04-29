@@ -22,8 +22,13 @@ import {
 
 import { DataTableToolbar } from "./data-table-toolbar";
 import PaginationComponent from "../expandable/pagination-component";
+import { Skeleton } from "@/components/ui/skeleton";
 
-export function DataTable({ columns, data }) {
+const getRandomWidth = (min = 100, max = 250) => {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+};
+
+export function DataTable({ columns, data, isLoading, error }) {
   // eslint-disable-next-line no-unused-vars
   const [rowSelection, setRowSelection] = React.useState({});
   // eslint-disable-next-line no-unused-vars
@@ -46,23 +51,37 @@ export function DataTable({ columns, data }) {
       rowSelection,
       columnFilters,
       expanded,
+      isLoading,
+      error,
     },
     enableRowSelection: true,
+    getCoreRowModel: getCoreRowModel(),
+    getFilteredRowModel: getFilteredRowModel(),
+    getSortedRowModel: getSortedRowModel(),
+    getExpandedRowModel: getExpandedRowModel(),
+    getPaginationRowModel: getPaginationRowModel(),
+    getFacetedRowModel: getFacetedRowModel(),
+    getFacetedUniqueValues: getFacetedUniqueValues(),
     onRowSelectionChange: setRowSelection,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
     onColumnVisibilityChange: setColumnVisibility,
-    getCoreRowModel: getCoreRowModel(),
-    getFilteredRowModel: getFilteredRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
-    getSortedRowModel: getSortedRowModel(),
-    getFacetedRowModel: getFacetedRowModel(),
-    getFacetedUniqueValues: getFacetedUniqueValues(),
     onExpandedChange: setExpanded,
-    getExpandedRowModel: getExpandedRowModel(),
     getSubRows: (row) => row.subRows,
     debugTable: true,
   });
+
+  const SkellyBody = ({ length = 10 }) => {
+    return [...Array(length).keys()].map(() => (
+      <TableRow>
+        {[...Array(columns.length).keys()].map((x) => (
+          <TableCell key={x}>
+            <Skeleton className={`h-[25px] w-[${getRandomWidth}px]`} />
+          </TableCell>
+        ))}
+      </TableRow>
+    ));
+  };
 
   return (
     <div className="space-y-4">
@@ -87,39 +106,44 @@ export function DataTable({ columns, data }) {
               </TableRow>
             ))}
           </TableHeader>
-          <TableBody>
-            {table.getRowModel().rows?.length ? (
-              table.getRowModel().rows.map((row) => (
-                <TableRow
-                  key={row.id}
-                  // data-state={row.original.level === 1 && "selected"}
-                  className={row.original.level === 1 && "font-bold"}
-                >
-                  {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext()
-                      )}
-                    </TableCell>
-                  ))}
+          {isLoading ? (
+            <TableBody>
+              <SkellyBody />
+            </TableBody>
+          ) : (
+            <TableBody>
+              {table.getRowModel().rows?.length ? (
+                table.getRowModel().rows.map((row) => (
+                  <TableRow
+                    key={row.id}
+                    // data-state={row.original.level === 1 && "selected"}
+                    className={row.original.level === 1 && "font-bold"}
+                  >
+                    {row.getVisibleCells().map((cell) => (
+                      <TableCell key={cell.id}>
+                        {flexRender(
+                          cell.column.columnDef.cell,
+                          cell.getContext()
+                        )}
+                      </TableCell>
+                    ))}
+                  </TableRow>
+                ))
+              ) : (
+                <TableRow>
+                  <TableCell
+                    colSpan={columns.length}
+                    className="h-24 text-center"
+                  >
+                    No results.
+                  </TableCell>
                 </TableRow>
-              ))
-            ) : (
-              <TableRow>
-                <TableCell
-                  colSpan={columns.length}
-                  className="h-24 text-center"
-                >
-                  No results.
-                </TableCell>
-              </TableRow>
-            )}
-          </TableBody>
+              )}
+            </TableBody>
+          )}
         </Table>
       </div>
-      {/* <DataTablePagination table={table} /> */}
-      <PaginationComponent table={table} />
+      {!isLoading && <PaginationComponent table={table} />}
     </div>
   );
 }

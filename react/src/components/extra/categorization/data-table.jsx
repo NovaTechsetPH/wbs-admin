@@ -22,7 +22,7 @@ import {
 import { DataTablePagination } from "./data-table-pagination";
 import { DataTableToolbar } from "./data-table-toolbar";
 
-export function DataTable({ columns, data }) {
+export function DataTable({ columns, data, isLoading, isError }) {
   const [rowSelection, setRowSelection] = React.useState({});
   const [columnVisibility, setColumnVisibility] = React.useState({});
   const [columnFilters, setColumnFilters] = React.useState([]);
@@ -36,6 +36,8 @@ export function DataTable({ columns, data }) {
       columnVisibility,
       rowSelection,
       columnFilters,
+      isLoading,
+      isError,
     },
     enableRowSelection: true,
     onRowSelectionChange: setRowSelection,

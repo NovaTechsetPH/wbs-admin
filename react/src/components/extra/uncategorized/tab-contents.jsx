@@ -171,13 +171,14 @@ const TabContents = () => {
     },
   });
 
-  if (isLoading) return "Loading data...";
-
-  if (error) return "An error has occurred: " + error.message;
-
   return (
     <DashboardContextProvider>
-      <DataTable data={data} columns={columns} />
+      <DataTable
+        data={data}
+        columns={columns}
+        isLoading={isLoading}
+        errir={error}
+      />
     </DashboardContextProvider>
   );
 };
