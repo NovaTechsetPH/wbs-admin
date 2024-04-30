@@ -222,4 +222,45 @@ class ActivityTrackController extends Controller
             'message' => 'Success',
         ], 200);
     }
+
+    public function getActivityByEmployee(Request $request)
+    {
+        $request->validate([
+            'employee_id' => 'exists:accounts,id|required'
+        ]);
+
+        $date = !request()->has('date') ? Carbon::now() : Carbon::parse($request->date);
+        $tracking = TrackRecords::where('userid', $request->employee_id)
+            ->where('datein', $date->toDateTimeLocalString())
+            ->first();
+
+        if (!$tracking) {
+            throw new Exception("No records found", 1);
+        }
+
+        $data = [];
+        $categories = [];
+        $apps = RunningApps::where('taskid', $tracking->id)->get();
+
+        foreach ($apps as $app) {
+            $key = array_search($app->category->name, $categories);
+            if (!in_array($app->category->name, $categories)) {
+                $data[] = [
+                    'name' => $app->category->name,
+                    'category_id' => $app->category_id,
+                    'duration' => $app->duration,
+                    'type' => $app->category->is_productive,
+                    'icon' => $app->category->icon
+                ];
+                array_push($categories, $app->category->name);
+            } else {
+                $data[$key]['duration'] += $app->duration;
+            }
+        }
+
+        return response()->json([
+            'data' => $data,
+            'message' => 'Success'
+        ], 200);
+    }
 }

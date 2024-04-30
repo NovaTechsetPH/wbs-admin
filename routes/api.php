@@ -103,10 +103,12 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/employee/status/{empid}', [ActivityTrackController::class, 'getActiveStatus']);
     Route::patch('/employee/status', [ActivityTrackController::class, 'updateActiveStatus']);
 
+    // Tracking
     Route::get('/tracking/data/{empid}/{date?}', [TimeLogsController::class, 'graphData']);
     Route::get('/redis/tracking/data/{empid}/{date}', [TimeLogsController::class, 'redisGraphData']);
     Route::get('/tracking/apps/data', [TimeLogsController::class, 'getAppData']);
     Route::get('/test-tracking/apps/data', [TimeLogsController::class, 'getAppDataTest']);
+    Route::get('/tracking/employee', [ActivityTrackController::class, 'getActivityByEmployee']);
 });
 
 Route::post('/signup', [AuthController::class, 'signup']);
