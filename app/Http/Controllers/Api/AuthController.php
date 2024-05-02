@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Events\ReportExported;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\LoginRequest;
 use App\Http\Requests\SignupRequest;
@@ -125,6 +126,20 @@ class AuthController extends Controller
 
         return response()->json([
             'message' => 'Logout Success!'
+        ], 200);
+    }
+
+    public function testReverb()
+    {
+        // $user = Auth::user();
+        $user = User::find(1);
+        // event(new ReportExported($user));
+        ReportExported::dispatch($user);
+
+        return response()->json([
+            'userId' => $user->id,
+            'status' => 'OK',
+            // 'event' => $event,
         ], 200);
     }
 }

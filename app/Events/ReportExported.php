@@ -9,17 +9,18 @@ use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
+use Laravel\Reverb\Protocols\Pusher\Channels\Channel as ChannelsChannel;
 
-class ReportExported
+class ReportExported implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
     /**
      * Create a new event instance.
      */
-    public function __construct()
+    public function __construct(public $user)
     {
-        //
+        $this->user = $user;
     }
 
     /**
@@ -27,10 +28,11 @@ class ReportExported
      *
      * @return array<int, \Illuminate\Broadcasting\Channel>
      */
-    public function broadcastOn(): array
+    public function broadcastOn()
     {
-        return [
-            new PrivateChannel('export-reports'),
-        ];
+        // return [
+        // new PrivateChannel('export.' . $this->user->id)
+        // ];
+        return new Channel('export');
     }
 }
