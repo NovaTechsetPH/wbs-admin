@@ -878,7 +878,7 @@ class EmployeeController extends Controller
 
             // $employee = Employee::find($empid);
             if (!$empid)
-                throw new \Exception('Employee not found 1');
+                throw new \Exception('Employee not found');
 
             $employee = Employee::where('employee_id', $empid)->first();
             if (!$employee)
