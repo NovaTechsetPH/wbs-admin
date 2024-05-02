@@ -522,7 +522,9 @@ class EmployeeController extends Controller
         ]);
 
         $date = Carbon::parse($request->date) ?? Carbon::now();
-        $is_past = Carbon::now()->startOfDay()->gt($date);
+	$is_past = Carbon::now()->startOfDay()->gt($date);
+
+	if(!request()->has('empId')){
 
         $redis_apps = Redis::get('category_apps:' . $request->teamId . ':' . $date->toDateString() . ':' . $request->isProductive);
 
@@ -532,10 +534,14 @@ class EmployeeController extends Controller
                 'redis' => 'hit',
                 'data' => json_decode($redis_apps),
                 'date' => $date->toDateString(),
-            ]);
+	    ]);
+	
 
         $emps_under = Employee::select('id')
-            ->where('team_id', $request->teamId)->get();
+		->where('team_id', $request->teamId)->get();
+	} else {
+	  $emps_under = [$request->empId];
+	}
 
         $categories = AppCategories::select('id')
             ->where('is_productive', $request->isProductive)->get();
@@ -576,8 +582,10 @@ class EmployeeController extends Controller
                 }
             });
 
-        $ttl = $is_past ? 3600 : $this->seconds_ten_min_ttl;
-        Redis::set('category_apps:' . $request->teamId . ':' . $date->toDateString() . ':' . $request->isProductive, json_encode($data), 'EX', $ttl);
+	if(!request()->has('empId')){
+          $ttl = $is_past ? 3600 : $this->seconds_ten_min_ttl;
+	  Redis::set('category_apps:' . $request->teamId . ':' . $date->toDateString() . ':' . $request->isProductive, json_encode($data), 'EX', $ttl);
+	}
 
         return response()->json([
             'count' => count($data),
