@@ -30,7 +30,7 @@ import { useDashboardContext } from "@/context/DashboardContextProvider";
 import { useStateContext } from "@/context/ContextProvider";
 import { secondsToHuman } from "@/lib/timehash";
 
-export const ShowExpandableApps = ({ prodType }) => {
+export const ShowExpandableApps = ({ prodType, empId }) => {
   const { date } = useDashboardContext();
   const { currentTeam } = useStateContext();
   // const rerender = React.useReducer(() => ({}), {})[1];
@@ -217,6 +217,7 @@ export const ShowExpandableApps = ({ prodType }) => {
         date: date,
         teamId: currentTeam,
         isProductive: isProductive,
+        empId: empId
       });
       return formatData(res.data.data);
     },

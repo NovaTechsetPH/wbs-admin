@@ -23,7 +23,7 @@ import {
   TooltipTrigger,
 } from "../ui/tooltip";
 
-export function TeamAppList({ title, apps, className }) {
+export function TeamAppList({ title, apps, className, empId }) {
   const convertSeconds = (seconds) => {
     const hours = Math.floor(seconds / 3600);
     const minutes = Math.floor((seconds % 3600) / 60);
@@ -34,9 +34,8 @@ export function TeamAppList({ title, apps, className }) {
     const secondString = remainingSeconds > 0 ? `${remainingSeconds}s` : "";
 
     if (hours > 0) {
-      return `${hourString} ${minuteString || "0 m"} ${
-        secondString && `${secondString}`
-      }`;
+      return `${hourString} ${minuteString || "0 m"} ${secondString && `${secondString}`
+        }`;
     } else if (!hours && minutes > 0) {
       return `${minuteString} ${secondString && `${secondString}`}`;
     }
@@ -122,13 +121,14 @@ export function TeamAppList({ title, apps, className }) {
               View More
             </Button>
           }
+          empId={empId}
         />
       </CardFooter>
     </Card>
   );
 }
 
-export function DialogBox({ btnTrigger, title }) {
+export function DialogBox({ btnTrigger, title, empId }) {
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -144,7 +144,7 @@ export function DialogBox({ btnTrigger, title }) {
         </DialogHeader>
         {/* Contents here */}
         <ScrollArea className="max-h-[75vh]">
-          <ShowExpandableApps prodType={title} />
+          <ShowExpandableApps prodType={title} empId={empId} />
         </ScrollArea>
         <DialogFooter>
           {/* <Button type="button" variant="outline">
