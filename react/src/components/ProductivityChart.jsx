@@ -34,7 +34,7 @@ const COLORS = {
 
 const getProductivity = async (date, currentTeam) => {
   const { data } = await axiosClient.get(
-    `/productivity/team/${currentTeam}/${moment(date).format("YYYY-MM-DD")}`
+    `/tracking/employee?employee_id=20&date=${moment(date).format("YYYY-MM-DD")}`
   );
   return data.data;
 };
@@ -59,7 +59,7 @@ const ProductivityChart = () => {
     getProductivity(date, currentTeam)
       .then((teamProductivity) => {
         return teamProductivity.sort((a, b) => {
-          return a.first_name.localeCompare(b.first_name);
+          return a.icon.localeCompare(b.icon);
         });
       })
       .then((teamProductivity) => {
@@ -68,7 +68,7 @@ const ProductivityChart = () => {
           tmpProductive.push(app.productive / 3600);
           tmpNeutral.push(app.neutral / 3600);
         });
-        setDataLabel(teamProductivity.map((x) => x.first_name));
+        setDataLabel(teamProductivity.map((x) => x.icon));
         setProductive(tmpProductive);
         setUnproductive(tmpUnproductive);
         setNeutral(tmpNeutral);
