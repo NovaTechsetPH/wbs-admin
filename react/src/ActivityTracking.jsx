@@ -31,9 +31,9 @@ const getWorkDuration = (data) => {
     moment(data.datein).isSame(moment(), "day") && data.timeout === null
       ? moment().diff(moment(data.timein, "HH:mm:ss"), "seconds")
       : moment(data.timeout, "HH:mm:ss").diff(
-          moment(data.timein, "HH:mm:ss"),
-          "seconds"
-        );
+        moment(data.timein, "HH:mm:ss"),
+        "seconds"
+      );
   return secondsToHuman(diff);
 };
 
@@ -238,6 +238,7 @@ const ActivityTracking = () => {
                 title={"Productive apps"}
                 apps={apps.Productive}
                 className={"bg-success text-success-foreground"}
+                empId={empId}
               />
             </div>
             <div className="col-span-1">
@@ -245,6 +246,7 @@ const ActivityTracking = () => {
                 title={"Unproductive apps"}
                 apps={apps.Unproductive}
                 className={"bg-warning text-warning-foreground"}
+                empId={empId}
               />
             </div>
             <div className="col-span-1">
@@ -252,6 +254,7 @@ const ActivityTracking = () => {
                 title={"Neutral apps"}
                 apps={apps.Neutral}
                 className={"bg-muted text-muted-foreground"}
+                empId={empId}
               />
             </div>
           </div>
