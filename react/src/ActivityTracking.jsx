@@ -10,7 +10,6 @@ import { TeamAppList } from "./components/extra/team-app-list";
 import { DatePicker } from "./components/extra/date-picker";
 
 import ActivityChart from "./components/ActivityChart";
-//import ActivityIcon from "./components/ActivityIcon";
 import SelectDialog from "./components/extra/employee-select-dialog";
 import Widget from "./components/extra/widget";
 
@@ -18,6 +17,7 @@ import { CandleData, handleAllocateTime, secondsToHuman } from "./lib/timehash";
 import { useDashboardContext } from "@/context/DashboardContextProvider";
 import { useParams } from "react-router-dom";
 import { useStateContext } from "./context/ContextProvider";
+import ProductivityChart from "./components/ProductivityChart";
 
 const CATEGORY = ["Unproductive", "Productive", "Neutral"];
 
@@ -169,7 +169,7 @@ const ActivityTracking = () => {
         <div className="flex items-center space-x-2">
           <DatePicker />
         </div>
-      </div> 
+      </div>
       <Separator className="my-4" />
       <div className="relative">
         <ScrollArea>
@@ -177,15 +177,13 @@ const ActivityTracking = () => {
             <div className="grid grid-cols-2 gap-4">
               <div className="col-span-1">
                 <ActivityChart
+                  isLoading={loading}
                   productivity={productivity}
                   rawApps={rawApps}
-                 // appList={appList}
-                  lastId={null}
-                  //isLoading={isLoading}
+                  apps={apps.Productive}
                 />
+                {/* <ProductivityChart /> */}
               </div>
-            
-              
               <div className="col-span-1">
                 <div className="grid grid-cols-2 gap-4">
                   <div className="col-span-1">
@@ -265,3 +263,5 @@ const ActivityTracking = () => {
 };
 
 export default ActivityTracking;
+
+
