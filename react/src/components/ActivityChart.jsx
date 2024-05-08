@@ -32,8 +32,13 @@ const COLORS = {
 };
 
 const getProductivity = async (date) => {
+  const currentUrl = window.location.href;
+
+  const url = new URL(currentUrl); // 'URL' should start with a capital letter
+  const id = url.pathname.split("/").pop();
+
   const { data } = await axiosClient.get(
-    `/tracking/employee?employee_id=14&date=${moment(date).format("YYYY-MM-DD")}`
+    `/tracking/employee?employee_id=${id}&date=${moment(date).format("YYYY-MM-DD")}`
   );
   console.log(data);
   return data.data;
@@ -42,7 +47,7 @@ const getProductivity = async (date) => {
 const ActivityChart = ({ isLoading }) => {
   const { date } = useDashboardContext();
   const [dataLabel, setDataLabel] = useState(["NAME"]);
-  const NUMBER_CFG = { count: 30, min: 0, max: 30 };
+ // const NUMBER_CFG = { count: 30, min: 0, max: 30 };
   const activePeriod = "day";
   const [productive, setProductive] = useState([]);
   const [unproductive, setUnproductive] = useState([]);
@@ -50,11 +55,12 @@ const ActivityChart = ({ isLoading }) => {
   const progress = useRef(null);
   //const [dataLength, setDataLength] = useState(0);
 
-  const isFutureDate = (value) => {
+  /*const isFutureDate = (value) => {
     let d_now = new Date();
     let d_inp = new Date(value);
     return d_now < d_inp;
-  };
+  };*/
+
 
   useEffect(() => {
     getProductivity(date)
@@ -161,7 +167,7 @@ const ActivityChart = ({ isLoading }) => {
                 if (activePeriod === "day") {
                   myChart.ticks = [];
                   tiktok.forEach((e) => {
-                    myChart.ticks.push(e);
+                    //myChart.ticks.push(e);
                   });
                 }
               },
@@ -197,7 +203,7 @@ const ActivityChart = ({ isLoading }) => {
                   style: "normal",
                   lineHeight: 2,
                 },
-                callback: function(value, index, values) {
+                callback: function(value) {
                   return secondsToHuman(value);
                 }
               },
@@ -209,7 +215,6 @@ const ActivityChart = ({ isLoading }) => {
       function secondsToHuman(seconds) {
         var hours = Math.floor(seconds / 3600);
         var minutes = Math.floor((seconds % 3600) / 60);
-        var remainingSeconds = seconds % 60;
         var result = "";
         if (hours > 0) {
           result += hours + "h ";
@@ -217,9 +222,9 @@ const ActivityChart = ({ isLoading }) => {
         if (minutes > 0 || hours > 0) {
           result += minutes + "m ";
         }
-        result += remainingSeconds + "s";
-        return result;
+        return result.trim(); // Trim any trailing space
       }
+      
       
     } catch (error) {
       console.log(error);
