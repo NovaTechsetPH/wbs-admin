@@ -738,11 +738,6 @@ body {
   margin-bottom: 0.25rem;
 }
 
-.my-2 {
-  margin-top: 0.5rem;
-  margin-bottom: 0.5rem;
-}
-
 .my-4 {
   margin-top: 1rem;
   margin-bottom: 1rem;
@@ -826,13 +821,6 @@ body {
 
 .mt-auto {
   margin-top: auto;
-}
-
-.line-clamp-1 {
-  overflow: hidden;
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 1;
 }
 
 .block {
@@ -995,8 +983,16 @@ body {
   max-height: 24rem;
 }
 
+.max-h-\[100vh\] {
+  max-height: 100vh;
+}
+
 .max-h-\[300px\] {
   max-height: 300px;
+}
+
+.max-h-\[75vh\] {
+  max-height: 75vh;
 }
 
 .min-h-\[80px\] {
@@ -1121,10 +1117,6 @@ body {
 
 .w-\[420px\] {
   width: 420px;
-}
-
-.w-\[60px\] {
-  width: 60px;
 }
 
 .w-\[70px\] {
@@ -1270,6 +1262,10 @@ body {
 
 .grid-cols-\[1fr_110px\] {
   grid-template-columns: 1fr 110px;
+}
+
+.grid-cols-1 {
+  grid-template-columns: repeat(1, minmax(0, 1fr));
 }
 
 .flex-row {
@@ -1967,16 +1963,12 @@ body {
   text-transform: capitalize;
 }
 
-.italic {
-  font-style: italic;
+.leading-6 {
+  line-height: 1.5rem;
 }
 
 .leading-none {
   line-height: 1;
-}
-
-.leading-snug {
-  line-height: 1.375;
 }
 
 .tracking-tight {
@@ -2141,6 +2133,12 @@ body {
 .shadow-md {
   --tw-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
   --tw-shadow-colored: 0 4px 6px -1px var(--tw-shadow-color), 0 2px 4px -2px var(--tw-shadow-color);
+  box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+}
+
+.shadow-none {
+  --tw-shadow: 0 0 #0000;
+  --tw-shadow-colored: 0 0 #0000;
   box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
 }
 
@@ -2318,6 +2316,18 @@ body {
 
 .bg-warning {
   background-color: hsl(var(--warning));
+}
+
+.blink {
+  animation: blinker 1s linear infinite;
+  /* filter: invert(48%) sepia(79%) saturate(2476%) hue-rotate(86deg) brightness(118%) contrast(119%); */
+  filter: invert(20%) sepia(95%) saturate(3245%) hue-rotate(336deg) brightness(90%) contrast(96%);
+}
+
+@keyframes blinker {
+  50% {
+    opacity: 0;
+  }
 }
 
 .file\:border-0::file-selector-button {
@@ -2800,6 +2810,10 @@ body {
 }
 
 @media (min-width: 640px) {
+  .sm\:col-span-1 {
+    grid-column: span 1 / span 1;
+  }
+
   .sm\:mt-0 {
     margin-top: 0px;
   }
@@ -2964,6 +2978,10 @@ body {
     width: 250px;
   }
 
+  .lg\:max-w-\[800px\] {
+    max-width: 800px;
+  }
+
   .lg\:grid-cols-2 {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
@@ -2978,6 +2996,10 @@ body {
 
   .lg\:grid-cols-7 {
     grid-template-columns: repeat(7, minmax(0, 1fr));
+  }
+
+  .lg\:grid-cols-1 {
+    grid-template-columns: repeat(1, minmax(0, 1fr));
   }
 
   .lg\:space-x-8 > :not([hidden]) ~ :not([hidden]) {
@@ -3023,12 +3045,20 @@ body {
     max-width: 42rem;
   }
 
+  .xl\:max-w-\[1140px\] {
+    max-width: 1140px;
+  }
+
   .xl\:grid-cols-1 {
     grid-template-columns: repeat(1, minmax(0, 1fr));
   }
 
   .xl\:grid-cols-3 {
     grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .xl\:grid-cols-2 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 

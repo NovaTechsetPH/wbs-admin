@@ -11,10 +11,11 @@ import {
   Tooltip,
 } from "chart.js";
 import * as Utils from "./../assets/utils";
-import { secondsToHuman } from "@/lib/timehash";
+// import { secondsToHuman } from "@/lib/timehash";
 import axiosClient from "@/axios-client";
 import moment from "moment";
 import React, { useRef } from "react";
+
 
 Chart.register(
   BarController,
@@ -31,23 +32,22 @@ const COLORS = {
   neutral: "240 4.8% 95.9%",
 };
 
-const getProductivity = async (date) => {
-  const currentUrl = window.location.href;
+const getProductivity = async (date, empId) => {
+  // const currentUrl = window.location.href;
 
-  const url = new URL(currentUrl); // 'URL' should start with a capital letter
-  const id = url.pathname.split("/").pop();
+  // const url = new URL(currentUrl); // 'URL' should start with a capital letter
+  // const id = url.pathname.split("/").pop();
 
   const { data } = await axiosClient.get(
-    `/tracking/employee?employee_id=${id}&date=${moment(date).format("YYYY-MM-DD")}`
+    `/tracking/employee?employee_id=${empId}&date=${moment(date).format("YYYY-MM-DD")}`
   );
-  console.log(data);
   return data.data;
 };
 
-const ActivityChart = ({ isLoading }) => {
+const ActivityChart = ({ isLoading, empId }) => {
   const { date } = useDashboardContext();
   const [dataLabel, setDataLabel] = useState(["NAME"]);
- // const NUMBER_CFG = { count: 30, min: 0, max: 30 };
+  // const NUMBER_CFG = { count: 30, min: 0, max: 30 };
   const activePeriod = "day";
   const [productive, setProductive] = useState([]);
   const [unproductive, setUnproductive] = useState([]);
@@ -63,12 +63,12 @@ const ActivityChart = ({ isLoading }) => {
 
 
   useEffect(() => {
-    getProductivity(date)
+    getProductivity(date, empId)
       .then((teamProductivity) => {
         teamProductivity.sort((a, b) => {
           return a.name.localeCompare(b.name);
         });
-  
+
         setDataLabel(teamProductivity.map((x) => x.name)); // Set as X-axis labels
         setProductive(teamProductivity.map((x) => x.type === "1" ? x.duration : ""));
         setUnproductive(teamProductivity.map((x) => x.type === "0" ? x.duration : ""));
@@ -77,8 +77,7 @@ const ActivityChart = ({ isLoading }) => {
       .catch((error) => {
         console.error("Error fetching productivity data:", error);
       });
-  }, [date]);
-  
+  }, [date, empId]);
 
   useEffect(() => {
     try {
@@ -129,11 +128,9 @@ const ActivityChart = ({ isLoading }) => {
             tooltip: {
               callbacks: {
                 label: function (context) {
-                  console.log(context, 'context');
                   let data = parseInt(context.formattedValue.replace(/,/g, ""));
-                  console.log(context, 'tooltip');
                   let label = context.dataset.label;
-  
+
                   // let newData = data*3600;
                   let formatedData =
                     secondsToHuman(data) === "" ? "0" : secondsToHuman(data);
@@ -141,8 +138,9 @@ const ActivityChart = ({ isLoading }) => {
                 },
               },
             },
+
           },
-          
+
           responsive: true,
           interaction: {
             intersect: false,
@@ -203,7 +201,7 @@ const ActivityChart = ({ isLoading }) => {
                   style: "normal",
                   lineHeight: 2,
                 },
-                callback: function(value) {
+                callback: function (value) {
                   return secondsToHuman(value);
                 }
               },
@@ -211,7 +209,7 @@ const ActivityChart = ({ isLoading }) => {
           },
         },
       });
-      
+
       function secondsToHuman(seconds) {
         var hours = Math.floor(seconds / 3600);
         var minutes = Math.floor((seconds % 3600) / 60);
@@ -224,8 +222,7 @@ const ActivityChart = ({ isLoading }) => {
         }
         return result.trim(); // Trim any trailing space
       }
-      
-      
+
     } catch (error) {
       console.log(error);
     }
