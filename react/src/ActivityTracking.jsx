@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import axiosClient from "./axios-client";
 import { useEffect, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
@@ -17,6 +18,7 @@ import { CandleData, handleAllocateTime, secondsToHuman } from "./lib/timehash";
 import { useDashboardContext } from "@/context/DashboardContextProvider";
 import { useParams } from "react-router-dom";
 import { useStateContext } from "./context/ContextProvider";
+import ProductivityChart from "./components/ProductivityChart";
 
 const CATEGORY = ["Unproductive", "Productive", "Neutral"];
 
@@ -29,9 +31,9 @@ const getWorkDuration = (data) => {
     moment(data.datein).isSame(moment(), "day") && data.timeout === null
       ? moment().diff(moment(data.timein, "HH:mm:ss"), "seconds")
       : moment(data.timeout, "HH:mm:ss").diff(
-          moment(data.timein, "HH:mm:ss"),
-          "seconds"
-        );
+        moment(data.timein, "HH:mm:ss"),
+        "seconds"
+      );
   return secondsToHuman(diff);
 };
 
@@ -196,6 +198,7 @@ const ActivityTracking = () => {
                   productivity={productivity}
                   rawApps={rawApps}
                 />
+                {/* <ProductivityChart /> */}
               </div>
               <div className="col-span-1">
                 <div className="grid grid-cols-3 gap-4">
@@ -265,6 +268,7 @@ const ActivityTracking = () => {
                 title={"Productive apps"}
                 apps={apps.Productive}
                 className={"bg-success text-success-foreground"}
+                empId={empId}
               />
             </div>
             <div className="col-span-1">
@@ -272,6 +276,7 @@ const ActivityTracking = () => {
                 title={"Unproductive apps"}
                 apps={apps.Unproductive}
                 className={"bg-warning text-warning-foreground"}
+                empId={empId}
               />
             </div>
             <div className="col-span-1">
@@ -279,6 +284,7 @@ const ActivityTracking = () => {
                 title={"Neutral apps"}
                 apps={apps.Neutral}
                 className={"bg-muted text-muted-foreground"}
+                empId={empId}
               />
             </div>
           </div>

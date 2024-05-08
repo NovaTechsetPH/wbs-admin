@@ -1,5 +1,5 @@
-// import axiosClient from "@/axios-client";
-// import { AlertDialog } from "@/components/ui/alert-dialog";
+import React, { useState } from "react";
+import { toast } from "sonner";
 import {
   Dialog,
   DialogContent,
@@ -10,20 +10,10 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Switch } from "@/components/ui/switch";
-// import { FormDescription } from "@/components/ui/form";
 import { cn } from "@/lib/utils";
 import { FilePlusIcon } from "@radix-ui/react-icons";
 import { Button } from "@ui/button";
-// import {
-//   Card,
-//   CardContent,
-//   CardDescription,
-//   CardFooter,
-//   CardHeader,
-//   CardTitle,
-// } from "@ui/card";
 import { Input } from "@ui/input";
-import { Label } from "@ui/label";
 import {
   Select,
   SelectContent,
@@ -32,43 +22,100 @@ import {
   SelectValue,
 } from "@ui/select";
 import { Textarea } from "@ui/textarea";
-import { useState } from "react";
-import { toast } from "sonner";
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 
-export function NewCategory({ className }) {
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import axiosClient from "@/axios-client";
+
+const formSchema = z.object({
+  productivityType: z.enum(["1", "0"], {
+    required_error: "You need to select the productivity type.",
+  }),
+  priorityLevel: z.enum(["1", "2", "3"], {
+    required_error: "You need to select the priority level.",
+  }),
+  term: z.string().min(6, { message: "You need to enter a search term." }), // {required_error: }
+
+  description: z.string().min(6, {
+    message: "Description must be at least 6 characters",
+  }),
+  headerName: z.string().min(6, {
+    message: "Header name must be at least 6 characters",
+  }),
+  applyChanges: z.boolean(),
+});
+
+export const NewCategory = ({ className }) => {
   const [open, setOpen] = useState(false);
-
   const handleClose = () => setOpen(false);
 
-  const handleSubmit = (event) => {
+  const form = useForm({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      productivityType: "1",
+      priorityLevel: "2",
+      term: "",
+      description: "",
+      headerName: "",
+      applyChanges: false,
+    },
+  });
+
+  function renameKeys(obj, newKeys) {
+    const keyValues = Object.keys(obj).map((key) => {
+      const newKey = newKeys[key] || key;
+      return { [newKey]: obj[key] };
+    });
+    return Object.assign({}, ...keyValues);
+  }
+
+  async function onSubmit(values) {
+    const newVals = await renameKeys(values, {
+      productivityType: "is_productive",
+      priorityLevel: "priority_id",
+      term: "name",
+      description: "description",
+      headerName: "header_name",
+      applyChanges: "apply_changes",
+    });
+
+    console.log(newVals);
     const promise = () =>
       new Promise((resolve, reject) => {
         setOpen(false);
-        setTimeout(() => {
-          resolve(true);
-        }, 2000);
-
-        // axiosClient
-        //   .post(`/categories`, {
-        //     params: {
-
-        //     },
-        //   })
-        //   .then((resp) => resolve(formatExcelData(resp.data.data, module)))
-        //   .catch((err) => reject(err));
+        axiosClient.post("/categories", newVals).then(
+          (resp) => resolve(resp),
+          (err) => reject(err)
+        );
       });
 
     toast.promise(promise, {
       loading: "Applying changes...",
       success: (resp) => {
-        return `Added category and applied changes`;
+        return `${JSON.stringify(resp.data.message)}`;
       },
-      error: (err) => console.log(err),
+      error: (err) => {
+        return `Error: ${err}`;
+      },
       action: {
         label: "Close",
         onClick: () => console.log("Event has been created"),
       },
     });
+  }
+
+  const onErrors = (errors) => {
+    console.log(errors, "error");
   };
 
   return (
@@ -85,76 +132,143 @@ export function NewCategory({ className }) {
       </DialogTrigger>
       <DialogContent className="grid gap-6">
         <DialogHeader>
-          <DialogTitle>Report an issue</DialogTitle>
+          <DialogTitle>Add new category</DialogTitle>
           <DialogDescription>
-            What area are you having problems with?
+            Add a new category to your list.
           </DialogDescription>
         </DialogHeader>
-        <form onSubmit={handleSubmit} className="grid gap-6">
-          <div className="grid grid-cols-2 gap-4">
-            <div className="grid gap-2">
-              <Label htmlFor="productivity_type">Type</Label>
-              <Select defaultValue="productive">
-                <SelectTrigger id="productivity_type">
-                  <SelectValue placeholder="Select" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="productive">Productive</SelectItem>
-                  <SelectItem value="unproductive">Unproductive</SelectItem>
-                </SelectContent>
-              </Select>
+        <Form {...form}>
+          <form
+            onSubmit={form.handleSubmit(onSubmit, onErrors)}
+            className="grid gap-6"
+          >
+            <div className="grid grid-cols-2 gap-4">
+              <div className="grid gap-2">
+                <FormField
+                  control={form.control}
+                  name="productivityType"
+                  render={({ field: { onChange, ...field } }) => (
+                    <FormItem>
+                      <FormLabel>Productivity Type</FormLabel>
+                      <FormControl>
+                        <Select {...field} onValueChange={onChange}>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="1">Productive</SelectItem>
+                            <SelectItem value="0">Unproductive</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+              <div className="grid gap-2">
+                <FormField
+                  control={form.control}
+                  name="priorityLevel"
+                  render={({ field: { onChange, ...field } }) => (
+                    <FormItem>
+                      <FormLabel>Priority Level</FormLabel>
+                      <FormControl>
+                        <Select onValueChange={onChange} {...field}>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select Level" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="1">High</SelectItem>
+                            <SelectItem value="2">Medium</SelectItem>
+                            <SelectItem value="3">Low</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
             </div>
             <div className="grid gap-2">
-              <Label htmlFor="security-level">Priority Level</Label>
-              <Select defaultValue="2">
-                <SelectTrigger
-                  id="security-level"
-                  className="line-clamp-1 w-[160px] truncate"
-                >
-                  <SelectValue placeholder="Select level" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="1">High</SelectItem>
-                  <SelectItem value="2">Medium</SelectItem>
-                  <SelectItem value="3">Low</SelectItem>
-                </SelectContent>
-              </Select>
+              <FormField
+                control={form.control}
+                name="term"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Term</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Enter a term or phrase" {...field} />
+                    </FormControl>
+                    <FormDescription>
+                      *Item description that will match to this term will be
+                      tagged to this category
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              {/* Header Name */}
+              <FormField
+                control={form.control}
+                name="headerName"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Header Name</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Enter a Header Name" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
             </div>
-          </div>
-          <div className="grid gap-2">
-            <Label htmlFor="term">Term</Label>
-            <Input id="term" placeholder="Enter a term or phrase" />
-            <div className="text-gray-500 text-sm italic">
-              *Item description that will match to this term will be tagged to
-              this category
+            <div className="grid gap-2">
+              {/* Description */}
+              <FormField
+                control={form.control}
+                name="description"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Description</FormLabel>
+                    <FormControl>
+                      <Textarea
+                        placeholder="Category description."
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
             </div>
-          </div>
-          <div className="grid gap-2">
-            <Label htmlFor="header_name">Header Name</Label>
-            <Input id="header_name" placeholder="Display name" />
-          </div>
-          <div className="grid gap-2">
-            <Label htmlFor="description">Description</Label>
-            <Textarea id="description" placeholder="Category description." />
-          </div>
-          <div className="flex items-center justify-between space-x-2">
-            <Label htmlFor="apply_change" className="flex flex-col space-y-1">
-              <span>Apply changes to existing data?</span>
-              {/* <span className="font-normal leading-snug text-muted-foreground">
-
-  </span> */}
-            </Label>
-            <Switch id="apply_change" />
-          </div>
-        </form>
-
-        <DialogFooter className="justify-between space-x-2">
-          <Button onClick={handleClose} variant="outline">
-            Cancel
-          </Button>
-          <Button onClick={handleSubmit}>Submit</Button>
-        </DialogFooter>
+            <div className="flex items-center justify-between space-x-2">
+              <FormField
+                control={form.control}
+                name="applyChanges"
+                render={({ field: { onChange, ...field } }) => (
+                  <FormItem>
+                    <FormLabel className="flex flex-col space-y-1">
+                      Apply Changes
+                    </FormLabel>
+                    <FormControl>
+                      <Switch onCheckedChange={onChange} {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+            <DialogFooter className="justify-between space-x-2">
+              <Button onClick={handleClose} type="button" variant="outline">
+                Cancel
+              </Button>
+              <Button type="submit">Submit</Button>
+            </DialogFooter>
+          </form>
+        </Form>
       </DialogContent>
     </Dialog>
   );
-}
+};

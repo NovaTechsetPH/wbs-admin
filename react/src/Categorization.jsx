@@ -6,52 +6,44 @@ import { Separator } from "@ui/separator";
 //=========
 import { columns } from "@/components/extra/categorization/columns";
 import { DataTable } from "@/components/extra/categorization/data-table";
-import { useEffect, useState } from "react";
+// import { useEffect, useState } from "react";
 import axiosClient from "./axios-client";
 import moment from "moment";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "./components/ui/tabs";
 import TabContents from "./components/extra/uncategorized/tab-contents";
 import { DateRangePicker } from "./components/extra/date-range-picker";
 import { DatePicker } from "./components/extra/date-picker";
+import { useQuery } from "@tanstack/react-query";
 
 import { Button } from "@/components/ui/button";
 
 const Categorization = () => {
-  const [data, setData] = useState([]);
-
-  // const [dateRange, setDateRange] = useState({
-  //   from: moment().subtract(7, "days").toDate(),
-  //   to: moment().toDate(),
-  // });
-
-  useEffect(() => {
-    axiosClient
-      .get("/categories")
-      .then(async ({ data }) => {
-        let tmpData = [];
-        await data.data.forEach((item) => {
-          tmpData.push({
-            id: item.id,
-            name: item.name,
-            description: item.description,
-            is_productive: item.is_productive,
-            header_name: item.header_name,
-            icon: item.icon,
-            abbreviation: item.abbreviation,
-            priority_id: item.priority_id,
-//<<<<<<<<< Temporary merge branch 1
-            updated_at:
-              item.updated_at ??
-              moment(item.updated_at).format("YYYY-MM-DD HH:mm:ss"),
-            created_at: item.created_at
-              ? moment(item.created_at).format("YYYY-MM-DD HH:mm:ss")
-              : null,
-          });
+  const { isLoading, isError, data } = useQuery({
+    queryKey: ["categories"],
+    queryFn: async () => {
+      const res = await axiosClient.get("/categories");
+      let tmpData = [];
+      await res.data.data.forEach((item) => {
+        tmpData.push({
+          id: item.id,
+          name: item.name,
+          description: item.description,
+          is_productive: item.is_productive,
+          header_name: item.header_name,
+          icon: item.icon,
+          abbreviation: item.abbreviation,
+          priority_id: item.priority_id,
+          updated_at:
+            item.updated_at ??
+            moment(item.updated_at).format("YYYY-MM-DD HH:mm:ss"),
+          created_at: item.created_at
+            ? moment(item.created_at).format("YYYY-MM-DD HH:mm:ss")
+            : null,
         });
-        setData(tmpData);
-      })
-      .catch((err) => console.log(err));
-  }, []);
+      });
+      return tmpData;
+    },
+  });
 
   return (
     <DashboardContextProvider>
@@ -81,7 +73,12 @@ const Categorization = () => {
             <TabContents />
           </TabsContent>
           <TabsContent value="categories">
-            <DataTable data={data} columns={columns} />
+            <DataTable
+              data={data}
+              isLoading={isLoading}
+              isError={isError}
+              columns={columns}
+            />
           </TabsContent>
         </Tabs>
 

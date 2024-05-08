@@ -4,8 +4,11 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\AppCategories;
+use App\Models\RunningApps;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Redis;
 
 class AppCategoriesController extends Controller
 {
@@ -20,6 +23,7 @@ class AppCategoriesController extends Controller
             ->orderBy('id', 'ASC')
             ->get();
 
+        Redis::set('categories', $categories, 'EX', 21600);
         return response()->json([
             'data' => $categories,
             'message' => 'Successfully retrieved all categories',
@@ -45,9 +49,20 @@ class AppCategoriesController extends Controller
                 'header_name' => $request->header_name,
                 'is_productive' => $request->is_productive,
                 'priority_id' => $request->priority_id,
-                'abbreviation' => $request->abbreviation,
+                'abbreviation' => $request->abbreviation ?? strtoupper(substr($request->name, 0, 2)),
                 'description' => $request->description,
             ]);
+
+            $message = 'Successfully created category ' . $category->name;
+            if ($request->apply_changes) {
+                $update = RunningApps::whereIn('category_id', [6])
+                    ->whereDate('created_at', '>=', Carbon::now()->subDays(7))
+                    ->where('description', 'LIKE', "%{$request->name}%")
+                    ->update([
+                        'category_id' => $category->id,
+                    ]);
+                $message = "Successfully updated {$update} apps to category {$category->name}";
+            }
         } catch (\Throwable $th) {
             return response()->json([
                 'error' => $th->getMessage(),
@@ -55,7 +70,7 @@ class AppCategoriesController extends Controller
         }
         return response()->json([
             'data' => $category,
-            'message' => 'Successfully retrieved category',
+            'message' => $message,
         ]);
     }
 

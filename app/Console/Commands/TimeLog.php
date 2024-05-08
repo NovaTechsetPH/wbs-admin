@@ -6,7 +6,7 @@ use Illuminate\Console\Command;
 use App\Models\RunningApps;
 use App\Models\TrackRecords;
 use App\Models\Employee;
-
+use App\Models\TempTaskrunning;
 use Carbon\Carbon;
 
 class TimeLog extends Command
@@ -39,32 +39,35 @@ class TimeLog extends Command
      */
     public function handle()
     {
-        $ref_date = '2024-04-15';
-        $members = Employee::select('id')->whereIn('team_id', [10])->get();
-        $tracks = TrackRecords::whereDate('datein', '=', $ref_date)
-            ->whereIn('userid', $members->pluck('id'))
+        $ref_date = '2024-05-06';
+        // $members = Employee::select('id')->whereIn('team_id', [10])->get();
+        // $tracks = TrackRecords::whereDate('datein', '=', $ref_date)
+        //     ->whereIn('userid', $members->pluck('id'))
+        //     ->get();
+
+        $budols = RunningApps::where('taskid', 4164)
+            ->whereBetween('time', [Carbon::parse('12:00'), Carbon::parse('13:45')])
             ->get();
 
-        $this->info('Logs: ' . $tracks->count());
-        foreach ($tracks as $track) {
+        $this->info('Logs: ' . $budols->count());
+        foreach ($budols as $budol) {
             // $employee = Employee::find($log->userid);
             // $this->info($log->time);
-            $insert = RunningApps::insert([
-                'userid' => $track->userid,
-                'taskid' => $track->id,
-                'description' => 'Team meeting',
-                'category_id' => 155,
-                'date' => '2024-04-15',
-                'time' => '13:30',
-                'end_time' => '15:30',
-                'duration' => 7200,
-                'status' =>  'closed',
+            $inserted = TempTaskrunning::create([
+                'userid' => 20,
+                'taskid' => 4164,
+                'description' => $budol->description,
+                'date' => $ref_date,
+                'time' => Carbon::parse($budol->time)->addHours(10)->toTimeString(),
+                'status' => 'Closed',
+                'category_id' => $budol->category_id,
+                'end_time' => Carbon::parse($budol->end_time)->addHours(10)->toTimeString(),
                 'platform' => 'desktop',
                 'type' => 'actual',
             ]);
 
-            if (!$insert) {
-                $this->info('Error: ' . $track->id);
+            if ($inserted) {
+                $this->info('data: ' . json_encode($inserted));
             }
         }
     }

@@ -7,32 +7,36 @@ import { DataTableViewOptions } from "./data-table-view-options";
 // import { DataTableFacetedFilter } from "./data-table-faceted-filter";
 
 // import { DialogAdd } from "./add";
-import { useState } from "react";
+// import { useState } from "react";
 import { NewCategory } from "./new-category";
+import { useState } from "react";
 
 export function DataTableToolbar({ table }) {
   const isFiltered = table.getState().columnFilters.length > 0;
-  const [employeeFilter, setEmployeeFilter] = useState("");
-  const handleFilterByEmployee = (event) => {
-    // table.getColumn("employee")?.setFilterValue(event.target.value)
-    setEmployeeFilter(event.target.value);
-  };
+  // const [employeeFilter, setEmployeeFilter] = useState("");
+  const [searchFilter, setSearchFilter] = useState("");
+  // const handleFilterByEmployee = (event) => {
+  //   table.getColumn("employee")?.setFilterValue(event.target.value);
+  //   // setEmployeeFilter(event.target.value);
+  // };
 
   return (
     <div className="flex items-center justify-between">
       <div className="flex flex-1 items-center space-x-2">
-        <Input
+        {/* <Input
           placeholder="Filter by employee..."
-          value={employeeFilter}
+          // value={employeeFilter}
+          value={table.getColumn("name")?.getFilterValue() ?? ""}
           onChange={handleFilterByEmployee}
           className="h-8 w-[150px] lg:w-[250px]"
-        />
+        /> */}
         <Input
-          placeholder="Search Task description..."
-          value={table.getColumn("description")?.getFilterValue() ?? ""}
-          onChange={(event) =>
-            table.getColumn("description")?.setFilterValue(event.target.value)
-          }
+          placeholder="Search..."
+          value={searchFilter}
+          onChange={(event) => {
+            table.getColumn("description")?.setFilterValue(event.target.value);
+            setSearchFilter(event.target.value);
+          }}
           className="h-8 w-[150px] lg:w-[250px]"
         />{" "}
         {/* {table.getColumn("is_productive") && (

@@ -2,11 +2,12 @@ import * as React from "react";
 import {
   flexRender,
   getCoreRowModel,
-  // getFacetedRowModel,
-  // getFacetedUniqueValues,
-  // getFilteredRowModel,
-  // getPaginationRowModel,
-  // getSortedRowModel,
+  getExpandedRowModel,
+  getFacetedRowModel,
+  getFacetedUniqueValues,
+  getFilteredRowModel,
+  getPaginationRowModel,
+  getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
 
@@ -19,10 +20,15 @@ import {
   TableRow,
 } from "@ui/table";
 
-import { DataTablePagination } from "./data-table-pagination";
 import { DataTableToolbar } from "./data-table-toolbar";
+import PaginationComponent from "../expandable/pagination-component";
+import { Skeleton } from "@/components/ui/skeleton";
 
-export function DataTable({ columns, data, total, perPage, currentPage }) {
+const getRandomWidth = (min = 100, max = 250) => {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+};
+
+export function DataTable({ columns, data, isLoading, error }) {
   // eslint-disable-next-line no-unused-vars
   const [rowSelection, setRowSelection] = React.useState({});
   // eslint-disable-next-line no-unused-vars
@@ -34,51 +40,48 @@ export function DataTable({ columns, data, total, perPage, currentPage }) {
   // eslint-disable-next-line no-unused-vars
   const [sorting, setSorting] = React.useState([]);
 
-  // const table = useReactTable({
-  //   data,
-  //   columns,
-  //   state: {
-  //     sorting,
-  //     columnVisibility,
-  //     rowSelection,
-  //     columnFilters,
-  //   },
-  //   enableRowSelection: true,
-  //   onRowSelectionChange: setRowSelection,
-  //   onSortingChange: setSorting,
-  //   onColumnFiltersChange: setColumnFilters,
-  //   onColumnVisibilityChange: setColumnVisibility,
-  //   getCoreRowModel: getCoreRowModel(),
-  //   // rowCount: 100,
-  //   getFilteredRowModel: getFilteredRowModel(),
-  //   getPaginationRowModel: getPaginationRowModel(),
-  //   // manualPagination: true,
-  //   getSortedRowModel: getSortedRowModel(),
-  //   getFacetedRowModel: getFacetedRowModel(),
-  //   getFacetedUniqueValues: getFacetedUniqueValues(),
-  // });
+  const [expanded, setExpanded] = React.useState({});
 
   const table = useReactTable({
     data,
     columns,
-    pageCount: Math.floor(total / perPage) ?? -1, //you can now pass in `rowCount` instead of pageCount and `pageCount` will be calculated internally (new in v8.13.0)
-    rowCount: total, // new in v8.13.0 - alternatively, just pass in `pageCount` directly
     state: {
-      pagination: {
-        pageIndex: (currentPage ?? 1) - 1,
-        pageSize: perPage,
-      },
       sorting,
       columnVisibility,
       rowSelection,
       columnFilters,
+      expanded,
+      isLoading,
+      error,
     },
-    // onPaginationChange: setPagination,
+    enableRowSelection: true,
     getCoreRowModel: getCoreRowModel(),
-    manualPagination: true, //we're doing manual "server-side" pagination
-    // getPaginationRowModel: getPaginationRowModel(), // If only doing manual pagination, you don't need this
+    getFilteredRowModel: getFilteredRowModel(),
+    getSortedRowModel: getSortedRowModel(),
+    getExpandedRowModel: getExpandedRowModel(),
+    getPaginationRowModel: getPaginationRowModel(),
+    getFacetedRowModel: getFacetedRowModel(),
+    getFacetedUniqueValues: getFacetedUniqueValues(),
+    onRowSelectionChange: setRowSelection,
+    onSortingChange: setSorting,
+    onColumnFiltersChange: setColumnFilters,
+    onColumnVisibilityChange: setColumnVisibility,
+    onExpandedChange: setExpanded,
+    getSubRows: (row) => row.subRows,
     debugTable: true,
   });
+
+  const SkellyBody = ({ length = 10 }) => {
+    return [...Array(length).keys()].map(() => (
+      <TableRow>
+        {[...Array(columns.length).keys()].map((x) => (
+          <TableCell key={x}>
+            <Skeleton className={`h-[25px] w-[${getRandomWidth}px]`} />
+          </TableCell>
+        ))}
+      </TableRow>
+    ));
+  };
 
   return (
     <div className="space-y-4">
@@ -103,38 +106,44 @@ export function DataTable({ columns, data, total, perPage, currentPage }) {
               </TableRow>
             ))}
           </TableHeader>
-          <TableBody>
-            {table.getRowModel().rows?.length ? (
-              table.getRowModel().rows.map((row) => (
-                <TableRow
-                  key={row.id}
-                  data-state={row.original.status === "Pending" && "selected"}
-                  // className={row.original.status == "Pending" && "font-bold"}
-                >
-                  {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext()
-                      )}
-                    </TableCell>
-                  ))}
+          {isLoading ? (
+            <TableBody>
+              <SkellyBody />
+            </TableBody>
+          ) : (
+            <TableBody>
+              {table.getRowModel().rows?.length ? (
+                table.getRowModel().rows.map((row) => (
+                  <TableRow
+                    key={row.id}
+                    // data-state={row.original.level === 1 && "selected"}
+                    className={row.original.level === 1 && "font-bold"}
+                  >
+                    {row.getVisibleCells().map((cell) => (
+                      <TableCell key={cell.id}>
+                        {flexRender(
+                          cell.column.columnDef.cell,
+                          cell.getContext()
+                        )}
+                      </TableCell>
+                    ))}
+                  </TableRow>
+                ))
+              ) : (
+                <TableRow>
+                  <TableCell
+                    colSpan={columns.length}
+                    className="h-24 text-center"
+                  >
+                    No results.
+                  </TableCell>
                 </TableRow>
-              ))
-            ) : (
-              <TableRow>
-                <TableCell
-                  colSpan={columns.length}
-                  className="h-24 text-center"
-                >
-                  No results.
-                </TableCell>
-              </TableRow>
-            )}
-          </TableBody>
+              )}
+            </TableBody>
+          )}
         </Table>
       </div>
-      <DataTablePagination table={table} />
+      {!isLoading && <PaginationComponent table={table} />}
     </div>
   );
 }

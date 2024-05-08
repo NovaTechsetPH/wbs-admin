@@ -52,10 +52,12 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // Dashboard
     Route::post('/dashboard/apps', [EmployeeController::class, 'getAllDailyOpenedApps']);
+    Route::post('/dashboard/categoryapps', [EmployeeController::class, 'getAllDailyOpenedByCategory']);
     Route::get('/dashboard/workhrs/{date?}/{teamid?}', [EmployeeController::class, 'getWorkHrs']);
 
     // Productivity Dashboard
     Route::get('/productivity/team/{team_id}/{date?}', [ActivityTrackController::class, 'getTeamProductivityData']);
+    Route::get('/productivity/duration', [ActivityTrackController::class, 'getNeutralProductiveDuration']);
 
     // Employees
     Route::get('/employees/absent', [EmployeeController::class, 'absent']);
@@ -101,10 +103,13 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/employee/status/{empid}', [ActivityTrackController::class, 'getActiveStatus']);
     Route::patch('/employee/status', [ActivityTrackController::class, 'updateActiveStatus']);
 
+    // Tracking
     Route::get('/tracking/data/{empid}/{date?}', [TimeLogsController::class, 'graphData']);
     Route::get('/redis/tracking/data/{empid}/{date}', [TimeLogsController::class, 'redisGraphData']);
     Route::get('/tracking/apps/data', [TimeLogsController::class, 'getAppData']);
     Route::get('/test-tracking/apps/data', [TimeLogsController::class, 'getAppDataTest']);
+    Route::get('/tracking/employee', [ActivityTrackController::class, 'getActivityByEmployee']);
+    Route::get('/tracking/recent', [EmployeeController::class, 'recentLogs']);
 });
 
 Route::post('/signup', [AuthController::class, 'signup']);

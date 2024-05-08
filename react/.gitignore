@@ -8,10 +8,15 @@ pnpm-debug.log*
 lerna-debug.log*
 
 node_modules
-dist/*
 dist-ssr
 public/images/*
 *.local
+
+# exclude everything
+dist
+
+# exception to the rule
+# !dist/.gitignore
 
 # Editor directories and files
 .vscode/*

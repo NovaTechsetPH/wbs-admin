@@ -2,9 +2,28 @@ import { cn } from "@/lib/utils";
 import { Button } from "@ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@ui/avatar";
-import { ScrollArea, ScrollBar } from "../ui/scroll-area";
+import { ScrollArea, ScrollBar } from "@ui/scroll-area";
 
-export function TeamAppList({ title, apps, className }) {
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+
+import ShowExpandableApps from "./expandable/dashboard/show-expandable-apps";
+import { InfoCircledIcon } from "@radix-ui/react-icons";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "../ui/tooltip";
+
+export function TeamAppList({ title, apps, className, empId }) {
   const convertSeconds = (seconds) => {
     const hours = Math.floor(seconds / 3600);
     const minutes = Math.floor((seconds % 3600) / 60);
@@ -15,9 +34,8 @@ export function TeamAppList({ title, apps, className }) {
     const secondString = remainingSeconds > 0 ? `${remainingSeconds}s` : "";
 
     if (hours > 0) {
-      return `${hourString} ${minuteString || "0 m"} ${
-        secondString && `${secondString}`
-      }`;
+      return `${hourString} ${minuteString || "0 m"} ${secondString && `${secondString}`
+        }`;
     } else if (!hours && minutes > 0) {
       return `${minuteString} ${secondString && `${secondString}`}`;
     }
@@ -86,10 +104,54 @@ export function TeamAppList({ title, apps, className }) {
         </ScrollArea>
       </CardContent>
       <CardFooter className={"pt-5"}>
-        <Button variant="outline" className="w-full">
-          View all
-        </Button>
+        <DialogBox
+          title={title}
+          btnTrigger={
+            <Button variant="outline" className="px-3 shadow-none w-full">
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <InfoCircledIcon className="mr-1 h-4 w-4 blink" />
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Beta</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+              View More
+            </Button>
+          }
+          empId={empId}
+        />
       </CardFooter>
     </Card>
+  );
+}
+
+export function DialogBox({ btnTrigger, title, empId }) {
+  return (
+    <Dialog>
+      <DialogTrigger asChild>
+        {/* <Button variant="outline">Edit Profile</Button> */}
+        {btnTrigger}
+      </DialogTrigger>
+      <DialogContent className="max-h-[100vh] sm:max-w-[425px] lg:max-w-[800px] xl:max-w-[1140px]">
+        <DialogHeader>
+          <DialogTitle>{title}</DialogTitle>
+          <DialogDescription>
+            Detailed logs of your team's accessed apps.
+          </DialogDescription>
+        </DialogHeader>
+        {/* Contents here */}
+        <ScrollArea className="max-h-[75vh]">
+          <ShowExpandableApps prodType={title} empId={empId} />
+        </ScrollArea>
+        <DialogFooter>
+          {/* <Button type="button" variant="outline">
+            Close
+          </Button> */}
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   );
 }

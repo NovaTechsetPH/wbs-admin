@@ -471,6 +471,8 @@ class EmployeeController extends Controller
             ->where('date', $date->toDateString())
             ->whereColumn('time', '<', 'end_time')
             ->whereIn('userid', $emps_under)
+            // ->whereIn('category_id', $categories)
+            // ->limit(100) // must disabled
             ->chunk(1000, function ($runningapps) use (&$data) {
                 foreach ($runningapps as $running) {
                     $employee = $running->employee;
@@ -482,8 +484,11 @@ class EmployeeController extends Controller
                         'time' => $running->time,
                         'end_time' => $running->end_time,
                         'status' => $running->status,
+                        'duration' => $running->duration,
                         'employee' => [
                             'id' => $employee->id,
+                            'name' => $employee->getFullNameAttribute(),
+                            'employee_id' => $employee->employee_id,
                         ],
                         'category' => [
                             'id' => $category->id,
@@ -499,6 +504,88 @@ class EmployeeController extends Controller
 
         $ttl = $is_past ? 3600 : $this->seconds_ten_min_ttl;
         Redis::set('admin_apps:' . $request->teamId . ':' . $date->toDateString(), json_encode($data), 'EX', $ttl);
+
+        return response()->json([
+            'count' => count($data),
+            'redis' => 'miss',
+            'date' => $date->toDateString(),
+            'data' => $data ?? [],
+            'message' => 'Success'
+        ], 200);
+    }
+
+    public function getAllDailyOpenedByCategory(Request $request)
+    {
+        $request->validate([
+            'teamId' => 'required|exists:teams,id',
+            'date' => 'date',
+        ]);
+
+        $date = Carbon::parse($request->date) ?? Carbon::now();
+        $is_past = Carbon::now()->startOfDay()->gt($date);
+
+        if (!request()->has('empId')) {
+
+            $redis_apps = Redis::get('category_apps:' . $request->teamId . ':' . $date->toDateString() . ':' . $request->isProductive);
+
+            if ($redis_apps != "[]" && $redis_apps != null)
+                return response()->json([
+                    'count' => count(json_decode($redis_apps)),
+                    'redis' => 'hit',
+                    'data' => json_decode($redis_apps),
+                    'date' => $date->toDateString(),
+                ]);
+
+
+            $emps_under = Employee::select('id')
+                ->where('team_id', $request->teamId)->get();
+        } else {
+            $emps_under = [$request->empId];
+        }
+
+        $categories = AppCategories::select('id')
+            ->where('is_productive', $request->isProductive)->get();
+
+        $data = [];
+        RunningApps::with('employee', 'category')
+            ->where('date', $date->toDateString())
+            ->whereColumn('time', '<', 'end_time')
+            ->whereIn('userid', $emps_under)
+            ->whereIn('category_id', $categories)
+            // ->limit(100) // must disabled
+            ->chunk(1000, function ($runningapps) use (&$data) {
+                foreach ($runningapps as $running) {
+                    $employee = $running->employee;
+                    $category = $running->category;
+                    $data[] = [
+                        'userid' => $running->id,
+                        'description' => $running->description,
+                        'date' => $running->date,
+                        'time' => $running->time,
+                        'end_time' => $running->end_time,
+                        'status' => $running->status,
+                        'duration' => $running->duration,
+                        'employee' => [
+                            'id' => $employee->id,
+                            'name' => $employee->getFullNameAttribute(),
+                            'employee_id' => $employee->employee_id,
+                        ],
+                        'category' => [
+                            'id' => $category->id,
+                            'name' => $category->name,
+                            'is_productive' => $category->is_productive,
+                            'header_name' => $category->header_name,
+                            'icon' => $category->icon,
+                            'abbreviation' => $category->abbreviation,
+                        ]
+                    ];
+                }
+            });
+
+        if (!request()->has('empId')) {
+            $ttl = $is_past ? 3600 : $this->seconds_ten_min_ttl;
+            Redis::set('category_apps:' . $request->teamId . ':' . $date->toDateString() . ':' . $request->isProductive, json_encode($data), 'EX', $ttl);
+        }
 
         return response()->json([
             'count' => count($data),
@@ -799,7 +886,7 @@ class EmployeeController extends Controller
 
             // $employee = Employee::find($empid);
             if (!$empid)
-                throw new \Exception('Employee not found 1');
+                throw new \Exception('Employee not found');
 
             $employee = Employee::where('employee_id', $empid)->first();
             if (!$employee)
@@ -874,6 +961,27 @@ class EmployeeController extends Controller
                 // 'unproductive' => $unproductive,
                 // 'neutral' => $neutral
             ]
+        ]);
+    }
+
+    public function recentLogs(Request $request)
+    {
+        $request->validate([
+            'userid' => 'exists:accounts,id|required',
+            'date' => 'date',
+            'count' => 'numeric'
+        ]);
+
+        $limit = request()->has('count') ? $request->count : 20;
+        $data = RunningApps::where('userid', $request->userid)
+            ->where('date', $request->date)
+            ->limit($limit)
+            ->orderBy('time', 'DESC')
+            ->get();
+
+        return response()->json([
+            'data' => $data,
+            'count' => count($data)
         ]);
     }
 }

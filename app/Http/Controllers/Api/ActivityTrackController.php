@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\AppCategories;
 use App\Models\RunningApps;
 use App\Models\Employee;
 use App\Models\TrackRecords;
@@ -180,6 +181,86 @@ class ActivityTrackController extends Controller
         return response()->json([
             'data' => $data,
             'message' => 'Success',
+        ], 200);
+    }
+
+    public function getNeutralProductiveDuration(Request $request)
+    {
+        try {
+            $request->validate([
+                'date' => 'required|date',
+                'userid' => 'required|integer|exists:accounts,id',
+            ]);
+
+            $date = Carbon::parse($request->date);
+            $employee = Employee::find($request->userid);
+            $track = TrackRecords::where('userid', $employee->id)
+                ->where('datein', $date->toDateString())
+                ->first();
+
+            if (!$track) {
+                return response()->json([
+                    'data' => 0,
+                    'message' => 'No data found',
+                ], 200);
+            }
+
+            $categories = AppCategories::select('id')->whereIn('is_productive', [1, 2])->get();
+
+            $duration = RunningApps::where('taskid', $track->id)
+                ->whereIn('category_id', $categories->pluck('id'))
+                ->sum('duration');
+        } catch (\Throwable $th) {
+            return response()->json([
+                'error' => $th->getMessage(),
+                'message' => 'Internal Server Error!',
+            ], 500);
+        }
+
+        return response()->json([
+            'data' => $duration,
+            'message' => 'Success',
+        ], 200);
+    }
+
+    public function getActivityByEmployee(Request $request)
+    {
+        $request->validate([
+            'employee_id' => 'exists:accounts,id|required'
+        ]);
+
+        $date = !request()->has('date') ? Carbon::now() : Carbon::parse($request->date);
+        $tracking = TrackRecords::where('userid', $request->employee_id)
+            ->where('datein', $date->toDateTimeLocalString())
+            ->first();
+
+        if (!$tracking) {
+            throw new Exception("No records found", 1);
+        }
+
+        $data = [];
+        $categories = [];
+        $apps = RunningApps::where('taskid', $tracking->id)->get();
+
+        foreach ($apps as $app) {
+            $key = array_search($app->category->name, $categories);
+            if (!in_array($app->category->name, $categories)) {
+                $data[] = [
+                    'name' => $app->category->name,
+                    'category_id' => $app->category_id,
+                    'duration' => $app->duration,
+                    'type' => $app->category->is_productive,
+                    'icon' => $app->category->icon
+                ];
+                array_push($categories, $app->category->name);
+            } else {
+                $data[$key]['duration'] += $app->duration;
+            }
+        }
+
+        return response()->json([
+            'data' => $data,
+            'message' => 'Success'
         ], 200);
     }
 }
