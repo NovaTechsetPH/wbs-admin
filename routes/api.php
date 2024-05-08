@@ -109,6 +109,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/tracking/apps/data', [TimeLogsController::class, 'getAppData']);
     Route::get('/test-tracking/apps/data', [TimeLogsController::class, 'getAppDataTest']);
     Route::get('/tracking/employee', [ActivityTrackController::class, 'getActivityByEmployee']);
+    Route::get('/tracking/recent', [EmployeeController::class, 'recentLogs']);
 });
 
 Route::post('/signup', [AuthController::class, 'signup']);
