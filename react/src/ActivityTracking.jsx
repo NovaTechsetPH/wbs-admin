@@ -51,6 +51,8 @@ const ActivityTracking = () => {
   });
   const [summary, setSummary] = useState({
     productive: "–– ––",
+    unproductive: "–– ––",
+    neutral: "–– ––",
     idle: "–– ––",
   });
   const [arrival, setArrival] = useState("--:--");
@@ -149,10 +151,24 @@ const ActivityTracking = () => {
 
         setProductivity(clonedSticks);
         setApps(listApps);
+
+        // Calculate total unproductive time and update the summary state
+        let unproductiveTime = listApps.Unproductive.reduce(
+          (total, app) => total + app.totalTime,
+          0
+        );
+        let neutralTime = listApps.Neutral.reduce(
+          (total, app) => total + app.totalTime,
+          0
+        );
+        setSummary((prevSummary) => ({
+          ...prevSummary,
+          unproductive: secondsToHuman(unproductiveTime),
+          neutral: secondsToHuman(neutralTime),
+        }));
       })
       .then(() => setLoading(false))
       .catch((err) => console.log(err));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [date, empId]);
 
   return (
@@ -182,12 +198,19 @@ const ActivityTracking = () => {
                 />
               </div>
               <div className="col-span-1">
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-3 gap-4">
                   <div className="col-span-1">
                     <Widget
                       loading={loading}
                       title={"Arrival time"}
                       content={arrival}
+                    />
+                  </div>
+                  <div className="col-span-1">
+                    <Widget
+                      loading={loading}
+                      title={"Productive time"}
+                      content={summary.productive}
                     />
                   </div>
                   <div className="col-span-1">
@@ -200,8 +223,15 @@ const ActivityTracking = () => {
                   <div className="col-span-1">
                     <Widget
                       loading={loading}
-                      title={"Productive time"}
-                      content={summary.productive}
+                      title={"Unproductive Time"}
+                      content={summary.unproductive}
+                    />
+                  </div>
+                  <div className="col-span-1">
+                    <Widget
+                      loading={loading}
+                      title={"Neutral Time"}
+                      content={summary.neutral}
                     />
                   </div>
                   <div className="col-span-1">
