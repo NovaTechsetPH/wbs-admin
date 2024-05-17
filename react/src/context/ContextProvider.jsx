@@ -5,6 +5,7 @@ const StateContext = createContext({
   currentTeam: null,
   token: null,
   notification: null,
+  processedFile: null,
   setUser: () => { },
   setToken: () => { },
   setNotification: () => { },
@@ -12,6 +13,7 @@ const StateContext = createContext({
   setEmployees: () => { },
   setTeams: () => { },
   setCurrentTeam: () => { },
+  setProcessedFile: () => { },
 });
 
 export const ContextProvider = ({ children }) => {
@@ -22,6 +24,7 @@ export const ContextProvider = ({ children }) => {
   const [employees, setEmployees] = useState({});
   const [teams, setTeams] = useState([]);
   const [currentTeam, setCurrentTeam] = useState(null);
+  const [processedFile, setProcessedFile] = useState({})
 
   const setToken = (token) => {
     _setToken(token);
@@ -61,6 +64,8 @@ export const ContextProvider = ({ children }) => {
         setTeams,
         currentTeam,
         setCurrentTeam,
+        processedFile,
+        setProcessedFile,
       }}
     >
       {children}

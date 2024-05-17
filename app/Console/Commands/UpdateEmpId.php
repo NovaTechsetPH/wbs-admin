@@ -2,6 +2,8 @@
 
 namespace App\Console\Commands;
 
+use App\Events\ReportExported;
+use App\Models\User;
 use Illuminate\Console\Command;
 
 class UpdateEmpId extends Command
@@ -25,5 +27,9 @@ class UpdateEmpId extends Command
      */
     public function handle()
     {
+        $user = User::find(1);
+        ReportExported::dispatch($user);
+        // echo json_encode($user);
+        return true;
     }
 }
