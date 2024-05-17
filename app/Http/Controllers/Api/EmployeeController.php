@@ -1018,4 +1018,13 @@ class EmployeeController extends Controller
         ]);
         //return $this->sendResponse($requestApproval, 'Request Approval Created Successfully.');
     }
+
+    public function updateUserForApproval(Request $request)
+    {
+        $user = Employee::find($request->id);
+        $user->status = $request->status;
+        $user->save();
+
+        return $user;
+    }
 }

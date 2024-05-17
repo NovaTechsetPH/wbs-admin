@@ -15,7 +15,7 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@ui/avatar";
 
 import { useStateContext } from "@/context/ContextProvider";
-import axiosClient from "@/axios-client";
+import axiosClient from "@/lib/axios-client";
 import { KeyRoundIcon } from "lucide-react";
 
 import { ChangePasswordDiaglog } from "./change-password-dialog";

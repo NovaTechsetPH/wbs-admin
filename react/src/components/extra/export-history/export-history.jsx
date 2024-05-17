@@ -1,5 +1,5 @@
 import React from "react";
-import axiosClient from "@/axios-client";
+import axiosClient from "@/lib/axios-client";
 import {
   DashboardContextProvider,
   useDashboardContext,

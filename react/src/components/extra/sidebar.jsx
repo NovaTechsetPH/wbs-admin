@@ -2,7 +2,7 @@ import { cn } from "@/lib/utils";
 import { Button, buttonVariants } from "@ui/button";
 import { Link, useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { LayersIcon } from "@radix-ui/react-icons";
+import { BarChartIcon, LayersIcon } from "@radix-ui/react-icons";
 import { Separator } from "../ui/separator";
 import { TeamSwitcher } from "../layout/team-switcher";
 
@@ -144,6 +144,11 @@ export function Sidebar({ className, open, setOpen }) {
       icon: <LayersIcon className="mr-2 h-4 w-4" />,
     },
     {
+      name: 'Utilization',
+      href: '/utilization',
+      icon: <BarChartIcon className='mr-2 h-4 w-4' />
+    },
+    {
       name: "Reports",
       href: "/reports",
       icon: (
@@ -194,7 +199,7 @@ export function Sidebar({ className, open, setOpen }) {
                     }),
                     "w-full justify-start",
                     currentRoute.includes(item.href) &&
-                      "dark:bg-muted dark:text-muted-foreground dark:hover:bg-muted dark:hover:text-white"
+                    "dark:bg-muted dark:text-muted-foreground dark:hover:bg-muted dark:hover:text-white"
                   )}
                 >
                   {item.icon}

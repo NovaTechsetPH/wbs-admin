@@ -12,6 +12,8 @@ import {
   QuestionMarkCircledIcon,
 } from "@radix-ui/react-icons";
 import { Button } from "@/components/ui/button";
+import axiosClient from '@/lib/axios-client';
+import { useNavigate } from 'react-router-dom';
 
 const labels = [
   {
@@ -64,6 +66,8 @@ export const priorities = [
   },
 ];
 
+
+
 const getIconColor = (value) => {
   switch (value) {
     case "Approved":
@@ -77,13 +81,34 @@ const getIconColor = (value) => {
   }
 };
 
-const handleApprove = (row) => {
-  console.log(row, "approve");
-};
+const ButtonComponent = ({ row }) => {
+  const navigate = useNavigate()
 
-const handleReject = (row) => {
-  console.log(row, "reject");
-};
+  const handleApprove = (row) => {
+    axiosClient
+      .post("/user-approval/update", {
+        status: "Approved",
+        id: row.original.id,
+      })
+      .then((res) => {
+        navigate('/employees')
+      })
+      .catch((err) => console.log(err));
+  };
+
+  const handleReject = (row) => {
+    console.log(row, "reject");
+  };
+
+  return (<div className="flex">
+    <Button size="3" variant="outline" onClick={() => handleApprove(row)}>
+      <CheckIcon className="h-4 w-4" color="green" />
+    </Button>
+    <Button size="3" variant="outline" onClick={() => handleReject(row)}>
+      <Cross1Icon className="h-4 w-4" color="red" />
+    </Button>
+  </div>)
+}
 
 export const columns = [
   {
@@ -167,16 +192,7 @@ export const columns = [
       <DataTableColumnHeader column={column} title="Action" />
     ),
     cell: ({ row }) => {
-      return (
-        <div className="flex">
-          <Button size="3" variant="outline" onClick={() => handleApprove(row)}>
-            <CheckIcon className="h-4 w-4" color="green" />
-          </Button>
-          <Button size="3" variant="outline" onClick={() => handleReject(row)}>
-            <Cross1Icon className="h-4 w-4" color="red" />
-          </Button>
-        </div>
-      );
+      return <ButtonComponent row={row} />;
     },
   },
 ];

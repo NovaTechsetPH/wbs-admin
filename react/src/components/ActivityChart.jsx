@@ -12,7 +12,7 @@ import {
 } from "chart.js";
 import * as Utils from "./../assets/utils";
 // import { secondsToHuman } from "@/lib/timehash";
-import axiosClient from "@/axios-client";
+import axiosClient from "@/lib/axios-client";
 import moment from "moment";
 import React, { useRef } from "react";
 

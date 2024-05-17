@@ -87,6 +87,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // UserApproval
     Route::get('/userapproval', [EmployeeController::class, 'getUserForApproval']);
+    Route::post('/user-approval/update', [EmployeeController::class, 'updateUserForApproval']);
 
     // Attendance
     Route::get('/attendance/weekly/{date?}/{teamid?}', [EmployeeController::class, 'getWeeklyAttendance']);

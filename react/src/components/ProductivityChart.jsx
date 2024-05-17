@@ -13,7 +13,7 @@ import {
   // Title,
 } from "chart.js";
 import * as Utils from "../assets/utils";
-import axiosClient from "@/axios-client";
+import axiosClient from "@/lib/axios-client";
 import moment from "moment";
 
 Chart.register(

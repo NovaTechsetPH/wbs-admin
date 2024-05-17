@@ -2,7 +2,7 @@
 import { useEffect } from "react";
 import { Navigate, Outlet, useLocation } from "react-router-dom";
 import { useStateContext } from "../context/ContextProvider";
-import axiosClient from "../axios-client.js";
+import axiosClient from "../lib/axios-client.js";
 
 import Navbar from "./layout/Navbar.jsx";
 import { Sidebar } from "./extra/sidebar";

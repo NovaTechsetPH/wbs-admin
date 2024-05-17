@@ -13,7 +13,7 @@ import { Label } from "@/components/ui/label";
 // import axios from "@/axios-client";
 
 import { Pencil } from "lucide-react";
-import axiosClient from "@/axios-client";
+import axiosClient from "@/lib/axios-client";
 
 export function DialogDemo({
   id,

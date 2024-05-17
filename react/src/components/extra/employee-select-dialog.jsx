@@ -10,7 +10,7 @@ import {
   CommandItem,
 } from "@ui/command";
 
-import axiosClient from "@/axios-client";
+import axiosClient from "@/lib/axios-client";
 import { Popover, PopoverContent, PopoverTrigger } from "@ui/popover";
 import { useQuery } from "@tanstack/react-query";
 import { useNavigate, useParams } from "react-router-dom";

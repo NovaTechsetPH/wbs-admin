@@ -2,7 +2,7 @@ import { useState } from "react";
 import ActivityChart from "../ActivityChart";
 import Widget from "../extra/widget";
 import { useQuery } from "@tanstack/react-query";
-import axiosClient, { axiosClientDev } from "@/axios-client";
+import axiosClient, { axiosClientDev } from "@/lib/axios-client";
 import { handleAllocateTime } from "@/lib/timehash";
 import moment from "moment";
 import { useParams } from "react-router-dom";

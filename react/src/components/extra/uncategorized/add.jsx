@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import axiosClient from "@/axios-client";
+import axiosClient from "@/lib/axios-client";
 
 import { FilePlus } from "lucide-react";
 import { cn } from "@/lib/utils";

@@ -35,7 +35,7 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import axiosClient from "@/axios-client";
+import axiosClient from "@/lib/axios-client";
 
 const formSchema = z.object({
   productivityType: z.enum(["1", "0"], {

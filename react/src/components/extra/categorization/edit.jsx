@@ -13,7 +13,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Pencil } from "lucide-react";
 // import axios from 'axios';
-import axiosClient from "../../../axios-client";
+import axiosClient from "../../../lib/axios-client";
 
 const EditCategoryDialog = ({ row, disabled }) => {
   const [editedFields, setEditedFields] = useState({

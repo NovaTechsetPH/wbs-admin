@@ -5,36 +5,36 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  // DropdownMenuRadioGroup,
+  // DropdownMenuRadioItem,
+  // DropdownMenuSeparator,
+  // DropdownMenuShortcut,
+  // DropdownMenuSub,
+  // DropdownMenuSubContent,
+  // DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from "@ui/dropdown-menu";
-import axiosClient from '@/lib/axios-client';
-import { useReducer } from 'react';
-import { exportTracking } from '@/lib/export-reports';
 
 // import { labels } from "../data/data"
 // import { taskSchema } from "../data/schema"
 
+// const labels = [
+//   {
+//     value: "bug",
+//     label: "Bug",
+//   },
+//   {
+//     value: "feature",
+//     label: "Feature",
+//   },
+//   {
+//     value: "documentation",
+//     label: "Documentation",
+//   },
+// ];
+
 export function DataTableRowActions({ row }) {
-  const rerender = useReducer(() => ({}), {})[1]
-
-  const handleDownloadFile = () => {
-    let id = row.original.id
-    exportTracking(id)
-  }
-
-  const handleCancel = () => {
-    axiosClient.post('/report/update-history', {
-      id: row.original.id,
-      status: 'failed'
-    })
-      .then((res) => {
-        console.log(res);
-        rerender()
-      })
-      .catch((err) => console.log(err))
-  }
-
-
+  // const task = row.original;
 
   return (
     <DropdownMenu>
@@ -48,9 +48,7 @@ export function DataTableRowActions({ row }) {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-[160px]">
-        <DropdownMenuItem onClick={handleDownloadFile} className='cursor-pointer'>Download</DropdownMenuItem>
-        {(row.original.status === 'pending') && <DropdownMenuItem onClick={handleCancel} className='cursor-pointer'>Cancel</DropdownMenuItem>}
-
+        <DropdownMenuItem>Edit</DropdownMenuItem>
         {/* <DropdownMenuItem>Make a copy</DropdownMenuItem>
         <DropdownMenuItem>Favorite</DropdownMenuItem>
         <DropdownMenuSeparator />

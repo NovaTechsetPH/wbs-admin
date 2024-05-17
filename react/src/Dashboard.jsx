@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useDashboardContext } from "@/context/DashboardContextProvider";
 // import ActivityChart from "./components/ActivityChart";
 import ProductivityChart from "./components/ProductivityChart";
-import axiosClient from "@/axios-client";
+import axiosClient from "@/lib/axios-client";
 
 import { ScrollArea } from "./components/ui/scroll-area";
 import { Separator } from "./components/ui/separator";

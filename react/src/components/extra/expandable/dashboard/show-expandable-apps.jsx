@@ -25,7 +25,7 @@ import React from "react";
 import PaginationComponent from "../pagination-component";
 import { Button } from "@/components/ui/button";
 import { useQuery } from "@tanstack/react-query";
-import axiosClient from "@/axios-client";
+import axiosClient from "@/lib/axios-client";
 import { useDashboardContext } from "@/context/DashboardContextProvider";
 import { useStateContext } from "@/context/ContextProvider";
 import { secondsToHuman } from "@/lib/timehash";

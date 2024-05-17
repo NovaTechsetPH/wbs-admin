@@ -12,6 +12,7 @@ import Attendance from "./Attendance";
 import UserApproval from "./UserApproval";
 import Report from "./Report";
 import Categorization from "./Categorization";
+import Utilization from './Utilization';
 
 const router = createBrowserRouter([
   {
@@ -53,6 +54,10 @@ const router = createBrowserRouter([
       {
         path: "/categorization",
         element: <Categorization />,
+      },
+      {
+        path: '/utilization',
+        element: <Utilization />
       },
       {
         path: "/reports",

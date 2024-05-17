@@ -3,7 +3,7 @@ import { Separator } from "@ui/separator";
 import { columns } from "@/components/extra/user-approval/columns";
 import { DataTable } from "@/components/extra/user-approval/data-table";
 import { useEffect, useState } from "react";
-import axiosClient from "./axios-client";
+import axiosClient from "./lib/axios-client";
 import moment from "moment";
 
 const Teams = () => {

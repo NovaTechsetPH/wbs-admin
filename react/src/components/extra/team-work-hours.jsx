@@ -7,7 +7,7 @@ import {
 } from "@ui/tooltip";
 import { useDashboardContext } from "@/context/DashboardContextProvider";
 import { useEffect, useState } from "react";
-import axiosClient from "@/axios-client";
+import axiosClient from "@/lib/axios-client";
 import { v4 as uuidv4 } from "uuid";
 import moment from "moment";
 import { secondsToHuman } from "@/lib/timehash";
@@ -24,9 +24,9 @@ const getWorkDuration = (data) => {
     moment(data.datein).isSame(moment(), "day") && data.timeout === null
       ? moment().diff(moment(data.timein, "HH:mm:ss"), "seconds")
       : moment(data.timeout, "HH:mm:ss").diff(
-          moment(data.timein, "HH:mm:ss"),
-          "seconds"
-        );
+        moment(data.timein, "HH:mm:ss"),
+        "seconds"
+      );
   return secondsToHuman(diff);
 };
 
@@ -134,58 +134,57 @@ const TeamWorkHours = ({ productive, handleTotalChange }) => {
       {!loading && workLogs.length === 0 && "No data"}
       {!loading
         ? workLogs.map((item) => (
-            <div key={item.id} className="flex items-center">
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger>
-                    <div
-                      className={`avatar ${item.employee.active_status.toLowerCase()}`}
+          <div key={item.id} className="flex items-center">
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger>
+                  <div
+                    className={`avatar ${item.employee.active_status.toLowerCase()}`}
+                  >
+                    <Avatar
+                      className={`h-9 w-9 border-2 ${getStatusStyle(
+                        item.employee.active_status
+                      )}`}
                     >
-                      <Avatar
-                        className={`h-9 w-9 border-2 ${getStatusStyle(
-                          item.employee.active_status
-                        )}`}
-                      >
-                        <AvatarImage
-                          // src={`/images/${item.userid}.png`}
-                          src={`${
-                            import.meta.env.VITE_BASE_IMG_URL
+                      <AvatarImage
+                        // src={`/images/${item.userid}.png`}
+                        src={`${import.meta.env.VITE_BASE_IMG_URL
                           }/api/employees/image/${item.employee.id}`}
-                          alt="Avatar"
-                        />
-                        <AvatarFallback>
-                          {item.employee.first_name[0]}
-                          {item.employee.last_name[0]}
-                        </AvatarFallback>
-                      </Avatar>
-                    </div>
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <p>{item.employee.active_status}</p>
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
-              <div className="ml-4 space-y-1">
-                <p className="text-sm font-medium leading-none">
-                  {item.employee.last_name} {item.employee.first_name}
-                </p>
-                <p className="text-sm text-muted-foreground">
-                  {item.employee.email}
-                </p>
-              </div>
-              <div className="ml-auto font-medium">{item.duration}</div>
+                        alt="Avatar"
+                      />
+                      <AvatarFallback>
+                        {item.employee.first_name[0]}
+                        {item.employee.last_name[0]}
+                      </AvatarFallback>
+                    </Avatar>
+                  </div>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>{item.employee.active_status}</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+            <div className="ml-4 space-y-1">
+              <p className="text-sm font-medium leading-none">
+                {item.employee.last_name} {item.employee.first_name}
+              </p>
+              <p className="text-sm text-muted-foreground">
+                {item.employee.email}
+              </p>
             </div>
-          ))
+            <div className="ml-auto font-medium">{item.duration}</div>
+          </div>
+        ))
         : [...Array(10)].map((__, index) => (
-            <div key={index} className="flex items-center">
-              <Skeleton className="h-9 w-9 border-2 rounded-full" />
-              <div className="ml-4 space-y-1">
-                <Skeleton className="w-[180px] h-[25px] bg-slate-200" />
-                <Skeleton className="w-[140px] h-[20px] bg-slate-200" />
-              </div>
-              <Skeleton className="ml-auto w-[100px] h-[28px] bg-slate-200" />
+          <div key={index} className="flex items-center">
+            <Skeleton className="h-9 w-9 border-2 rounded-full" />
+            <div className="ml-4 space-y-1">
+              <Skeleton className="w-[180px] h-[25px] bg-slate-200" />
+              <Skeleton className="w-[140px] h-[20px] bg-slate-200" />
             </div>
-          ))}
+            <Skeleton className="ml-auto w-[100px] h-[28px] bg-slate-200" />
+          </div>
+        ))}
     </div>
   );
 };

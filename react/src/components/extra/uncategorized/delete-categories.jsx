@@ -13,7 +13,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
-import axiosClient from "@/axios-client";
+import axiosClient from "@/lib/axios-client";
 
 import { Trash2 } from "lucide-react";
 

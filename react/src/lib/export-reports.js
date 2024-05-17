@@ -1,4 +1,4 @@
-import axiosClient from '@/axios-client';
+import axiosClient from '@/lib/axios-client';
 import moment from 'moment';
 import * as XLSX from "xlsx";
 

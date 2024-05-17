@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { createRef, useState } from "react";
-import axiosClient from "../axios-client.js";
+import axiosClient from "../lib/axios-client.js";
 import { useStateContext } from "../context/ContextProvider.jsx";
 import React from "react";
 // import "./../assets/signup.css";

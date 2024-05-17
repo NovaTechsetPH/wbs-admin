@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-import axiosClient from "./axios-client";
+import axiosClient from "./lib/axios-client";
 import { useEffect, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 import moment from "moment";

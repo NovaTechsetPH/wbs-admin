@@ -7,7 +7,7 @@ import { DashboardContextProvider } from "@/context/DashboardContextProvider";
 import { columns } from "@/components/extra/categorization/columns";
 import { DataTable } from "@/components/extra/categorization/data-table";
 // import { useEffect, useState } from "react";
-import axiosClient from "./axios-client";
+import axiosClient from "./lib/axios-client";
 import moment from "moment";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "./components/ui/tabs";
 import TabContents from "./components/extra/uncategorized/tab-contents";

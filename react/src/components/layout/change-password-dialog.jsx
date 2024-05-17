@@ -21,7 +21,7 @@ import {
 } from "@ui/form";
 
 import { PasswordInput } from "@ui/password-input";
-import axiosClient from "@/axios-client";
+import axiosClient from "@/lib/axios-client";
 
 const formSchema = z
   .object({

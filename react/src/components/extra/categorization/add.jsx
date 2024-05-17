@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import axiosClient from "@/axios-client";
+import axiosClient from "@/lib/axios-client";
 import { Button } from "@ui/button";
 import { Input } from "@ui/input";
 import {

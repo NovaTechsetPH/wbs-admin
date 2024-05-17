@@ -3,7 +3,7 @@ import { Separator } from "@ui/separator";
 import { columns } from "@/components/extra/user-approval/columns";
 import { DataTable } from "@/components/extra/user-approval/data-table";
 import { useEffect, useState } from "react";
-import axiosClient from "./axios-client";
+import axiosClient from "./lib/axios-client";
 import moment from "moment";
 
 const UserApproval = () => {
@@ -20,6 +20,7 @@ const UserApproval = () => {
             name: `${item.first_name} ${item.last_name}`,
             status: item.status,
             requestedOn: moment(item.created_at).format("YYYY-MM-DD"),
+            id: item.id,
           });
         });
         setData(tmpData);

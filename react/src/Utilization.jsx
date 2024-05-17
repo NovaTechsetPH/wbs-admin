@@ -5,8 +5,8 @@ import {
   createContext,
   useEffect,
 } from "react";
-import { columns } from "@/components/extra/attendance/columns";
-import { DataTable } from "@/components/extra/attendance/data-table";
+import { columns } from "@/components/extra/utilization/columns";
+import { DataTable } from "@/components/extra/utilization/data-table";
 import { v4 as uuidv4 } from "uuid";
 import axiosClient from "./lib/axios-client";
 import moment from "moment";
@@ -17,9 +17,9 @@ import { useStateContext } from "./context/ContextProvider";
 
 const CUTOFF_TIME = moment("12:00:00", "HH:mm");
 
-const PaginationContext = createContext(5);
+const PaginationContext = createContext(10);
 
-const Attendance = () => {
+const Utilization = () => {
   const { date } = useDashboardContext();
   const { currentTeam } = useStateContext();
 
@@ -45,7 +45,7 @@ const Attendance = () => {
   };
 
   const { data, isLoading } = useQuery({
-    queryKey: ["attendance", date, currentTeam],
+    queryKey: ["utilization", date, currentTeam],
     queryFn: () =>
       axiosClient
         .get(
@@ -124,4 +124,4 @@ const Attendance = () => {
   );
 };
 
-export default Attendance;
+export default Utilization;

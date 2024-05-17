@@ -5,7 +5,7 @@ import { z } from "zod";
 import moment from "moment";
 import * as XLSX from "xlsx";
 import { toast } from "sonner";
-import axiosClient from "@/axios-client";
+import axiosClient from "@/lib/axios-client";
 
 import {
   AlertDialog,

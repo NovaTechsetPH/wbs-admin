@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { columns } from "@/components/extra/employee/columns";
 import { DataTable } from "@/components/extra/employee/data-table";
-import axiosClient from "./axios-client";
+import axiosClient from "./lib/axios-client";
 import moment from "moment";
 import { useStateContext } from "./context/ContextProvider";
 
