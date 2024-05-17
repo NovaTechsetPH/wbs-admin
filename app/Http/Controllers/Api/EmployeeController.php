@@ -12,6 +12,7 @@ use App\Models\Position;
 use App\Models\RunningApps;
 use App\Models\Team;
 use App\Models\TrackRecords;
+use App\Models\RequestApproval;
 
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
@@ -983,5 +984,27 @@ class EmployeeController extends Controller
             'data' => $data,
             'count' => count($data)
         ]);
+    }
+
+    public function getAllEmployees()
+    {
+        $employees = Employee::all();
+        return response()->json([
+            'data' => $employees
+        ]);
+    }
+
+    public function insertRequestApproval(Request $request)
+    {
+
+        $data = $request->query();
+
+        // Create the request approval using the extracted data
+        $requestApproval = RequestApproval::create($data);
+        // Return response
+        return response()->json([
+            'data' => $requestApproval
+        ]);
+        //return $this->sendResponse($requestApproval, 'Request Approval Created Successfully.');
     }
 }

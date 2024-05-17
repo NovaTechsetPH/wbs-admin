@@ -12,7 +12,7 @@ use App\Http\Controllers\Api\ReportController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Redis;
-
+use Illuminate\Support\Facades\DB;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -110,6 +110,10 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/test-tracking/apps/data', [TimeLogsController::class, 'getAppDataTest']);
     Route::get('/tracking/employee', [ActivityTrackController::class, 'getActivityByEmployee']);
     Route::get('/tracking/recent', [EmployeeController::class, 'recentLogs']);
+
+    Route::get('/employees-all', [EmployeeController::class, 'getAllEmployees']);
+
+    Route::put('/insertRequest', [EmployeeController::class, 'insertRequestApproval']);
 });
 
 Route::post('/signup', [AuthController::class, 'signup']);

@@ -39,14 +39,14 @@ class TimeLog extends Command
      */
     public function handle()
     {
-        $ref_date = '2024-05-06';
+        $ref_date = '2024-05-08';
         // $members = Employee::select('id')->whereIn('team_id', [10])->get();
         // $tracks = TrackRecords::whereDate('datein', '=', $ref_date)
         //     ->whereIn('userid', $members->pluck('id'))
         //     ->get();
 
-        $budols = RunningApps::where('taskid', 4164)
-            ->whereBetween('time', [Carbon::parse('12:00'), Carbon::parse('13:45')])
+        $budols = RunningApps::where('taskid', 4037)
+            ->whereBetween('time', [Carbon::parse('20:18'), Carbon::parse('20:49')])
             ->get();
 
         $this->info('Logs: ' . $budols->count());
@@ -55,13 +55,13 @@ class TimeLog extends Command
             // $this->info($log->time);
             $inserted = TempTaskrunning::create([
                 'userid' => 20,
-                'taskid' => 4164,
+                'taskid' => 4281,
                 'description' => $budol->description,
                 'date' => $ref_date,
-                'time' => Carbon::parse($budol->time)->addHours(10)->toTimeString(),
+                'time' => Carbon::parse($budol->time)->addHours(2)->toTimeString(),
                 'status' => 'Closed',
                 'category_id' => $budol->category_id,
-                'end_time' => Carbon::parse($budol->end_time)->addHours(10)->toTimeString(),
+                'end_time' => Carbon::parse($budol->end_time)->addHours(2)->toTimeString(),
                 'platform' => 'desktop',
                 'type' => 'actual',
             ]);
