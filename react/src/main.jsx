@@ -7,7 +7,7 @@ import { ContextProvider } from "./context/ContextProvider.jsx";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { DashboardContextProvider } from "./context/DashboardContextProvider";
 
-const queryClient = new QueryClient();
+export const queryClient = new QueryClient();
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>

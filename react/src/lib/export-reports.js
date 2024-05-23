@@ -2,7 +2,7 @@ import axiosClient from '@/lib/axios-client';
 import moment from 'moment';
 import * as XLSX from "xlsx";
 
-export async function exportTracking(reportId) {
+export async function exportTracking(reportId, filename = null) {
   const { data } = await axiosClient('/reports/download', {
     params: {
       reportId: reportId,
@@ -17,7 +17,7 @@ export async function exportTracking(reportId) {
   XLSX.utils.book_append_sheet(workbook, worksheet, 'tracking');
   XLSX.writeFile(
     workbook,
-    `nTrac-Tracking-Report-${moment().unix()}.xlsx`
+    filename ?? `nTrac-Tracking-Report-${moment().unix()}.xlsx`
   );
 }
 

@@ -228,8 +228,11 @@ export const AlertDialogTemplate = ({
     if (module === 'tracking') {
       toast.promise(promise, {
         loading: 'Generating reports data...',
-        success: (resp) => `Downloading...`,
-        error: (err) => console.log(err),
+        success: (resp) => `Files downloaded.`,
+        error: (err) => {
+          console.log(err)
+          return 'Processing...'
+        },
         action: {
           label: 'Show',
           onClick: () => {
@@ -238,13 +241,16 @@ export const AlertDialogTemplate = ({
           }
         }
       })
+
+      setTimeout(() => handleClickHist(), 1500)
       return;
     }
 
     toast.promise(promise, {
       loading: "Generating reports data...",
-      success: (resp) => {
-        const worksheet = XLSX.utils.json_to_sheet(resp);
+      success: ({ data }) => {
+        const formattedData = formatExcelData(data.data, module)
+        const worksheet = XLSX.utils.json_to_sheet(formattedData);
         const workbook = XLSX.utils.book_new();
         XLSX.utils.book_append_sheet(workbook, worksheet, moduleName);
         XLSX.writeFile(

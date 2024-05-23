@@ -1,9 +1,12 @@
 import { cn } from "@/lib/utils";
-import { Button, buttonVariants } from "@ui/button";
 import { Link, useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
+
+import { Button, buttonVariants } from "@ui/button";
+import { Badge } from "@ui/badge"
+import { Separator } from "@ui/separator";
+
 import { BarChartIcon, LayersIcon } from "@radix-ui/react-icons";
-import { Separator } from "../ui/separator";
 import { TeamSwitcher } from "../layout/team-switcher";
 
 export function Sidebar({ className, open, setOpen }) {
@@ -137,6 +140,7 @@ export function Sidebar({ className, open, setOpen }) {
           <path d="M96 128a128 128 0 1 1 256 0A128 128 0 1 1 96 128zM0 482.3C0 383.8 79.8 304 178.3 304h91.4C368.2 304 448 383.8 448 482.3c0 16.4-13.3 29.7-29.7 29.7H29.7C13.3 512 0 498.7 0 482.3zM625 177L497 305c-9.4 9.4-24.6 9.4-33.9 0l-64-64c-9.4-9.4-9.4-24.6 0-33.9s24.6-9.4 33.9 0l47 47L591 143c9.4-9.4 24.6-9.4 33.9 0s9.4 24.6 0 33.9z" />
         </svg>
       ),
+      notif: 6,
     },
     {
       name: "Categorization",
@@ -167,8 +171,8 @@ export function Sidebar({ className, open, setOpen }) {
   ];
 
   return (
-    <div className={cn("pb-12", className)}>
-      <div className="space-y-4 py-4">
+    <div className={cn("pb-3", className)}>
+      <div className="space-y-4">
         <div className="px-3 py-2">
           <div
             className={cn(
@@ -212,6 +216,9 @@ export function Sidebar({ className, open, setOpen }) {
                   >
                     {item.name}
                   </span>
+                  {item.notif && <Badge className="ml-auto flex h-6 w-6 shrink-0 items-center justify-center rounded-full">
+                    {item.notif}
+                  </Badge>}
                 </Button>
               </Link>
             ))}

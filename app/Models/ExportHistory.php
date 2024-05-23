@@ -15,6 +15,7 @@ class ExportHistory extends Model
         'id',
         'type',
         'userid',
+        'filename',
         'employee_id',
         'item_count',
         'start_date',

@@ -235,7 +235,8 @@ class ActivityTrackController extends Controller
             ->first();
 
         if (!$tracking) {
-            throw new Exception("No records found", 1);
+            // throw new \Exception("No records found", 1);
+            return [];
         }
 
         $data = [];

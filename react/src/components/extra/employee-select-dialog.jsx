@@ -51,7 +51,7 @@ const SelectDialog = ({ data, onEmployeeChanged }) => {
           className="w-[200px] justify-between"
         >
           {employee && !isLoading
-            ? `${employee.first_name} ${employee.last_name}`
+            ? `${employee.last_name}, ${employee.first_name}`
             : selectedName}
           <CaretSortIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
@@ -72,11 +72,11 @@ const SelectDialog = ({ data, onEmployeeChanged }) => {
                     setSelectedName(
                       currentValue === selectedName
                         ? "Search Employee..."
-                        : `${emp.first_name} ${emp.last_name}`
+                        : `${emp.last_name}, ${emp.first_name}`
                     );
                   }}
                 >
-                  {`${emp.first_name} ${emp.last_name}`}
+                  {`${emp.last_name}, ${emp.first_name}`}
                   <CheckIcon
                     className={cn(
                       "ml-auto h-4 w-4",

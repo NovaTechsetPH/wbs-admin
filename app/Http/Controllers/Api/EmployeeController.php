@@ -8,6 +8,7 @@ use App\Models\Employee;
 use App\Http\Resources\AppCategoriesResource;
 use App\Http\Resources\EmployeeResource;
 use App\Jobs\GenerateReportJob;
+use App\Models\AccessRole;
 use App\Models\AppCategories;
 use App\Models\ExportHistory;
 use App\Models\ExtractTrackingData;
@@ -100,7 +101,10 @@ class EmployeeController extends Controller
         // }
 
         $teamid = $teamid ?? DB::table('manager_team_access')->first()->team_id;
-        $data = Employee::where('team_id', $teamid)->get();
+        $data = Employee::where('team_id', $teamid)
+            ->orderBy('last_name', 'asc')
+            ->orderBy('first_name', 'asc')
+            ->get();
 
         return response()->json([
             'data' => $data,
@@ -610,14 +614,25 @@ class EmployeeController extends Controller
         try {
             $emps_under = Auth::user()->positions()->with('employees')->get()
                 ->pluck('employees')->flatten()->pluck('id')->toArray();
-            $users = Employee::whereIn('id', $emps_under)
-                ->whereIn('status', ['Pending', 'Rejected'])
-                ->orderBy('id', 'desc')->get();
+
+            $special_access = AccessRole::where('role', 'USER_APPROVAL')->first();
+
+            if ($special_access) {
+                $users = Employee::where('status', 'Pending')
+                    ->orderBy('id', 'desc')
+                    ->get();
+            } else {
+                $users = Employee::whereIn('id', $emps_under)
+                    ->whereIn('status', ['Pending', 'Rejected'])
+                    ->orderBy('id', 'desc')
+                    ->get();
+            }
         } catch (\Exception $e) {
             return response()->json([
                 'message' => $e->getMessage()
             ], 500);
         }
+
         return response()->json([
             'data' => $users ?? [],
             'message' => 'Success'
@@ -1008,10 +1023,19 @@ class EmployeeController extends Controller
     public function insertRequestApproval(Request $request)
     {
 
-        $data = $request->query();
+        // $data = $request->query();
 
         // Create the request approval using the extracted data
-        $requestApproval = RequestApproval::create($data);
+        $employee = Employee::find($request->userid);
+        $requestApproval = RequestApproval::create([
+            'managerid' => $employee->team->manager_id,
+            'status' => $request->status ?? 'Pending',
+            'userid' => $request->userid,
+            'start_time' => $request->start_time,
+            'end_time' => $request->end_time,
+            'description' => $request->description,
+            'duration' => $request->duration
+        ]);
         // Return response
         return response()->json([
             'data' => $requestApproval

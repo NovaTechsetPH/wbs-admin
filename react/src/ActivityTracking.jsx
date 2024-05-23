@@ -83,7 +83,8 @@ const ActivityTracking = () => {
       .then(({ data }) => data.data)
       .then((resp) => {
         let convert = getWorkDuration(resp);
-        setArrival(resp?.timein ?? "--:--");
+        let tmpArrival = resp?.timein ? moment(resp?.timein, 'HH:mm:ss').format('HH:mm') : "--:--";
+        setArrival(tmpArrival);
         setDuty(convert);
       });
 
@@ -227,7 +228,7 @@ const ActivityTracking = () => {
                   <div className="col-span-1">
                     <Widget
                       loading={loading}
-                      title={"Unproductive Time"}
+                      title={"Unproductive"}
                       content={summary.unproductive}
                     />
                   </div>

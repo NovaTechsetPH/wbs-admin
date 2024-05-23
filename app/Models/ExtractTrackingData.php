@@ -28,4 +28,9 @@ class ExtractTrackingData extends Model
     {
         return $this->belongsTo(Employee::class, 'employee_id');
     }
+
+    public function export_history()
+    {
+        return $this->belongsTo(ExportHistory::class, 'report_id');
+    }
 }

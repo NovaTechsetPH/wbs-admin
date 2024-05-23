@@ -113,11 +113,12 @@ class GenerateReportJob implements ShouldQueue
 
             if ($completed == $this->export_history->item_count) {
                 $this->export_history->update([
-                    'status' => 'completed'
+                    'status' => 'completed',
+                    'filename' => 'nTrac-Tracking-Report-' . Carbon::now()->unix() . '.xlsx',
                 ]);
             }
         } catch (\Throwable $th) {
-            \Log::info($th->getMessage());
+            // \Log::info($th->getMessage());
             $this->export_history->update([
                 'status' => 'failed'
             ]);

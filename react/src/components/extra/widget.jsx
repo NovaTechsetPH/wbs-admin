@@ -6,10 +6,10 @@ const Widget = ({ title, content, loading = false }) => {
   return loading ? (
     <Card style={{ height: "193px" }}>
       <CardHeader>
-        <Skeleton className={"w-[140px] h-[25px] bg-slate-200"} />
+        <Skeleton className={"w-[100px] h-[25px] bg-slate-200"} />
       </CardHeader>
       <CardContent className="text-4xl ">
-        <Skeleton className="w-[200px] h-[32px] bg-slate-200" />
+        <Skeleton className="w-[150px] h-[32px] bg-slate-200" />
       </CardContent>
     </Card>
   ) : (
@@ -17,7 +17,7 @@ const Widget = ({ title, content, loading = false }) => {
       <CardHeader>
         <CardTitle className="text-base font-bold">{title}</CardTitle>
       </CardHeader>
-      <CardContent className="text-4xl">{content}</CardContent>
+      <CardContent className="text-3xl">{content}</CardContent>
     </Card>
   );
 };

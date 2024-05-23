@@ -19,7 +19,7 @@ export function DataTableRowActions({ row }) {
 
   const handleDownloadFile = () => {
     let id = row.original.id
-    exportTracking(id)
+    exportTracking(id, row.original.filename)
   }
 
   const handleCancel = () => {
@@ -33,8 +33,6 @@ export function DataTableRowActions({ row }) {
       })
       .catch((err) => console.log(err))
   }
-
-
 
   return (
     <DropdownMenu>

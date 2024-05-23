@@ -39,6 +39,9 @@ class TriggerGenerateJob implements ShouldQueue
 
         // $employee = Employee::find($this->extract_tracking_data->userid)
 
+        if (!$track_record)
+            return;
+
         $completed = ExtractTrackingData::where('report_id', $this->extract_tracking_data->report_id)->count();
 
         $item = [
@@ -52,7 +55,8 @@ class TriggerGenerateJob implements ShouldQueue
             'timein' => $track_record->timein,
             'employee' => $track_record->employee->first_name . ', ' . $track_record->employee->last_name,
             'export_id' => $this->extract_tracking_data->report_id,
-            'items_completed' => $completed
+            'items_completed' => $completed,
+            'filename' => $this->extract_tracking_data->export_history->filename
         ];
 
         ReportExported::dispatch($item);
